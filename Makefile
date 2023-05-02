@@ -40,7 +40,9 @@ TEST_BIN_DIR = $(addprefix $(TEST_DIR)/, bin)
 OBJS = $(addprefix $(OBJ_DIR)/, unittest.o)
 LIBS = $(addprefix $(LIB_DIR)/, libunittest.a)
 
-TESTS = $(addprefix $(TEST_BIN_DIR)/, test_running_testcase.out)
+TESTS = $(addprefix $(TEST_BIN_DIR)/, 	test_running_testcase.out \
+					test_create_suit.out \
+					test_multiple_suits.out)
 
 .PHONY: clean format
 all: $(OBJ_DIR) $(LIB_DIR) $(TEST_BIN_DIR) $(OBJS) $(LIBS) $(TESTS)

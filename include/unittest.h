@@ -10,12 +10,13 @@
 #ifndef __UNIT_TEST_H__
 #define __UNIT_TEST_H__
 
-#include <string.h>
 #include <stddef.h>
-#include <stdint.h>
+#include <string.h>
 #include <except.h>
 
 #define T TestCaseFrame
+#define S Suit
+#define MAX_AMOUNT_OF_TESTS_IN_SUITS 1024
 
 /* The structure to keep track */
 typedef struct T T;
@@ -27,9 +28,23 @@ struct T {
 	JmpBuf buf;
 };
 
+typedef void (*test_case_ptr)(void);
+/* To create a suit of test cases */
+typedef struct S S;
+struct S {
+	test_case_ptr cases[MAX_AMOUNT_OF_TESTS_IN_SUITS];
+	size_t amount;
+	const char *name;
+	struct S *next;	/* For linking suits */
+};
+
+/* To run the whole tests */
+extern void run_tests(void);
+extern S *head;
+
 /* To create a new testcase */
 #define TestCase(TEST_CASE_NAME)					\
-	void TEST_CASE_NAME() {						\
+	static void TEST_CASE_NAME(void) {				\
 	TestCaseFrame test_case;					\
 	test_case.name = #TEST_CASE_NAME;				\
 	test_case.amount = 0;						\
@@ -37,6 +52,7 @@ struct T {
 	test_case.counter = 0;						\
 	do 
 
+/* To run an specific test */
 #define Test(TEST_NAME)							\
 	test_case.current_test = #TEST_NAME;				\
 	/* Count all the tests */					\
@@ -49,7 +65,22 @@ struct T {
 		jmpback(&test_case.buf, test_case.test_to_execute + 1);	\
 	}
 
+/* To create a new suit */
+#define NEW_SUIT(SUIT_NAME, ...)					\
+	Suit SUIT_NAME = {{__VA_ARGS__},				\
+			  sizeof((test_case_ptr[]) {__VA_ARGS__}) / sizeof(test_case_ptr), \
+			  #SUIT_NAME,					\
+			  NULL						\
+	}								
 
+/* CATCH_SUIT: To append the testcases from a suit */
+#define CATCH_SUIT(SUIT_NAME)			\
+	SUIT_NAME.next = head;			\
+	head = &SUIT_NAME
+
+/* To run the suit */
+#define RUN() run_tests()
 
 #undef T
+#undef S
 #endif

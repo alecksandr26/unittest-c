@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
@@ -15,6 +14,26 @@ float foo(float *arr, size_t n)
 	return sum;
 }
 
+
+/* Creates a new test cases */
+TestCase(NewCase)
+{
+	/* Construct the tests case */
+	int var = 1;
+	
+	/* Start testing */
+	Test(first_test) {	/* First Test */
+		var++;
+		assert(var == 2);
+	}
+
+	Test(second_test) { 	/* Second test */
+		/* Do your assertions */
+		assert(var == 1);
+	}
+} EndTestCase
+
+
 /* Test a simple function */
 TestCase(Testfoo)
 {
@@ -28,14 +47,16 @@ TestCase(Testfoo)
 			arr[i] = ((float) i) / 100;
 
 		sum = foo(arr, amount);
-
-		printf("total isolated: %f\n", sum);
-		
 		assert(sum == (float) 49.500004);
 	}
 	
 	free(arr);
 } EndTestCase
+
+
+  /* First suit */
+NEW_SUIT(FirstSuit, Testfoo, NewCase);
+
 
 
 TestCase(TestingMalloc)
@@ -56,34 +77,14 @@ TestCase(TestingMalloc)
 } EndTestCase
 
 
-/* Creates a new test cases */
-TestCase(NewCase)
+NEW_SUIT(SecondSuit, TestingMalloc);
+
+int main(void)
 {
-	/* Construct the tests case */
-	int var = 1;
+	CATCH_SUIT(FirstSuit);
+	CATCH_SUIT(SecondSuit);
 	
-	/* Start testing */
-	Test(first_test) {	/* First Test */
-		var++;
-		assert(var == 2);
-		printf("Isolated in %s: %i\n", test_case.current_test, var);
-	}
-
-	Test(second_test) { 	/* Second test */
-		/* Do your assertions */
-		assert(var == 1);
-		printf("Isolated in %s: %i\n", test_case.current_test, var);
-	}
-} EndTestCase
-
-
-int main()
-{
-	/* Run the tests case */
-	NewCase();
-	
-	TestingMalloc();
-	
-	Testfoo();
+	RUN();
 }
+
 
