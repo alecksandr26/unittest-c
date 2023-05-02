@@ -12,10 +12,17 @@ define \n
 endef
 
 C = cc
-AR = ar rc
+C_DEBUG_FLAGS = -ggdb -pedantic -Wall
+C_COMPILE_FLAGS = -O2 -DNDEBUG -fno-stack-protector -z execstack -no-pie
+C_FLAGS = $(C_DEBUG_FLAGS)
+C_FLAGS_LIBS = -lexcept
 
-C_FLAGS = -ggdb -pedantic -Wall -Werror 
-C_FLAGS_LIBS = 
+N = nasm
+N_DEBUG_FLAGS = -g -f elf64
+N_COMPILE_FLAGS = -f elf64
+N_FLAGS = $(N_DEBUG_FLAGS)
+
+AR = ar rc
 CF = clang-format -i
 
 V = valgrind
@@ -30,10 +37,10 @@ INCLUDE_DIR = include
 TEST_SRC_DIR = $(addprefix $(TEST_DIR)/, src)
 TEST_BIN_DIR = $(addprefix $(TEST_DIR)/, bin)
 
-OBJS = $(addprefix $(OBJ_DIR)/, )
+OBJS = $(addprefix $(OBJ_DIR)/, unittest.o)
 LIBS = $(addprefix $(LIB_DIR)/, libunittest.a)
 
-TESTS = $(addprefix $(TEST_BIN_DIR)/, )
+TESTS = $(addprefix $(TEST_BIN_DIR)/, test_running_testcase.out)
 
 .PHONY: clean format
 all: $(OBJ_DIR) $(LIB_DIR) $(TEST_BIN_DIR) $(OBJS) $(LIBS) $(TESTS)
@@ -53,6 +60,10 @@ $(TEST_BIN_DIR):
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(OBJ_DIR)
 	@echo Compiling: $@
 	@$(C) $(C_FLAGS) -c $< -o $@ $(C_FLAGS_LIBS)
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.asm $(OBJ_DIR)
+	@echo Compiling: $@
+	@$(N) $(N_FLAGS) $< -o $@
 
 # Compile the tests
 $(TEST_BIN_DIR)/test_%.out: $(TEST_SRC_DIR)/test_%.c $(LIBS)
@@ -118,6 +129,7 @@ format: $(addprefix format_, 	$(wildcard $(SRC_DIR)/*.c) \
 test_%.out: $(TEST_BIN_DIR)/test_%.out
 	@echo Running: $<
 	@$(V) $(V_FLAGS) ./$<
+	@echo Passed
 
 test: $(notdir $(TESTS))
 
