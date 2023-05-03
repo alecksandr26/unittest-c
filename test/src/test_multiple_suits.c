@@ -58,7 +58,6 @@ TestCase(Testfoo)
 NEW_SUIT(FirstSuit, Testfoo, NewCase);
 
 
-
 TestCase(TestingMalloc)
 {
 	/* Construct the test case */
@@ -81,8 +80,8 @@ NEW_SUIT(SecondSuit, TestingMalloc);
 
 int main(void)
 {
-	CATCH_SUIT(FirstSuit);
-	CATCH_SUIT(SecondSuit);
+	CATCH(FirstSuit, SecondSuit);
+	/* Better */
 	
 	RUN();
 }

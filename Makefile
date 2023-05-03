@@ -37,12 +37,13 @@ INCLUDE_DIR = include
 TEST_SRC_DIR = $(addprefix $(TEST_DIR)/, src)
 TEST_BIN_DIR = $(addprefix $(TEST_DIR)/, bin)
 
-OBJS = $(addprefix $(OBJ_DIR)/, unittest.o)
+OBJS = $(addprefix $(OBJ_DIR)/, unittest.o atom.o)
 LIBS = $(addprefix $(LIB_DIR)/, libunittest.a)
 
 TESTS = $(addprefix $(TEST_BIN_DIR)/, 	test_running_testcase.out \
 					test_create_suit.out \
-					test_multiple_suits.out)
+					test_multiple_suits.out\
+					test_tset_directory.out)
 
 .PHONY: clean format
 all: $(OBJ_DIR) $(LIB_DIR) $(TEST_BIN_DIR) $(OBJS) $(LIBS) $(TESTS)
@@ -63,20 +64,17 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(OBJ_DIR)
 	@echo Compiling: $@
 	@$(C) $(C_FLAGS) -c $< -o $@ $(C_FLAGS_LIBS)
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.asm $(OBJ_DIR)
-	@echo Compiling: $@
-	@$(N) $(N_FLAGS) $< -o $@
+# Creates the library
+$(LIB_DIR)/%.a: $(OBJS) $(LIB_DIR)
+	@echo Archiving: $@ $(filter-out $(LIB_DIR), $^)
+	@$(AR) $@ $(filter-out $(LIB_DIR), $^)
+	@ranlib $@
 
 # Compile the tests
-$(TEST_BIN_DIR)/test_%.out: $(TEST_SRC_DIR)/test_%.c $(LIBS)
-	@echo Compiling: $^ -o $@
-	@$(C) $(C_FLAGS) $^ -o $@ $(C_FLAGS_LIBS)
+$(TEST_BIN_DIR)/test_%.out: $(TEST_SRC_DIR)/test_%.c $(LIBS) $(TEST_BIN_DIR)
+	@echo Compiling: $(filter-out $(TEST_BIN_DIR), $^) -o $@
+	@$(C) $(C_FLAGS) $(filter-out $(TEST_BIN_DIR), $^) -o $@ $(C_FLAGS_LIBS)
 
-# Creates the library
-$(LIB_DIR)/%.a: $(OBJS)
-	@echo Archiving: $@
-	@$(AR) $@ $^
-	@ranlib $@
 
 clean_$(LIB_DIR)/%:
 	@echo Removing: $(patsubst clean_%, %, $@)

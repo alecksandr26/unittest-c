@@ -5,7 +5,6 @@
 
 #include "../../include/unittest.h"
 
-
 float foo(float *arr, size_t n)
 {
 	float sum = 0.0;
@@ -59,9 +58,12 @@ NEW_SUIT(SimpleSuit, Testfoo, NewCase);
 
 int main(void)
 {
-	CATCH_SUIT(SimpleSuit);
-	
+
+	CATCH(SimpleSuit);
 	RUN();
+
+	// RUN(SimpleSuit);
+	
 	
 	return 0;
 }

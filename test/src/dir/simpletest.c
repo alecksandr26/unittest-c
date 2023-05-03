@@ -1,9 +1,7 @@
-#include <stdio.h>
-#include <stdlib.h>
+#include <malloc.h>
 #include <assert.h>
-#include <string.h>
+#include "../../../include/unittest.h"
 
-#include "../../include/unittest.h"
 
 float foo(float *arr, size_t n)
 {
@@ -12,6 +10,7 @@ float foo(float *arr, size_t n)
 		sum += arr[i];
 	return sum;
 }
+
 
 /* Test a simple function */
 TestCase(Testfoo)
@@ -74,22 +73,5 @@ TestCase(NewCase)
 	}
 } EndTestCase
 
-int main()
-{
-	/* Run the tests case */
-	
-	/* it is better to Catch it 
-	   
-	RUN(Testfoo);
-
-	RUN(NewCase);
-	*/
-
-	
-	// CATCH(Testfoo, NewCase, TestingMalloc);
-
-	/*  Run the tree at once */
-
-	RUN(Testfoo, NewCase, TestingMalloc);
-}
-
+NEW_SUIT(FirstSuit, TestingMalloc, NewCase);
+NEW_SUIT(SecondSuit, Testfoo);
