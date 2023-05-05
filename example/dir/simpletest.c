@@ -21,17 +21,22 @@ TestCase(NewCase)
 	/* Start testing */
 	Test(first_test) {	/* First Test */
 		var += 2;
-		assert(var == 3);
+		ASSERT(var != 3);
 	}
 
 	Test(second_test) { 	/* Second test */
 		/* Do your assertions */
 		var++;
-		assert(var == 2);
+		ASSERT(var == 2);
+		var++;
+		ASSERT(var == 3);
 	}
 
 	Test(third_test) {
-		assert(var == 1);
+		
+		ASSERT(var == 0, "Should be zero >:|"); /* Stops executing */
+
+		ASSERT(0, "This other assert shoun't bee executed");
 	}
 } EndTestCase
 
@@ -49,7 +54,7 @@ TestCase(Testfoo)
 			arr[i] = ((float) i) / 100;
 
 		sum = foo(arr, amount);
-		assert(sum == (float) 49.500004);
+		ASSERT(sum == (float) 49.500004);
 	}
 	
 	free(arr);
@@ -66,16 +71,16 @@ TestCase(TestingMalloc)
 	/* Each test is isolated */
 	Test(MallocNotNull) {
 		pointer = malloc(sizeof(int) * amount);
-		assert(pointer != NULL);
+		ASSERT(pointer != NULL);
 		free(pointer);
 	}
 
 	Test(ShouldBeNull) {
-		assert(pointer == NULL);
+		ASSERT(pointer == NULL);
 	}
 
 	Test(AmountShouldBe10) {
-		assert(amount == 10);
+		ASSERT(amount == 10);
 	}
 } EndTestCase
 

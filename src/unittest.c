@@ -449,6 +449,8 @@ void run_tests(void)
 {
 	assert(head_tc != NULL && "Should be at least one test");
 	size_t count_tests, success_test, failed_test;
+	TestInfoFailed *infofails[MAX_AMOUNT_OF_TESTS];
+	
 	
 	/* Execute each testcase */
 	count_tests = success_test = failed_test = 0;
@@ -458,20 +460,46 @@ void run_tests(void)
 		head_tc->test(head_tc);
 		count_tests += head_tc->amount;
 		success_test += head_tc->amount - head_tc->amount_failed;
-		failed_test += head_tc->amount_failed;
+
+		/* Catch its failes info */
+		for (size_t i = 0; i < head_tc->amount_failed; i++) {
+			infofails[failed_test] = &head_tc->failed_info[i];
+			infofails[failed_test]->tcase = head_tc->name;
+			infofails[failed_test++]->file = head_tc->file;
+		}
+		
 		/* Move to the next test */
 		head_tc = head_tc->next;
 	}
 	clock_t end_time = clock();
 	printf("\n");
-	puts("----------------------------------------------------------------------");
+
+	
+	for (size_t i = 0; i < failed_test; i++) {
+		puts("======================================================================================");
+		printf("FAIL:\t\t%s\t\t(%s.%s)\n", infofails[i]->test, infofails[i]->tcase,
+		       infofails[i]->test);
+		puts("--------------------------------------------------------------------------------------");
+		puts("Traceback...");
+		printf("\tFile \"%s\", line %i, in %s\n", infofails[i]->file, infofails[i]->line,
+		       infofails[i]->test);
+		if (infofails[i]->msg != NULL)
+			printf("AssertionError:\t \"%s\",\t\"%s\" \n\n",
+			       infofails[i]->expr, infofails[i]->msg);
+		else
+			printf("AssertionError:\t \"%s\"\n\n", infofails[i]->expr);
+
+	}
+
+	puts("--------------------------------------------------------------------------------------");
 	if (failed_test == 0) {
 		printf("Ran %zu test in %fs\n", count_tests,
 		       (double) (end_time - start_time) / CLOCKS_PER_SEC);
 		printf("\nOk \n\n");
 	} else {
-		printf("Ran %zu test in %fs succeed %zu failed %zu\n", count_tests,
-		       (double) (end_time - start_time) / CLOCKS_PER_SEC, success_test, failed_test);
+		printf("Ran %zu test in %fs\n", count_tests,
+		       (double) (end_time - start_time) / CLOCKS_PER_SEC);
+		printf("\nFAILED(failures=%zu)\n\n", failed_test);
 	}
 		
 }

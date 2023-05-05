@@ -28,7 +28,7 @@ TestCase(Testfoo)
 
 		sum = foo(arr, amount);
 
-		ASSERT(sum == (float) 49.500000);
+		ASSERT(sum == (float) 49.500004);
 	}
 
 	free(arr);
@@ -48,7 +48,7 @@ TestCase(TestingMalloc)
 		free(pointer);
 	}
 
-	Test(ShouldBeNull) { ASSERT(pointer != NULL); }
+	Test(ShouldBeNull) { ASSERT(pointer == NULL); }
 }
 EndTestCase
 

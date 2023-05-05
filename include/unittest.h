@@ -28,7 +28,8 @@
 #define MAX_AMOUNT_OF_TESTS_IN_SUITS 1024
 #define MAX_AMOUNT_OF_SUITS_IN_FILES 100
 #define MAX_AMOUNT_OF_FILES	     100
-#define MAX_AMOUNT_OF_TESTS 100
+#define MAX_AMOUNT_OF_FAILS_IN_TESTCASES 100
+#define MAX_AMOUNT_OF_TESTS 10000
 
 /* For recompiling the suits */
 #define COMPILER	 "gcc"
@@ -41,7 +42,7 @@
 
 typedef struct F F;
 struct F {
-	const char *expr, *msg;
+	const char *expr, *msg, *test, *tcase, *file;
 	int line;
 };
 
@@ -71,7 +72,7 @@ struct TC {
 
 	/* Catch the test function */
 	void (*test)(TC *);
-	F failed_info[MAX_AMOUNT_OF_TESTS];
+	F failed_info[MAX_AMOUNT_OF_FAILS_IN_TESTCASES];
 };
 
 #include "unittest_assert.h"
@@ -116,7 +117,6 @@ extern Except UnittestNotEnoughMemory, UnittestErrorOpeningFile,
 	TestCaseFrame tframe;						\
 	tframe.state   = stackjmp(&tframe.buf);				\
 	tframe.counter = 0;						\
-	tframe.status = '.';						\
 	do
 
 /* To run an specific test */
@@ -132,7 +132,7 @@ extern Except UnittestNotEnoughMemory, UnittestErrorOpeningFile,
 	assert(tcase->amount > 0					\
 	       && "The testcase should have atleast one test");		\
 	if (tframe.state > 0)						\
-		putchar(tframe.status);					\
+		putchar('.');						\
 	if (tframe.state < (int) tcase->amount) 			\
 		jmpback(&tframe.buf, tframe.state + 1);			\
 									\

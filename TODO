@@ -1,10 +1,12 @@
 ---- 2023/05/02 ----
 - Create different type of assertions [ ]
 - Create macros to include files and load suits [x]
-- Make a way of creating and compiling multiples files [ ]
+- Make a way of creating and compiling multiples files [x]
 ---- 2023/05/03 ----
 - Rewrite the exceptions in a better way [ ]
-- Dive everything in more components [ ]
+- Divide everything in more components [ ]
 - Wrap the malloc [ ]
 ---- 2023/05/03 ----
 - Deal with the bad string contaenations of the files and obj [ ]
+- Write the documentation
+- Refactor the whole code
