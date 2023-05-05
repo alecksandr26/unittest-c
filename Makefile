@@ -38,7 +38,7 @@ EXAMPLE_DIR = example
 TEST_SRC_DIR = $(addprefix $(TEST_DIR)/, src)
 TEST_BIN_DIR = $(addprefix $(TEST_DIR)/, bin)
 
-OBJS = $(addprefix $(OBJ_DIR)/, unittest.o unittest_map.o)
+OBJS = $(addprefix $(OBJ_DIR)/, unittest.o unittest_map.o unittest_assert.o)
 LIBS = $(addprefix $(LIB_DIR)/, libunittest.a)
 EXAMPLES = $(addprefix $(EXAMPLE_DIR)/, test)
 

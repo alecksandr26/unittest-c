@@ -12,8 +12,10 @@
 
 #include "../include/unittest.h"
 /* Sime implemention of an assert */
-extern void unittest_print_fails(TestCase *tcase);
+extern void unittest_print_faild_test(TestInfoFailed *tcase);
 #define FIRST(X, ...) X
+
+/* To catcht all the inforamtion */
 #define ASSERT(EXPR, ...)						\
 	if (!(EXPR)) {							\
 		tcase->failed_info[tcase->amount_failed].expr = #EXPR;	\

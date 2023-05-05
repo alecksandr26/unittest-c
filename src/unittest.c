@@ -8,8 +8,8 @@
 */
 
 #include "../include/unittest.h"
-
 #include "../include/unittest_map.h"
+#include "../include/unittest_assert.h"
 
 #include <assert.h>
 #include <dirent.h>
@@ -475,21 +475,9 @@ void run_tests(void)
 	printf("\n");
 
 	
-	for (size_t i = 0; i < failed_test; i++) {
-		puts("======================================================================================");
-		printf("FAIL:\t\t%s\t\t(%s.%s)\n", infofails[i]->test, infofails[i]->tcase,
-		       infofails[i]->test);
-		puts("--------------------------------------------------------------------------------------");
-		puts("Traceback...");
-		printf("\tFile \"%s\", line %i, in %s\n", infofails[i]->file, infofails[i]->line,
-		       infofails[i]->test);
-		if (infofails[i]->msg != NULL)
-			printf("AssertionError:\t \"%s\",\t\"%s\" \n\n",
-			       infofails[i]->expr, infofails[i]->msg);
-		else
-			printf("AssertionError:\t \"%s\"\n\n", infofails[i]->expr);
+	for (size_t i = 0; i < failed_test; i++)
+		unittest_print_faild_test(infofails[i]);
 
-	}
 
 	puts("--------------------------------------------------------------------------------------");
 	if (failed_test == 0) {
