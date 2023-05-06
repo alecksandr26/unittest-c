@@ -82,7 +82,7 @@ int main(void)
 }
 ```
 5. Here's a summary of what the final code might look like:
-```
+```C
 #include <unittest.h>
 
 TESTCASE(MyTestCase)
@@ -104,10 +104,11 @@ int main(void)
 }
 ```
 
-6. To compile the code, you must use the following two flags: -lunittest and -lexcept. The -lexcept flag is required because unittest-c uses exceptions in
-its source code. If you want to learn more about how to use exceptions in your C code, you can check out the 
-[c-exceptions](https://github.com/alecksandr26/c-exceptions) library, which is used by unittest-c.
+6. To compile the code, you must use the following two flags: ***-lunittest -lexcept***. The ***-lexcept*** flag is required because ***unittest-c*** uses an exception library ***c-exceptions*** in
+its source code. If you want to learn more about how to use ***exceptions*** in your C code, you can check out the 
+[c-exceptions](https://github.com/alecksandr26/c-exceptions) library, which is used by ***unittest-c.***
 ```
+cc mytestfile.c -lunittest -lexcept
 ```
 
 # References
