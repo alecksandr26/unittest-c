@@ -8,8 +8,8 @@
 boilerplate code. With macros and a built-in test runner, it's ideal for large test suites.
 # How to install it?
 ## Using `yay`
-1. First, ensure that you have the yay package manager installed. You can install it [AUR(en)-yay](https://aur.archlinux.org/packages/yay).
-2. Once yay is installed, you can search for the unittest-c package by running the following command:
+1. First, ensure that you have the ***yay package manager installed***. You can install it [AUR(en)-yay](https://aur.archlinux.org/packages/yay).
+2. Once ***yay is installed***, you can search for ***the unittest-c package*** by running the following command:
 ```
 yay -Ss unittest-c
 ```
@@ -21,7 +21,7 @@ yay -S unittest-c
 ```
 yay -Syu
 ```
-That's it! After completing these steps, unittest-c should be installed on your system and ready to use.
+That's it! After completing these steps, ***unittest-c*** should be installed on your system and ready to use.
 
 ## Using `make`
 1. Clone the ***unittest-c repository*** from ***GitHub*** using the following command:
@@ -48,6 +48,36 @@ make example_test_installed
 ```
 That's it! After completing these five steps, unittest-c should be installed on your system and ready to use.
 # Getting started
-blah balh balh ....
+## Quick start How to write a testcase?
+1. Start by including the ***unittest.h*** header file in your C code:
+```C
+#include <unittest.h>
+```
+2. Define a test case using the ***TESTCASE macro***, which takes a name for the test case as an argument:
+```C
+TESTCASE(MyTestCase)
+{
+    // Tests code goes here
+} ENDTESTCASE
+```
+3. Inside the test case, write individual test functions using the ***TEST*** macro. Each test function should contain one or more assertions that check a specific aspect of the code being tested:
+```C
+TESTCASE(MyTestCase)
+{
+    TEST(MyTest) {
+        ASSERT(1 == 1, "This assertion should pass");
+        ASSERT(1 != 1, "This assertion should fail");
+    }
+} ENDTESTCASE
+```
+4. Use the ***RUN*** macro to run the tests inside the test case. In your ***main()*** function, call ***RUN*** and pass in ***the name of the test case*** as an argument:
+```C
+int main(void)
+{
+    RUN(MyTestCase);
+    return 0;
+}
+```
+
 # References
 blah blah balh ....
