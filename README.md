@@ -6,8 +6,8 @@
 * [Getting started](https://github.com/alecksandr26/unittest-c#getting-started)
 	* [How to write Test Cases?](https://github.com/alecksandr26/unittest-c#how-to-write-test-cases)
 		* [Another testcase example](https://github.com/alecksandr26/unittest-c#another-testcase-example)
-	* [How to create Suit Tests?]()
-* [References](https://github.com/alecksandr26/unittest-c#getting-started)
+	* [How to create Suits?]()
+* [References](https://github.com/alecksandr26/unittest-c#references)
 # Description
 ***unittest c*** is a fast and simple macro-based unit testing framework for C. It's inspired by the Python unittest module and designed to reduce 
 boilerplate code. With macros and a built-in test runner, it's ideal for large test suites.
@@ -178,6 +178,7 @@ Ok
 [term]$
 ```
 This output shows that ***unittest-c*** executed two tests without ***any errors***, and that all assertions passed.
+## How to create Suits?
 
 # References
 1. Wikipedia contributors. (2022a). Boilerplate code. Wikipedia. https://en.wikipedia.org/wiki/Boilerplate_code
