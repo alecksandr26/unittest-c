@@ -253,6 +253,10 @@ Ok
 
 [term] $
 ```
+## How to include `Test Cases` or `Suits` from other files?
+blah blah blah....
+## How to recompile the `executable` and each individual `test file`?
+blah blah blah.....
 
 
 # References
