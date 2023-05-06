@@ -243,7 +243,7 @@ int main(void)
     return 0;
 }
 ```
-5. Finally, ompile the code with the ***flags mentioned in the previous section***([How to write Test Cases?](https://github.com/alecksandr26/unittest-c#how-to-write-test-cases)) and run the executable. You should see an output similar to this:
+5. Compile the code with the ***flags mentioned in the previous section*** ([How to write Test Cases?](https://github.com/alecksandr26/unittest-c#how-to-write-test-cases)) and run the executable. You should see an output similar to this:
 ```C
 [term] $ cc mytestfile.c -lunittest -lexcept
 [term] $ ./a.out
@@ -254,6 +254,60 @@ Ran 4 test in 0.000015s
 Ok
 
 [term] $
+```
+Finally here is the complete exmple code from this section.
+```C
+#include <unittest.h>
+
+TESTCASE(MyTestCases1)
+{
+    // Set up any boilerplate code for all tests in the test case
+    int x = 42;
+
+    // Define individual tests using the TEST macro
+    TEST(Test1)
+    {
+        // Use ASSERT macro to check if x equals 42
+        ASSERT(x == 42, "x should equal 42");
+    }
+
+    TEST(Test2)
+    {
+        // Use ASSERT macro to check if x is less than 100
+        ASSERT(x < 100, "x should be less than 100");
+    }
+
+} ENDTESTCASE
+
+TESTCASE(MyTestCases2)
+{
+    // Set up any boilerplate code for all tests in the test case
+    int y = 100;
+
+    // Define individual tests using the TEST macro
+    TEST(Test3)
+    {
+        // Use ASSERT macro to check if y equals 100
+        ASSERT(y == 100, "y should equal 100");
+    }
+
+    TEST(Test4)
+    {
+        // Use ASSERT macro to check if y is greater than or equal to 50
+        ASSERT(y >= 50, "y should be greater than or equal to 50");
+    }
+
+} ENDTESTCASE
+
+NEW_SUIT(MySuit, MyTestCases1, MyTestCases2);
+
+int main(void)
+{
+    // Call RUN macro with the name of the suit to run the test cases
+    RUN(MySuit);
+
+    return 0;
+}
 ```
 ## How to include `Test Cases` or `Suits` from other files?
 blah blah blah....
