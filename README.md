@@ -1,6 +1,7 @@
 # Table Of Contents
 * [Description](https://github.com/alecksandr26/unittest-c#Description)
 * [How to install it?](https://github.com/alecksandr26/unittest-c#how-to-install-it)
+	* [How to write testcases?](https://github.com/alecksandr26/unittest-c#how-to-write-test-cases)
 * [Getting started](https://github.com/alecksandr26/unittest-c#getting-started)
 * [References](https://github.com/alecksandr26/unittest-c#getting-started)
 # Description
