@@ -1,4 +1,6 @@
+example/test
 vgcore.*
+*/vgcore.*
 *.bin
 
 # Prerequisites
