@@ -112,7 +112,7 @@ cc mytestfile.c -lunittest -lexcept
 ```
 Finally, the output of the program should look like this because it contains an assertion that causes the program to exit with a non-zero status:
 ```
-[aleck@arch Desktop]$ ./a.out
+[term] $ ./a.out
 F
 ======================================================================================
 FAIL:		MyTest		(MyTestCase.MyTest)
@@ -126,8 +126,54 @@ Ran 1 test in 0.000032s
 
 FAILED(failures=1)
 
-[aleck@arch Desktop]$
+[term] $
 ```
+### Another testcase example
+Here's another example of how you can use the unittest-c framework to write your own test cases:
+```C
+#include <unittest.h>
+
+TESTCASE(MyTests)
+{
+    // Set up any boilerplate code for all tests in the test case
+    int x = 42;
+
+    // Define individual tests using the TEST macro
+    TEST(Test1)
+    {
+        // Use ASSERT macro to check if x equals 42
+        ASSERT(x == 42, "x should equal 42");
+    }
+
+    TEST(Test2)
+    {
+        // Use ASSERT macro to check if x is less than 100
+        ASSERT(x < 100, "x should be less than 100");
+    }
+
+} ENDTESTCASE
+
+int main(void)
+{
+    // Call RUN macro with the name of the test case to run the tests
+    RUN(MyTests);
+
+    return 0;
+}
+```
+Then the output says that the tests were exectued well, there is no error detected.
+```
+[term]$ ./a.out
+..
+--------------------------------------------------------------------------------------
+Ran 2 test in 0.000031s
+
+Ok
+
+[term]$
+```
+This output shows that ***unittest-c*** executed two tests without ***any errors***, and that all assertions passed.
+
 # References
 1. Wikipedia contributors. (2022a). Boilerplate code. Wikipedia. https://en.wikipedia.org/wiki/Boilerplate_code
 2. Wikipedia contributors. (2023a). Test suite. Wikipedia. https://en.wikipedia.org/wiki/Test_suite
