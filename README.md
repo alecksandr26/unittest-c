@@ -48,7 +48,7 @@ make example_test_installed
 ```
 That's it! After completing these five steps, unittest-c should be installed on your system and ready to use.
 # Getting started
-## How to write a testcases?
+## How to write Test Cases?
 1. Start by including the ***unittest.h*** header file in your C code:
 ```C
 #include <unittest.h>
