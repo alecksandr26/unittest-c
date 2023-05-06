@@ -81,6 +81,34 @@ int main(void)
     return 0;
 }
 ```
+5. Here's a summary of what the final code might look like:
+```
+#include <unittest.h>
+
+TESTCASE(MyTestCase)
+{
+    // the boilerplate code
+    int var = 1;
+    
+    TEST(MyTest) {
+        ASSERT(var == 1, "This assertion should pass");
+        ASSERT(var != 1, "This assertion should fail");
+    }
+} ENDTESTCASE
+
+
+int main(void)
+{
+    RUN(MyTestCase);
+    return 0;
+}
+```
+
+6. To compile the code, you must use the following two flags: -lunittest and -lexcept. The -lexcept flag is required because unittest-c uses exceptions in
+its source code. If you want to learn more about how to use exceptions in your C code, you can check out the 
+[c-exceptions](https://github.com/alecksandr26/c-exceptions) library, which is used by unittest-c.
+```
+```
 
 # References
 blah blah balh ....
