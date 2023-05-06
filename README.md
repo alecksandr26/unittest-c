@@ -4,7 +4,8 @@
 * [Getting started](https://github.com/alecksandr26/unittest-c#getting-started)
 * [References](https://github.com/alecksandr26/unittest-c#getting-started)
 # Description
-A simple fast based macro unit testing module for c, inspired from python unittest module.
+***unittest c*** is a fast and simple macro-based unit testing framework for C. It's inspired by the Python unittest module and designed to reduce 
+boilerplate code. With macros and a built-in test runner, it's ideal for large test suites.
 # How to install it?
 blah blah blah ....
 # Getting started
