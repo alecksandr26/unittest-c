@@ -5,15 +5,14 @@
 
 TestCase(Checking)
 {
-
 	/* This test will faild */
 	Test(False) { ASSERT(1 == 0, "Testing the message"); }
-}
-EndTestCase
+	
+} EndTestCase
 
-	int
-	main(void)
+int main(void)
 {
+	
 	RUN(Checking);
 
 	return 0;

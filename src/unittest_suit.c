@@ -12,9 +12,9 @@
 #include "../include/unittest_tcase.h"
 #define S Suit
 
-/* link_suit_testcases: to link together the test cases contained within the suit
+/* link_suit_tcase: to link together the test cases contained within the suit
  * structure to run them */
-void link_suit_testcases(S *suit)
+void link_suit_tcase(S *suit)
 {
 	for (size_t i = 0; i < suit->amount; i++)
 		link_tcase(suit->tcase[i]);

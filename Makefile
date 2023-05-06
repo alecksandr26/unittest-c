@@ -49,7 +49,7 @@ TESTS = $(addprefix $(TEST_BIN_DIR)/, 	test_running_testcase.out \
 					test_multiple_suits.out\
 					test_unittest_map.out\
 					test_assert.out)
-.PHONY: clean format
+
 all: $(OBJ_DIR) $(LIB_DIR) $(TEST_BIN_DIR) $(OBJS) $(LIBS) $(TESTS) $(EXAMPLES)
 
 $(OBJ_DIR):
@@ -67,7 +67,6 @@ $(TEST_BIN_DIR):
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(OBJ_DIR)
 	@echo Compiling: $@
 	@$(C) $(C_FLAGS) -c $< -o $@ $(C_FLAGS_LIBS)
-
 
 # Creates the library
 $(LIB_DIR)/%.a: $(OBJS) $(LIB_DIR)

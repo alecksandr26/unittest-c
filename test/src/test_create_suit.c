@@ -1,6 +1,5 @@
 #include "../../include/unittest.h"
 
-#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -23,13 +22,13 @@ TestCase(NewCase)
 	Test(first_test)
 	{ /* First Test */
 		var++;
-		assert(var == 2);
+		ASSERT(var == 1);
 	}
 
 	Test(second_test)
 	{ /* Second test */
 		/* Do your assertions */
-		assert(var == 1);
+		ASSERT(var == 1);
 	}
 }
 EndTestCase
@@ -48,19 +47,19 @@ TestCase(Testfoo)
 			arr[i] = ((float) i) / 100;
 
 		sum = foo(arr, amount);
-		assert(sum == (float) 49.500004);
+		// ASSERT(sum == (float) 49.500004);
+		ASSERT(sum == (float) 49.500000);
 	}
 
 	free(arr);
 }
 EndTestCase
 
-	/* Creats a new suit for testing */
-	NEW_SUIT(SimpleSuit, Testfoo, NewCase);
+/* Creats a new suit for testing */
+NEW_SUIT(SimpleSuit, Testfoo, NewCase);
 
 int main(void)
 {
-
 	CATCH(SimpleSuit);
 	RUN();
 

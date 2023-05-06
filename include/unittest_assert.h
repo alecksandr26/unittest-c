@@ -37,10 +37,10 @@ extern void unittest_print_faild_test(F *tcase);
 		tcase->failed_info[tcase->amount_failed].test = tframe.current_test; \
 		tcase->failed_info[tcase->amount_failed].line = __LINE__;            \
 		tcase->amount_failed++;                                              \
-		/* Stops executing the test and jump to execute more tests */        \
-		putchar('F');                                                        \
-		jmpback(&tframe.buf, tframe.state + 1);                              \
-	}
+		/* Stops executing the test and jump to execute more tests */ \
+		putchar('F');						\
+		jmpback(&tframe.buf, tframe.state + 1);			\
+	} else 
 
 #undef F
 #endif

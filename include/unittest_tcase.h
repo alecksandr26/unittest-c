@@ -22,7 +22,6 @@
 #define F				 TestInfoFailed
 #define TC				 TestCase
 #define TF				 TestCaseFrame
-
 #define MAX_AMOUNT_OF_TESTS_IN_TESTCASES 1024
 
 /* The TC struct represents a test case and includes information such as file name, test
@@ -46,22 +45,20 @@ struct TF {
 	volatile int state;
 	const char  *current_test;
 	int	     counter;
-	char	     status;
-
 	JmpBuf buf;
 };
 
 /* These are macros used to define and run test cases. */
-#define TestCase(TEST_CASE_NAME)                                             \
-	void	 tcase_##TEST_CASE_NAME(TestCase *tcase);                    \
-	TestCase TEST_CASE_NAME = {.file	  = __FILE__,                \
-				   .name	  = #TEST_CASE_NAME,         \
-				   .amount	  = 0,                       \
-				   .amount_failed = 0,                       \
-				   .next	  = NULL,                    \
-				   .test	  = &tcase_##TEST_CASE_NAME, \
-				   .failed_info	  = {{0}}};                    \
-	void	 tcase_##TEST_CASE_NAME(TestCase *tcase)                     \
+#define TestCase(TEST_CASE_NAME)					\
+	void	 TestCase##TEST_CASE_NAME(TestCase *tcase);			\
+	TestCase TEST_CASE_NAME = {.file	  = __FILE__,		\
+					   .name	  = #TEST_CASE_NAME, \
+					   .amount	  = 0,		\
+					   .amount_failed = 0,		\
+					   .next	  = NULL,	\
+					   .test	  = &(TestCase##TEST_CASE_NAME), \
+					   .failed_info	  = {{0}}};	\
+	void TestCase##TEST_CASE_NAME(TestCase *tcase)			\
 	{                                                                    \
 		assert(tcase != NULL && "Can't be null tcase tests");        \
 		TestCaseFrame tframe;                                        \
@@ -78,9 +75,12 @@ struct TF {
 #define EndTestCase                                                                     \
 	while (0)                                                                       \
 		;                                                                       \
-	assert(tcase->amount > 0 && "The testcase should have atleast one test");       \
-	if (tframe.state > 0) putchar('.');                                             \
-	if (tframe.state < (int) tcase->amount) jmpback(&tframe.buf, tframe.state + 1); \
+	assert(tcase->amount > 0 && "The testcase should have atleast one test"); \
+	if (tframe.state > 0 && tframe.state <= (int) tcase->amount)	\
+		putchar('.');						\
+	if (tframe.state < (int) tcase->amount) {			\
+		jmpback(&tframe.buf, tframe.state + 1);			\
+	}								\
 	}
 
 /* head_tc: A pointer to the last linked test case. */

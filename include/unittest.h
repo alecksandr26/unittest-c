@@ -74,7 +74,19 @@ extern void run_tests(void);
 	head_tc = NULL
 #endif
 
-#define CATCH_GENERIC(X) _Generic((X), TestCase : link_tcase, Suit : link_suit_testcases)(&X)
+/*
+#define CATCH_GENERIC(X)						\
+	_Generic((X),							\
+		 void(*)(TestCase *): link_tcase,			\
+		 Suit : link_suit_tcase					\
+		 )(_Generic((X),					\
+			    void(*)(TestCase *): &(tcase_##X),		\
+			    Suit : &(X)					\
+			    ))
+*/
+
+#define CATCH_GENERIC(X) _Generic((X), TestCase : link_tcase, Suit : link_suit_tcase)(&X)
+
 
 /* Simple recursive macros */
 #define CATCH(first, ...)   CATCH_GENERIC(first) __VA_OPT__(; CATCH1(__VA_ARGS__))
