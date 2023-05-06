@@ -133,7 +133,7 @@ FAILED(failures=1)
 
 [term] $
 ```
-### Another testcase example
+### Another `Test Case` example
 Here's another example of how you can use the unittest-c framework to write your own test cases:
 ```C
 #include <unittest.h>
@@ -178,7 +178,82 @@ Ok
 [term]$
 ```
 This output shows that ***unittest-c*** executed two tests without ***any errors***, and that all assertions passed.
-## How to create Suits?
+## How to create `Suits`?
+1. Create a new C file and include the ***unittest.h header*** at the beginning of your code.
+```C
+#include <unittest.h>
+```
+2. Define one or more test cases using the ***TESTCASE*** macro. Inside each test case, you can define individual tests using the ***TEST*** macro. 
+   Use the ***ASSERT*** macro to check if a specific condition is true or false.
+```C
+TESTCASE(MyTestCases1)
+{
+    // Set up any boilerplate code for all tests in the test case
+    int x = 42;
+
+    // Define individual tests using the TEST macro
+    TEST(Test1)
+    {
+        // Use ASSERT macro to check if x equals 42
+        ASSERT(x == 42, "x should equal 42");
+    }
+
+    TEST(Test2)
+    {
+        // Use ASSERT macro to check if x is less than 100
+        ASSERT(x < 100, "x should be less than 100");
+    }
+
+} ENDTESTCASE
+
+TESTCASE(MyTestCases2)
+{
+    // Set up any boilerplate code for all tests in the test case
+    int y = 100;
+
+    // Define individual tests using the TEST macro
+    TEST(Test3)
+    {
+        // Use ASSERT macro to check if y equals 100
+        ASSERT(y == 100, "y should equal 100");
+    }
+
+    TEST(Test4)
+    {
+        // Use ASSERT macro to check if y is greater than or equal to 50
+        ASSERT(y >= 50, "y should be greater than or equal to 50");
+    }
+
+} ENDTESTCASE
+```
+3. Create a new test suite using the ***NEW_SUIT*** macro, passing in the ***names*** of all the ***test cases*** you want to include in the suite as
+ arguments.
+```C
+NEW_SUIT(MySuit, MyTestCases1, MyTestCases2);
+```
+4. In the ***main()*** function, call the RUN macro with ***the name of the test suite*** to run all the test cases.
+```C
+int main(void)
+{
+    // Call RUN macro with the name of the suit to run the test cases
+    RUN(MySuit);
+
+    return 0;
+}
+```
+5. Finally, ompile the code with the ***flags mentioned in the previous section***([How to write Test Cases?](https://github.com/alecksandr26/unittest-c#how-to-write-test-cases)) and run the executable. You should see an output similar to this:
+```C
+[term] $ cc mytestfile.c -lunittest -lexcept
+[term] $ ./a.out
+....
+--------------------------------------------------------------------------------------
+Ran 4 test in 0.000015s
+
+Ok
+
+[term] $
+```
+
 
 # References
 1. Wikipedia contributors. (2022a). Boilerplate code. Wikipedia. https://en.wikipedia.org/wiki/Boilerplate_code
