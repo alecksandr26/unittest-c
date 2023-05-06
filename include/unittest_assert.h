@@ -11,6 +11,8 @@
 #ifndef UNITTEST_ASSERT_INCLUDE
 #define UNITTEST_ASSERT_INCLUDE
 
+#include <stdio.h>
+
 #define F TestInfoFailed
 
 /* The structure that captures all information needed for a failed test. */

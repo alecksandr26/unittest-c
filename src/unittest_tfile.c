@@ -34,12 +34,12 @@ size_t	new_amount_hashed_dates = 0;
 long	new_hashed_dates[MAX_AMOUNT_OF_FILES];
 
 /* TODO: Rewrite this exceptions */
-Except UnittestErrorCreatingFile = {"Error creating the hashed dates binary file"};
-Except UnittestErrorOpeningFile	 = {"Error opening a file the hashed dates binary file"};
-Except UnittestErrorReadingFile	 = {"Error while reading the hashed dates binary file"};
-Except UnittestErrorWrittingFile = {"Error while writting some file"};
-Except UnittestNotEnoughMemory	 = {"Not enough memory for the heap allocating"};
-Except UnittestErrorTestBaseDoesntExist = {"The test base directory doesn't exist"};
+Except UnittestErrorCreatingFile = {"Error creating a new file at \"TEST_DIR\""};
+Except UnittestErrorOpeningFile	 = {"Error opening a file at \"TEST_DIR\""};
+Except UnittestErrorReadingFile	 = {"Error reading a file at \"TEST_DIR\""};
+Except UnittestErrorWrittingFile = {"Error writting a file at \"TEST_DIR\""};
+Except UnittestNotEnoughMemory	 = {"Not enough memory on the heap"};
+Except UnittestErrorTestBaseDoesntExist = {"Error the default \"TEST_DIR\" doesn't exist"};
 
 /* put_new_dates: Puts new creation/modification dates of the test files in the file. */
 void put_new_dates(const char *test_dir, const char *filename)
@@ -162,8 +162,6 @@ void include(const char *test_dir, const char *filename)
 
 	get_creation_date(path, date);
 	h = unittest_hash((const uint8_t *) date);
-
-	/* TODO: Try to use static memory for this structures */
 
 	if ((new_file = malloc(sizeof(F))) == NULL) throw_except(UnittestNotEnoughMemory);
 

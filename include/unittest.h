@@ -42,7 +42,7 @@ extern void run_tests(void);
 		CATCH(__VA_ARGS__);          \
 	}
 #define RUN(...)                                                                \
-	if (UNITTEST_RECOMPILE) {                                               \
+	if (UNITTEST_RECOMPILE) {					\
 		CompilerContex c = {.compiler	    = COMPILER,                 \
 				    .compiler_path  = COMPILER_PATH COMPILER,   \
 				    .compiler_flags = COMPILER_FLAGS};          \

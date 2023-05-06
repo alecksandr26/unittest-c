@@ -29,7 +29,7 @@
 #include "../include/unittest_map.h"
 
 Except UnittestErrorCreatingDir = {
-	"Error creating the dir where the objects files  will be allocated"};
+	"Error creating the object dir \"OBJ_DIR\" at \"TEST_DIR\""};
 
 char *args[50];	      /* Max 50 arguments */
 char  args_buf[2048]; /* Buffer where the args will be allocated */
@@ -55,21 +55,19 @@ static void create_obj_directory(const char *test_dir, const char *obj_dir)
 	if (mkdir(path, 0775) != 0) throw_except(UnittestErrorCreatingDir);
 }
 
-/* TODO: Deal better with the errors during the compilation */
-
 /* compile: Compiles something running a child process and returns it status */
 static int compile(const C c, const char *args[50])
 {
 	int   status;
 	pid_t pid = fork(); /* Creates the child process */
 	if (pid == -1) {
-		fprintf(stderr, "Error while compilig: %s", strerror(errno));
+		fprintf(stderr, "Error while compilig: fork: %s", strerror(errno));
 		fprintf(stderr, "Aborting....");
 		abort();
 	} else if (pid == 0) { /* Child process */
 		int ret = execv(c.compiler_path, (char *const *) args);
 		if (ret == -1) { /* Somehting went wrong */
-			fprintf(stderr, "Error while compilig: %s", strerror(errno));
+			fprintf(stderr, "Error while compilig: execv: %s", strerror(errno));
 			fprintf(stderr, "Aborting....");
 			abort();
 		}
@@ -79,7 +77,7 @@ static int compile(const C c, const char *args[50])
 		pid_t child_pid =
 			waitpid(pid, &status, 0); /* waits the child process execute */
 		if (child_pid == -1) {
-			fprintf(stderr, "Error while compilig: %s", strerror(errno));
+			fprintf(stderr, "Error while compilig: waitpid: %s", strerror(errno));
 			fprintf(stderr, "Aborting....");
 			abort();
 		}
@@ -115,7 +113,7 @@ static int execute(const char *outfile)
 	int   status;
 	pid_t pid = fork(); /* Creates the child process */
 	if (pid == -1) {
-		fprintf(stderr, "Error while testing: %s", strerror(errno));
+		fprintf(stderr, "Error while testing: fork: %s", strerror(errno));
 		fprintf(stderr, "Aborting....");
 		abort();
 	} else if (pid == 0) { /* Child process */
@@ -125,7 +123,7 @@ static int execute(const char *outfile)
 		strcat(path, outfile);
 		int ret = execl(path, path, NULL);
 		if (ret == -1) { /* Somehting went wrong */
-			fprintf(stderr, "Error while testing: %s", strerror(errno));
+			fprintf(stderr, "Error while testing: execl: %s", strerror(errno));
 			fprintf(stderr, "Aborting....");
 			abort();
 		}
@@ -135,7 +133,7 @@ static int execute(const char *outfile)
 		pid_t child_pid =
 			waitpid(pid, &status, 0); /* waits the child process execute */
 		if (child_pid == -1) {
-			fprintf(stderr, "Error while testing: %s", strerror(errno));
+			fprintf(stderr, "Error while testing: waitpid: %s", strerror(errno));
 			fprintf(stderr, "Aborting....");
 			abort();
 		}
@@ -187,14 +185,10 @@ void recompile_with_tests(const C c, const char *test_dir, const char *obj_dir,
 
 	create_obj_directory(test_dir, obj_dir); /* Create the object file  */
 
-	/* Parse arguments  */
-	memset(args, 0, sizeof(args));
-	nargs = add_args(args, c.compiler, args_buf, 0);
-	nargs = add_args(args, c.compiler_flags, args_buf, nargs);
+	memset(output, 0, sizeof(output));
 
 	while (head_files != NULL) {
 		/* Catch the object file */
-		memset(output[n_outputs], 0, 255);
 		strcat(output[n_outputs], test_dir);
 		strcat(output[n_outputs], obj_dir);
 		strcat(output[n_outputs], head_files->filename);
@@ -213,6 +207,9 @@ void recompile_with_tests(const C c, const char *test_dir, const char *obj_dir,
 			strcat(source, head_files->filename);
 
 			/* Attach the arguments */
+			memset(args, 0, sizeof(args));
+			nargs = add_args(args, c.compiler, args_buf, 0);
+			nargs = add_args(args, c.compiler_flags, args_buf, nargs);
 			nargs = add_args(args, "-c", args_buf, nargs);
 			nargs = add_args(args, source, args_buf, nargs);
 			nargs = add_args(args, "-o", args_buf, nargs);
@@ -254,6 +251,7 @@ void recompile_with_tests(const C c, const char *test_dir, const char *obj_dir,
 
 	/* Compile with loaded tests */
 	if (compile(c, (const char **) args) != 0) {
+		
 		fprintf(stderr, "Aborting.....\n");
 		abort();
 	}

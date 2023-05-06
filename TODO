@@ -3,7 +3,7 @@
 - Create macros to include files and load suits [x]
 - Make a way of creating and compiling multiples files [x]
 ---- 2023/05/03 ----
-- Rewrite the exceptions in a better way [ ]
+- Rewrite the exceptions in a better way [X]
 - Divide everything in more components [X]
 - Wrap the malloc [ ]
 ---- 2023/05/03 ----
@@ -11,5 +11,7 @@
 - Write the documentation [ ]
 - Refactor the whole code [X]
 ---- 2023/05/05 ----
-- Try To avoid to use dynamic memory in the include_file function [ ]
-- Deal better witht he possible errors during the compilation [ ]
+- Try To avoid to use dynamic memory in the include_file function [X] its impossible :')
+- Deal better witht he possible errors during the recompilation [X]
+---- 2023/05/06 ----
+- Find another method to know if a directory exist [ ]

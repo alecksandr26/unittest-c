@@ -11,7 +11,6 @@ float foo(float *arr, size_t n)
 	return sum;
 }
 
-
 /* Creates a new test cases */
 TestCase(NewCase)
 {
@@ -21,7 +20,7 @@ TestCase(NewCase)
 	/* Start testing */
 	Test(first_test) {	/* First Test */
 		var += 2;
-		ASSERT(var != 3);
+		ASSERT(var == 3);
 	}
 
 	Test(second_test) { 	/* Second test */
@@ -34,9 +33,9 @@ TestCase(NewCase)
 
 	Test(third_test) {
 		
-		ASSERT(var == 0, "Should be zero >:|"); /* Stops executing */
+		ASSERT(var == 1, "Should be one >:|"); /* Stops executing */
 
-		ASSERT(0, "This other assert shoun't bee executed");
+		// ASSERT(0, "This other assert shoun't bee executed");
 	}
 } EndTestCase
 
@@ -76,11 +75,16 @@ TestCase(TestingMalloc)
 	}
 
 	Test(ShouldBeNull) {
-		ASSERT(pointer == NULL);
+		ASSERT(pointer ==  NULL);
 	}
 
 	Test(AmountShouldBe10) {
 		ASSERT(amount == 10);
+	}
+
+
+	Test(AnotherTest) {
+		ASSERT(pointer == NULL);
 	}
 } EndTestCase
 
