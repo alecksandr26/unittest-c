@@ -110,6 +110,25 @@ its source code. If you want to learn more about how to use ***exceptions*** in 
 ```
 cc mytestfile.c -lunittest -lexcept
 ```
+Finally, the output of the program should look like this because it contains an assertion that causes the program to exit with a non-zero status:
+```
+[aleck@arch Desktop]$ ./a.out
+F
+======================================================================================
+FAIL:		MyTest		(MyTestCase.MyTest)
+--------------------------------------------------------------------------------------
+Traceback...
+	File "shit.c", line 10, in MyTest
+AssertionError:	 "var != 1",	"This assertion should fail"
 
+--------------------------------------------------------------------------------------
+Ran 1 test in 0.000032s
+
+FAILED(failures=1)
+
+[aleck@arch Desktop]$
+```
 # References
-blah blah balh ....
+1. Wikipedia contributors. (2022a). Boilerplate code. Wikipedia. https://en.wikipedia.org/wiki/Boilerplate_code
+2. Wikipedia contributors. (2023a). Test suite. Wikipedia. https://en.wikipedia.org/wiki/Test_suite
+3. Python, R. (2023). Getting Started With Testing in Python. realpython.com. https://realpython.com/python-testing/
