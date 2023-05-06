@@ -15,7 +15,7 @@
 boilerplate code. With macros and a built-in test runner, it's ideal for large test suites.
 # How to install it?
 ## Using `yay`
-1. First, ensure that you have the ***yay package manager installed***. You can install it [AUR(en)-yay](https://aur.archlinux.org/packages/yay).
+1. First, ensure that you have the ***yay package manager*** installed. You can install it here: [install-and-use-yay-arch-linux](https://www.makeuseof.com/install-and-use-yay-arch-linux/).
 2. Once ***yay is installed***, you can search for ***the unittest-c package*** by running the following command:
 ```
 yay -Ss unittest-c
@@ -49,6 +49,7 @@ sudo make install
 ```
 This will copy the ***unittest-c*** executable to your system's default binary directory, which should be in your PATH. You may be prompted to enter your
 password for authentication.
+
 5. Optionally, run the test to verify that the installation was successful:
 ```
 make example_test_installed
