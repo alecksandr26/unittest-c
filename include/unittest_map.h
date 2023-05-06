@@ -1,6 +1,8 @@
 /*!
   @file unittest_map.h
-  @brief As simple implementation of map structure.
+  @brief contains the declarations for a simple implementation of a map structure used in a
+  unittesting library. It provides functions to hash a string or an array of bytes, map a set
+  of bytes and make them unique, free mapped data and the bucket, and find mapped bytes.
 
   @author Erick Carrillo.
   @copyright Copyright (C) 2022, Erick Alejandro Carrillo López, All rights reserved.

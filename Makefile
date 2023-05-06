@@ -17,11 +17,6 @@ C_COMPILE_FLAGS = -O2 -DNDEBUG -fno-stack-protector -z execstack -no-pie
 C_FLAGS = $(C_DEBUG_FLAGS)
 C_FLAGS_LIBS = -lexcept
 
-N = nasm
-N_DEBUG_FLAGS = -g -f elf64
-N_COMPILE_FLAGS = -f elf64
-N_FLAGS = $(N_DEBUG_FLAGS)
-
 AR = ar cr
 CF = clang-format -i
 
@@ -38,14 +33,22 @@ EXAMPLE_DIR = example
 TEST_SRC_DIR = $(addprefix $(TEST_DIR)/, src)
 TEST_BIN_DIR = $(addprefix $(TEST_DIR)/, bin)
 
-OBJS = $(addprefix $(OBJ_DIR)/, unittest.o unittest_map.o unittest_assert.o)
+OBJS = $(addprefix $(OBJ_DIR)/, unittest.o \
+				unittest_map.o \
+				unittest_assert.o \
+				unittest_tcase.o\
+				unittest_suit.o\
+				unittest_tfile.o\
+				unittest_recompile.o)
+
 LIBS = $(addprefix $(LIB_DIR)/, libunittest.a)
 EXAMPLES = $(addprefix $(EXAMPLE_DIR)/, test)
 
 TESTS = $(addprefix $(TEST_BIN_DIR)/, 	test_running_testcase.out \
 					test_create_suit.out \
 					test_multiple_suits.out\
-					test_unittest_map.out)
+					test_unittest_map.out\
+					test_assert.out)
 .PHONY: clean format
 all: $(OBJ_DIR) $(LIB_DIR) $(TEST_BIN_DIR) $(OBJS) $(LIBS) $(TESTS) $(EXAMPLES)
 

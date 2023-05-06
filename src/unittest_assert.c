@@ -7,25 +7,27 @@
   @license This project is released under the MIT License
 */
 
-#include <stdlib.h>
-#include <unistd.h>
-#include <except.h>
-
-#include "../include/unittest.h"
 #include "../include/unittest_assert.h"
 
+#include <except.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#define F TestInfoFailed
+
 /* Sime implemention of an assert */
-void unittest_print_faild_test(TestInfoFailed *info)
+void unittest_print_faild_test(F *info)
 {
-	puts("======================================================================================");
+	puts("==========================================================================="
+	     "===========");
 	printf("FAIL:\t\t%s\t\t(%s.%s)\n", info->test, info->tcase, info->test);
-	puts("--------------------------------------------------------------------------------------");
+	puts("---------------------------------------------------------------------------"
+	     "-----------");
 	puts("Traceback...");
 	printf("\tFile \"%s\", line %i, in %s\n", info->file, info->line, info->test);
 	if (info->msg != NULL)
 		printf("AssertionError:\t \"%s\",\t\"%s\" \n\n", info->expr, info->msg);
-	else
-		printf("AssertionError:\t \"%s\"\n\n", info->expr);
+	else printf("AssertionError:\t \"%s\"\n\n", info->expr);
 }
 
-
+#undef F

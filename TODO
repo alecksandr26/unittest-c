@@ -8,5 +8,8 @@
 - Wrap the malloc [ ]
 ---- 2023/05/03 ----
 - Deal with the bad string contaenations of the files and obj [ ]
-- Write the documentation
-- Refactor the whole code
+- Write the documentation [ ]
+- Refactor the whole code [ ]
+---- 2023/05/05 ----
+- Try To avoid to use dynamic memory in the include_file function [ ]
+- Deal better witht he possible errors during the compilation [ ]
