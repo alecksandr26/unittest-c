@@ -49,16 +49,16 @@ struct TF {
 };
 
 /* These are macros used to define and run test cases. */
-#define TestCase(TEST_CASE_NAME)                                                     \
-	void	     TestCase##TEST_CASE_NAME(UnitTestCase *unitcase);               \
+#define TESTCASE(TEST_CASE_NAME)                                                     \
+	void	     TESTCASE##TEST_CASE_NAME(UnitTestCase *unitcase);               \
 	UnitTestCase TEST_CASE_NAME = {.file	      = __FILE__,                    \
 				       .name	      = #TEST_CASE_NAME,             \
 				       .amount	      = 0,                           \
 				       .amount_failed = 0,                           \
 				       .next	      = NULL,                        \
-				       .test	      = &(TestCase##TEST_CASE_NAME), \
+				       .test	      = &(TESTCASE##TEST_CASE_NAME), \
 				       .failed_info   = {{0}}};                        \
-	void	     TestCase##TEST_CASE_NAME(UnitTestCase *unitcase)                \
+	void	     TESTCASE##TEST_CASE_NAME(UnitTestCase *unitcase)                \
 	{                                                                            \
 		assert(unitcase != NULL && "Can't be null unitcase tests");          \
 		UnitTestCaseFrame unitframe;                                         \
@@ -66,13 +66,13 @@ struct TF {
 		unitframe.counter = 0;                                               \
 		do
 
-#define Test(TEST_NAME)                               \
+#define TEST(TEST_NAME)                               \
 	unitframe.current_test = #TEST_NAME;          \
 	/* Count all the tests */                     \
 	if (unitframe.state == 0) unitcase->amount++; \
 	if (unitframe.state == ++unitframe.counter)
 
-#define EndTestCase                                                                  \
+#define ENDTESTCASE                                                                  \
 	while (0)                                                                    \
 		;                                                                    \
 	assert(unitcase->amount > 0 && "The testcase should have atleast one test"); \

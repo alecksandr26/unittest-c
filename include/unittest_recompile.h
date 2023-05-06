@@ -21,8 +21,11 @@
 #define TEST_DIR	 "./"
 #define TEST_OUT	 "test"
 
-/* TODO: For the moment to be able to compile the exmaple/test.c */
+#ifndef NDEBUG
 #define LIB_UNITTEST "../lib/libunittest.a"
+#else
+#define LIB_UNITTEST "-lunittest"
+#endif
 
 typedef struct C C;
 struct C {

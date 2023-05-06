@@ -3,12 +3,12 @@
 
 #include <stdio.h>
 
-TestCase(Checking)
+TESTCASE(Checking)
 {
 	/* This test will faild */
-	Test(False) { ASSERT(1 == 0, "Testing the message"); }
+	TEST(False) { ASSERT(1 == 0, "Testing the message"); }
 }
-EndTestCase
+ENDTESTCASE
 
 	int
 	main(void)

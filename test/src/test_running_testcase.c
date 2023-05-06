@@ -13,15 +13,15 @@ float foo(float *arr, size_t n)
 	return sum;
 }
 
-/* Test a simple function */
-TestCase(Testfoo)
+/* TEST a simple function */
+TESTCASE(Testfoo)
 {
 	/* Execute for each test */
 	size_t amount = 100;
 	float *arr    = malloc(sizeof(float) * amount);
 	float  sum    = 0.0;
 
-	Test(simple_sum)
+	TEST(simple_sum)
 	{
 		for (size_t i = 0; i < amount; i++)
 			arr[i] = ((float) i) / 100;
@@ -33,45 +33,45 @@ TestCase(Testfoo)
 
 	free(arr);
 }
-EndTestCase
+ENDTESTCASE
 
-TestCase(TestingMalloc)
+TESTCASE(TestingMalloc)
 {
 	/* Construct the test case */
 	int *pointer = NULL, amount = 10;
 
 	/* Each test is isolated */
-	Test(MallocNotNull)
+	TEST(MallocNotNull)
 	{
 		pointer = malloc(sizeof(int) * amount);
 		assert(pointer != NULL);
 		free(pointer);
 	}
 
-	Test(ShouldBeNull) { ASSERT(pointer == NULL); }
+	TEST(ShouldBeNull) { ASSERT(pointer == NULL); }
 }
-EndTestCase
+ENDTESTCASE
 
 /* Creates a new test cases */
-TestCase(NewCase)
+TESTCASE(NewCase)
 {
 	/* Construct the tests case */
 	int var = 1;
 
 	/* Start testing */
-	Test(first_test)
-	{ /* First Test */
+	TEST(first_test)
+	{ /* First TEST */
 		var++;
 		assert(var == 2);
 	}
 
-	Test(second_test)
+	TEST(second_test)
 	{
 		/* A failed test */
 		ASSERT(var == 1);
 	}
 }
-EndTestCase
+ENDTESTCASE
 
 	int
 	main(void)

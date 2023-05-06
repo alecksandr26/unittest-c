@@ -13,35 +13,35 @@ float foo(float *arr, size_t n)
 }
 
 /* Creates a new test cases */
-TestCase(NewCase)
+TESTCASE(NewCase)
 {
 	/* Construct the tests case */
 	int var = 1;
 
 	/* Start testing */
-	Test(first_test)
-	{ /* First Test */
+	TEST(first_test)
+	{ /* First TEST */
 		var++;
 		ASSERT(var == 1);
 	}
 
-	Test(second_test)
+	TEST(second_test)
 	{ /* Second test */
 		/* Do your assertions */
 		ASSERT(var == 1);
 	}
 }
-EndTestCase
+ENDTESTCASE
 
-/* Test a simple function */
-TestCase(Testfoo)
+/* TEST a simple function */
+TESTCASE(Testfoo)
 {
 	/* Execute for each test */
 	size_t amount = 100;
 	float *arr    = malloc(sizeof(float) * amount);
 	float  sum    = 0.0;
 
-	Test(simple_sum)
+	TEST(simple_sum)
 	{
 		for (size_t i = 0; i < amount; i++)
 			arr[i] = ((float) i) / 100;
@@ -53,7 +53,7 @@ TestCase(Testfoo)
 
 	free(arr);
 }
-EndTestCase
+ENDTESTCASE
 
 	/* Creats a new suit for testing */
 	NEW_SUIT(SimpleSuit, Testfoo, NewCase);

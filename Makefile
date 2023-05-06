@@ -30,8 +30,21 @@ LIB_DIR = lib
 INCLUDE_DIR = include
 EXAMPLE_DIR = example
 
+# For installation
+INSTALL_LIB_DIR = /usr/lib
+INSTALL_INCLUDE_DIR = /usr/include
+
 TEST_SRC_DIR = $(addprefix $(TEST_DIR)/, src)
 TEST_BIN_DIR = $(addprefix $(TEST_DIR)/, bin)
+
+INTERFACES = $(addprefix $(INCLUDE_DIR)/, 	unittest_assert.h\
+						unittest_exceptions.h\
+						unittest.h\
+						unittest_map.h\
+						unittest_recompile.h\
+						unittest_suit.h\
+						unittest_tcase.h\
+						unittest_tfile.h)
 
 OBJS = $(addprefix $(OBJ_DIR)/, unittest.o \
 				unittest_map.o \
@@ -150,4 +163,25 @@ format: $(addprefix format_, 	$(wildcard $(SRC_DIR)/*.c) \
 				$(wildcard $(TEST_SRC_DIR)/*.c)\
 				$(wildcard $(EXAMPLE_DIR)/*.c))
 
+# Clean objects and libs and recompile with optimizations
+compile: C_FLAGS = $(C_COMPILE_FLAGS)
+compile: $(OBJ_DIR) $(LIB_DIR) $(TEST_BIN_DIR) \
+	$(addprefix clean_, 	$(wildcard $(OBJ_DIR)/*.o) \
+				$(wildcard $(LIB_DIR)/*.a) \
+				$(wildcard $(TEST_BIN_DIR)/*.out)) \
+	$(LIBS)
 
+# Install header files
+$(INSTALL_INCLUDE_DIR)/%.h: $(INCLUDE_DIR)/%.h
+	@echo Installing: $< -o $@
+	sudo install $< $@
+
+$(INSTALL_LIB_DIR)/%.a: $(LIB_DIR)/%.a
+	@echo Installing: $< -o $@
+	sudo install $< $@
+
+# Install the library
+install: 	compile \
+		$(addprefix $(INSTALL_INCLUDE_DIR)/, $(notdir $(INTERFACES)))\
+		$(addprefix $(INSTALL_LIB_DIR)/, $(notdir $(LIBS)))
+	@echo Installed:
