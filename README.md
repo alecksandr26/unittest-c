@@ -48,7 +48,7 @@ make example_test_installed
 ```
 That's it! After completing these five steps, unittest-c should be installed on your system and ready to use.
 # Getting started
-## Quick start How to write a testcase?
+## How to write a testcases?
 1. Start by including the ***unittest.h*** header file in your C code:
 ```C
 #include <unittest.h>
@@ -60,13 +60,16 @@ TESTCASE(MyTestCase)
     // Tests code goes here
 } ENDTESTCASE
 ```
-3. Inside the test case, write individual test functions using the ***TEST*** macro. Each test function should contain one or more assertions that check a specific aspect of the code being tested:
+3. Inside the test case defined using the TESTCASE macro, you can write individual test functions using the TEST macro. Each test function should contain one or more assertions that check a specific aspect of the code being tested. Additionally, you can write a few lines of code in the TESTCASE scope to set up a boilerplate code for each individual test, such as initializing variables or creating test fixtures. This code will be executed before each test in the test case, allowing you to reuse common setup logic across multiple tests.
 ```C
 TESTCASE(MyTestCase)
 {
+    // the boilerplate code
+    int var = 1;
+    
     TEST(MyTest) {
-        ASSERT(1 == 1, "This assertion should pass");
-        ASSERT(1 != 1, "This assertion should fail");
+        ASSERT(var == 1, "This assertion should pass");
+        ASSERT(var != 1, "This assertion should fail");
     }
 } ENDTESTCASE
 ```
