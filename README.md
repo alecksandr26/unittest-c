@@ -1,8 +1,12 @@
 # Table Of Contents
 * [Description](https://github.com/alecksandr26/unittest-c#Description)
 * [How to install it?](https://github.com/alecksandr26/unittest-c#how-to-install-it)
-	* [How to write testcases?](https://github.com/alecksandr26/unittest-c#how-to-write-test-cases)
+	* [Using yay](https://github.com/alecksandr26/unittest-c#using-yay)
+	* [Using make](https://github.com/alecksandr26/unittest-c#using-make)
 * [Getting started](https://github.com/alecksandr26/unittest-c#getting-started)
+	* [How to write Test Cases?](https://github.com/alecksandr26/unittest-c#how-to-write-test-cases)
+		* [Another testcase example](https://github.com/alecksandr26/unittest-c#another-testcase-example)
+	* [How to create Suit Tests?]()
 * [References](https://github.com/alecksandr26/unittest-c#getting-started)
 # Description
 ***unittest c*** is a fast and simple macro-based unit testing framework for C. It's inspired by the Python unittest module and designed to reduce 
