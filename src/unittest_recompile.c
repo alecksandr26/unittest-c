@@ -32,7 +32,7 @@ Except UnittestErrorCreatingDir = {
 	"Error creating the object dir \"OBJ_DIR\" at \"TEST_DIR\""};
 
 char *args[50];	      /* Max 50 arguments */
-char  args_buf[2048]; /* Buffer where the args will be allocated */
+char  args_buf[1024]; /* Buffer where the args will be allocated */
 
 static void create_obj_directory(const char *test_dir, const char *obj_dir)
 {
@@ -86,26 +86,7 @@ static int compile(const C c, const char *args[50])
 	return status;
 }
 
-/* add_args: Adds arguments to the buffer of arguments */
-static size_t add_args(char *args[50], const char *some_args, char args_buffer[1024],
-		       size_t nargs)
-{
-	size_t n;
-	n = strlen(some_args);
 
-	static size_t ibuf = 0; /* The first time will be 0 */
-	for (size_t i = 0; i < n; i++) {
-		size_t j;
-		args[nargs] = args_buffer + ibuf;
-		for (j = 0; i < n && some_args[i] != ' '; j++)
-			args[nargs][j] = some_args[i++];
-		args[nargs][j] = '\0'; /* Null termined */
-		ibuf += j + 1;
-		nargs++;
-	}
-
-	return nargs;
-}
 
 /* execute: Executes the gived program. */
 static int execute(const char *outfile)
@@ -142,6 +123,25 @@ static int execute(const char *outfile)
 	return status;
 }
 
+/* add_args: Adds arguments to the buffer of arguments */
+static size_t add_args(char **args_buf_ptr, const char *some_args, size_t nargs)
+{
+	size_t n;
+	n = strlen(some_args);
+
+	for (size_t i = 0; i < n; i++) {
+		size_t j;
+		args[nargs] = *args_buf_ptr;
+		for (j = 0; i < n && some_args[i] != ' '; j++)
+			args[nargs][j] = some_args[i++];
+		args[nargs][j] = '\0'; /* Null termined */
+		*args_buf_ptr += j + 1;
+		nargs++;
+	}
+
+	return nargs;
+}
+
 /* recompile_without_tests: Re-compiles the source file into an executable without
  * including any test files. */
 void recompile_without_tests(const C c, const char *file, const char *outfile)
@@ -150,13 +150,15 @@ void recompile_without_tests(const C c, const char *file, const char *outfile)
 
 	/* Recompile without tests */
 	memset(args, 0, sizeof(args));
-
-	nargs = add_args(args, c.compiler, args_buf, 0);
-	nargs = add_args(args, file, args_buf, nargs);
-	nargs = add_args(args, LIB_UNITTEST, args_buf, nargs);
-	nargs = add_args(args, "-o", args_buf, nargs);
-	nargs = add_args(args, outfile, args_buf, nargs);
-	nargs = add_args(args, "-lexcept", args_buf, nargs);
+	memset(args_buf, 0, sizeof(args_buf));
+	
+	char *args_buf_ptr = args_buf;
+	nargs = add_args(&args_buf_ptr, c.compiler,  0);
+	nargs = add_args(&args_buf_ptr, file,  nargs);
+	nargs = add_args(&args_buf_ptr, LIB_UNITTEST, nargs);
+	nargs = add_args(&args_buf_ptr, "-o",  nargs);
+	nargs = add_args(&args_buf_ptr, outfile,  nargs);
+	nargs = add_args(&args_buf_ptr, "-lexcept", nargs);
 
 	if (compile(c, (const char **) args) != 0) {
 		fprintf(stderr, "Aborting.....\n");
@@ -208,12 +210,15 @@ void recompile_with_tests(const C c, const char *test_dir, const char *obj_dir,
 
 			/* Attach the arguments */
 			memset(args, 0, sizeof(args));
-			nargs = add_args(args, c.compiler, args_buf, 0);
-			nargs = add_args(args, c.compiler_flags, args_buf, nargs);
-			nargs = add_args(args, "-c", args_buf, nargs);
-			nargs = add_args(args, source, args_buf, nargs);
-			nargs = add_args(args, "-o", args_buf, nargs);
-			nargs = add_args(args, output[n_outputs], args_buf, nargs);
+			memset(args_buf, 0, sizeof(args_buf));
+	
+			char *args_buf_ptr = args_buf;
+			nargs = add_args(&args_buf_ptr, c.compiler, 0);
+			nargs = add_args(&args_buf_ptr, c.compiler_flags, nargs);
+			nargs = add_args(&args_buf_ptr, "-c", nargs);
+			nargs = add_args(&args_buf_ptr, source, nargs);
+			nargs = add_args(&args_buf_ptr, "-o", nargs);
+			nargs = add_args(&args_buf_ptr, output[n_outputs], nargs);
 
 			printf("[COMPILING] %s -o %s\n", source, output[n_outputs]);
 			if (compile(c, (const char **) args) != 0) {
@@ -232,22 +237,26 @@ void recompile_with_tests(const C c, const char *test_dir, const char *obj_dir,
 
 	/* Reset the buffer */
 	memset(args, 0, sizeof(args));
+	memset(args_buf, 0, sizeof(args_buf));
+	
+	char *args_buf_ptr = args_buf;
 
 	/* Prepare the argments */
-	nargs = add_args(args, c.compiler, args_buf, 0);
-	nargs = add_args(args, "-D UNITTEST_RECOMPILE=0", args_buf, nargs);
-	nargs = add_args(args, file, args_buf, nargs);
+	nargs = add_args(&args_buf_ptr, c.compiler, 0);
+	nargs = add_args(&args_buf_ptr, c.compiler_flags, nargs);
+	nargs = add_args(&args_buf_ptr, "-D UNITTEST_RECOMPILE=0", nargs);
+	nargs = add_args(&args_buf_ptr, file, nargs);
 
 	/* Put all the object files */
 	for (size_t i = 0; i < n_outputs; i++)
-		nargs = add_args(args, output[i], args_buf, nargs);
+		nargs = add_args(&args_buf_ptr, output[i], nargs);
 
 	/* TODO: For the debugin purpuse for the moment to be able to compile
 	 * example/test.c */
-	nargs = add_args(args, LIB_UNITTEST, args_buf, nargs);
-	nargs = add_args(args, "-o", args_buf, nargs);
-	nargs = add_args(args, outfile, args_buf, nargs);
-	nargs = add_args(args, "-lexcept", args_buf, nargs);
+	nargs = add_args(&args_buf_ptr, LIB_UNITTEST, nargs);
+	nargs = add_args(&args_buf_ptr, "-o", nargs);
+	nargs = add_args(&args_buf_ptr, outfile, nargs);
+	nargs = add_args(&args_buf_ptr, "-lexcept", nargs);
 
 	/* Compile with loaded tests */
 	if (compile(c, (const char **) args) != 0) {
