@@ -125,7 +125,7 @@ F
 FAIL:		MyTest		(MyTestCase.MyTest)
 --------------------------------------------------------------------------------------
 Traceback...
-	File "shit.c", line 10, in MyTest
+	File "mytestfile.c", line 10, in MyTest
 AssertionError:	 "var != 1",	"This assertion should fail"
 
 --------------------------------------------------------------------------------------
