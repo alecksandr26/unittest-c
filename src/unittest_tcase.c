@@ -9,16 +9,16 @@
 */
 
 #include "../include/unittest_tcase.h"
-#define TC TestCase
+#define TC UnitTestCase
 
-/* head_tc: A pointer to the last linked test case. */
-TC *head_tc = NULL;
+/* unittest_head_tc: A pointer to the last linked test case. */
+TC *unittest_head_tc = NULL;
 
 /* link_tcases: Links test case structures together for the testing process. */
-void link_tcase(TC *tc)
+void unittest_link_tcase(TC *tc)
 {
-	tc->next = head_tc;
-	head_tc	 = tc;
+	tc->next	 = unittest_head_tc;
+	unittest_head_tc = tc;
 }
 
 #undef TC

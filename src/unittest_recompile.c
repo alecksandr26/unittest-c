@@ -21,10 +21,10 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <wait.h>
-#define C CompilerContex
+#define C UnitCompilerContex
 
 #include "../include/unittest_tfile.h"
-#define F TestFile
+#define F UnitTestFile
 
 #include "../include/unittest_map.h"
 
@@ -67,7 +67,8 @@ static int compile(const C c, const char *args[50])
 	} else if (pid == 0) { /* Child process */
 		int ret = execv(c.compiler_path, (char *const *) args);
 		if (ret == -1) { /* Somehting went wrong */
-			fprintf(stderr, "Error while compilig: execv: %s", strerror(errno));
+			fprintf(stderr, "Error while compilig: execv: %s",
+				strerror(errno));
 			fprintf(stderr, "Aborting....");
 			abort();
 		}
@@ -77,7 +78,8 @@ static int compile(const C c, const char *args[50])
 		pid_t child_pid =
 			waitpid(pid, &status, 0); /* waits the child process execute */
 		if (child_pid == -1) {
-			fprintf(stderr, "Error while compilig: waitpid: %s", strerror(errno));
+			fprintf(stderr, "Error while compilig: waitpid: %s",
+				strerror(errno));
 			fprintf(stderr, "Aborting....");
 			abort();
 		}
@@ -85,8 +87,6 @@ static int compile(const C c, const char *args[50])
 
 	return status;
 }
-
-
 
 /* execute: Executes the gived program. */
 static int execute(const char *outfile)
@@ -104,7 +104,8 @@ static int execute(const char *outfile)
 		strcat(path, outfile);
 		int ret = execl(path, path, NULL);
 		if (ret == -1) { /* Somehting went wrong */
-			fprintf(stderr, "Error while testing: execl: %s", strerror(errno));
+			fprintf(stderr, "Error while testing: execl: %s",
+				strerror(errno));
 			fprintf(stderr, "Aborting....");
 			abort();
 		}
@@ -114,7 +115,8 @@ static int execute(const char *outfile)
 		pid_t child_pid =
 			waitpid(pid, &status, 0); /* waits the child process execute */
 		if (child_pid == -1) {
-			fprintf(stderr, "Error while testing: waitpid: %s", strerror(errno));
+			fprintf(stderr, "Error while testing: waitpid: %s",
+				strerror(errno));
 			fprintf(stderr, "Aborting....");
 			abort();
 		}
@@ -142,23 +144,23 @@ static size_t add_args(char **args_buf_ptr, const char *some_args, size_t nargs)
 	return nargs;
 }
 
-/* recompile_without_tests: Re-compiles the source file into an executable without
- * including any test files. */
-void recompile_without_tests(const C c, const char *file, const char *outfile)
+/* unittest_recompile_without_tests: Re-compiles the source file into an executable
+ * without including any test files. */
+void unittest_recompile_without_tests(const C c, const char *file, const char *outfile)
 {
 	size_t nargs;
 
 	/* Recompile without tests */
 	memset(args, 0, sizeof(args));
 	memset(args_buf, 0, sizeof(args_buf));
-	
+
 	char *args_buf_ptr = args_buf;
-	nargs = add_args(&args_buf_ptr, c.compiler,  0);
-	nargs = add_args(&args_buf_ptr, file,  nargs);
-	nargs = add_args(&args_buf_ptr, LIB_UNITTEST, nargs);
-	nargs = add_args(&args_buf_ptr, "-o",  nargs);
-	nargs = add_args(&args_buf_ptr, outfile,  nargs);
-	nargs = add_args(&args_buf_ptr, "-lexcept", nargs);
+	nargs		   = add_args(&args_buf_ptr, c.compiler, 0);
+	nargs		   = add_args(&args_buf_ptr, file, nargs);
+	nargs		   = add_args(&args_buf_ptr, LIB_UNITTEST, nargs);
+	nargs		   = add_args(&args_buf_ptr, "-o", nargs);
+	nargs		   = add_args(&args_buf_ptr, outfile, nargs);
+	nargs		   = add_args(&args_buf_ptr, "-lexcept", nargs);
 
 	if (compile(c, (const char **) args) != 0) {
 		fprintf(stderr, "Aborting.....\n");
@@ -166,8 +168,9 @@ void recompile_without_tests(const C c, const char *file, const char *outfile)
 	}
 }
 
-/* rerun_with_tests: Re-executes the test program with the tests files already loaded. */
-void rerun_with_tests(const char *outfile)
+/* unittest_rerun_with_tests: Re-executes the test program with the tests files already
+ * loaded. */
+void unittest_rerun_with_tests(const char *outfile)
 {
 	/* Exectues with the loaded tests */
 	if (execute(outfile) != 0) {
@@ -176,10 +179,11 @@ void rerun_with_tests(const char *outfile)
 	}
 }
 
-/* recompile_with_tests: Re-compiles and links the source files including the tests files,
+/* unittest_recompile_with_tests: Re-compiles and links the source files including the
+   tests files,
    Re-producing a new executable. */
-void recompile_with_tests(const C c, const char *test_dir, const char *obj_dir,
-			  const char *file, const char *outfile)
+void unittest_recompile_with_tests(const C c, const char *test_dir, const char *obj_dir,
+				   const char *file, const char *outfile)
 {
 	char   output[MAX_AMOUNT_OF_FILES][255];
 	size_t n_outputs = 0;
@@ -189,31 +193,31 @@ void recompile_with_tests(const C c, const char *test_dir, const char *obj_dir,
 
 	memset(output, 0, sizeof(output));
 
-	while (head_files != NULL) {
+	while (unittest_head_files != NULL) {
 		/* Catch the object file */
 		strcat(output[n_outputs], test_dir);
 		strcat(output[n_outputs], obj_dir);
-		strcat(output[n_outputs], head_files->filename);
+		strcat(output[n_outputs], unittest_head_files->filename);
 
 		/* Change the last character test.c -> test.o */
 		output[n_outputs][strlen(output[n_outputs]) - 1] = 'o';
 
 		/* Check if there were changes */
-		if (needs_update(head_files->date_hashed)) {
+		if (unittest_needs_update(unittest_head_files->date_hashed)) {
 			char source[255];
 
 			memset(source, 0, 255);
 
 			/* TODO: Clean the outputs */
 			strcat(source, test_dir);
-			strcat(source, head_files->filename);
+			strcat(source, unittest_head_files->filename);
 
 			/* Attach the arguments */
 			memset(args, 0, sizeof(args));
 			memset(args_buf, 0, sizeof(args_buf));
-	
+
 			char *args_buf_ptr = args_buf;
-			nargs = add_args(&args_buf_ptr, c.compiler, 0);
+			nargs		   = add_args(&args_buf_ptr, c.compiler, 0);
 			nargs = add_args(&args_buf_ptr, c.compiler_flags, nargs);
 			nargs = add_args(&args_buf_ptr, "-c", nargs);
 			nargs = add_args(&args_buf_ptr, source, nargs);
@@ -228,17 +232,17 @@ void recompile_with_tests(const C c, const char *test_dir, const char *obj_dir,
 		}
 
 		n_outputs++;
-		unittest_map_free((const uint8_t *) head_files->filename,
-				  strlen(head_files->filename));
-		F *prev	   = head_files;
-		head_files = head_files->next;
+		unittest_map_free((const uint8_t *) unittest_head_files->filename,
+				  strlen(unittest_head_files->filename));
+		F *prev		    = unittest_head_files;
+		unittest_head_files = unittest_head_files->next;
 		free(prev);
 	}
 
 	/* Reset the buffer */
 	memset(args, 0, sizeof(args));
 	memset(args_buf, 0, sizeof(args_buf));
-	
+
 	char *args_buf_ptr = args_buf;
 
 	/* Prepare the argments */
@@ -260,7 +264,7 @@ void recompile_with_tests(const C c, const char *test_dir, const char *obj_dir,
 
 	/* Compile with loaded tests */
 	if (compile(c, (const char **) args) != 0) {
-		
+
 		fprintf(stderr, "Aborting.....\n");
 		abort();
 	}

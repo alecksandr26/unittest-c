@@ -28,8 +28,8 @@ int main(void)
 	INCLUDE_TEST_CASE("simpletest.c", NewCase);
 	INCLUDE_TEST_CASE("simpletest2.c", NewCase2);
 	INCLUDE_SUIT("anothertest.c", SecondSuit2);
-	
+
 	RUN();
-	
+
 	return 0;
 }

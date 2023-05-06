@@ -3,7 +3,7 @@
   @brief This module provides functionality to create collections or suites of test cases for unit testing.
   It defines a struct S that contains an array of test cases, a count of the number of test cases, and a
   name for the suite. It also provides macros to create a new suite and to link the test cases in the suite.
-  The link_suit_tcase() function is used to link the test cases structures together for the running process.
+  The unittest_link_suit_tcase() function is used to link the test cases structures together for the running process.
 
   @author Erick Carrillo.
   @copyright Copyright (C) 2022, Erick Alejandro Carrillo López, All rights reserved.
@@ -14,8 +14,8 @@
 #define UNITTEST_SUIT_INCLUDED
 
 #include "unittest_tcase.h"
-#define TC			     TestCase
-#define S			     Suit
+#define TC			     UnitTestCase
+#define S			     UnitSuit
 
 #define MAX_AMOUNT_OF_TESTS_IN_SUITS 30
 
@@ -30,15 +30,15 @@ struct S {
 };
 
 /* NEW_SUIT: creates a new test suite with a given name and a list of test cases.  */
-#define NEW_SUIT(SUIT_NAME, ...)                                                 \
-	Suit SUIT_NAME = {.tcase  = {ADDR(__VA_ARGS__)},                         \
-			  .amount = sizeof((TestCase *[]) {ADDR(__VA_ARGS__)}) / \
-				    sizeof(TestCase *),                          \
-			  .name = #SUIT_NAME}
+#define NEW_SUIT(SUIT_NAME, ...)                                                         \
+	UnitSuit SUIT_NAME = {.tcase  = {ADDR(__VA_ARGS__)},                             \
+			      .amount = sizeof((UnitTestCase *[]) {ADDR(__VA_ARGS__)}) / \
+					sizeof(UnitTestCase *),                          \
+			      .name = #SUIT_NAME}
 
-/* link_suit_tcase: to link together the test cases contained within the suit
+/* unittest_link_suit_tcase: to link together the test cases contained within the suit
  * structure to run them */
-extern void link_suit_tcase(S *suit);
+extern void unittest_link_suit_tcase(S *suit);
 
 #define AMPR(...) __VA_OPT__(&) __VA_ARGS__
 

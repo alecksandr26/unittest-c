@@ -19,74 +19,67 @@
 #include "unittest_tcase.h"
 #include "unittest_tfile.h"
 
-/* check_testdir_exist: This function checks whether the test directory exists or not. */
-extern void check_testdir_exist(const char *test_dir);
+/* unittest_check_testdir_exist: This function checks whether the test directory exists or
+ * not. */
+extern void unittest_check_testdir_exist(const char *test_dir);
 
-/* run_tests: Executes the test cases that were linked using the provided macros. */
-extern void run_tests(void);
+/* unittest_run_tests: Executes the test cases that were linked using the provided macros.
+ */
+extern void unittest_run_tests(void);
 
 #ifndef UNITTEST_RECOMPILE
 #define UNITTEST_RECOMPILE 0
-#define INCLUDE_SUIT(filename, ...)      \
-	check_testdir_exist(TEST_DIR);   \
-	include(TEST_DIR, filename);     \
-	if (!UNITTEST_RECOMPILE) {       \
-		extern Suit __VA_ARGS__; \
-		CATCH(__VA_ARGS__);      \
+#define INCLUDE_SUIT(filename, ...)             \
+	unittest_check_testdir_exist(TEST_DIR); \
+	unittest_include(TEST_DIR, filename);   \
+	if (!UNITTEST_RECOMPILE) {              \
+		extern UnitSuit __VA_ARGS__;    \
+		CATCH(__VA_ARGS__);             \
 	}
-#define INCLUDE_TEST_CASE(filename, ...)     \
-	check_testdir_exist(TEST_DIR);       \
-	include(TEST_DIR, filename);         \
-	if (!UNITTEST_RECOMPILE) {           \
-		extern TestCase __VA_ARGS__; \
-		CATCH(__VA_ARGS__);          \
+#define INCLUDE_TEST_CASE(filename, ...)         \
+	unittest_check_testdir_exist(TEST_DIR);  \
+	unittest_include(TEST_DIR, filename);    \
+	if (!UNITTEST_RECOMPILE) {               \
+		extern UnitTestCase __VA_ARGS__; \
+		CATCH(__VA_ARGS__);              \
 	}
-#define RUN(...)                                                                \
-	if (UNITTEST_RECOMPILE) {					\
-		CompilerContex c = {.compiler	    = COMPILER,                 \
-				    .compiler_path  = COMPILER_PATH COMPILER,   \
-				    .compiler_flags = COMPILER_FLAGS};          \
-		get_prev_dates(TEST_DIR, DATE_HASHED_FILE);                     \
-		check_testdir_exist(TEST_DIR);                                  \
-		recompile_with_tests(c, TEST_DIR, OBJ_DIR, __FILE__, TEST_OUT); \
-		put_new_dates(TEST_DIR, DATE_HASHED_FILE);                      \
-		rerun_with_tests(TEST_OUT);                                     \
-		recompile_without_tests(c, __FILE__, TEST_OUT);                 \
-		return 0;                                                       \
-	}                                                                       \
-	__VA_OPT__(CATCH(__VA_ARGS__));                                         \
-	run_tests();                                                            \
-	head_tc = NULL
+#define RUN(...)                                                                         \
+	if (UNITTEST_RECOMPILE) {                                                        \
+		UnitCompilerContex c = {.compiler	= COMPILER,                      \
+					.compiler_path	= COMPILER_PATH COMPILER,        \
+					.compiler_flags = COMPILER_FLAGS};               \
+		unittest_get_prev_dates(TEST_DIR, DATE_HASHED_FILE);                     \
+		unittest_check_testdir_exist(TEST_DIR);                                  \
+		unittest_recompile_with_tests(c, TEST_DIR, OBJ_DIR, __FILE__, TEST_OUT); \
+		unittest_put_new_dates(TEST_DIR, DATE_HASHED_FILE);                      \
+		unittest_rerun_with_tests(TEST_OUT);                                     \
+		unittest_recompile_without_tests(c, __FILE__, TEST_OUT);                 \
+		return 0;                                                                \
+	}                                                                                \
+	__VA_OPT__(CATCH(__VA_ARGS__));                                                  \
+	unittest_run_tests();                                                            \
+	unittest_head_tc = NULL
 #else
-#define INCLUDE_SUIT(filename, ...)    \
-	check_testdir_exist(TEST_DIR); \
-	include(TEST_DIR, filename);   \
-	extern Suit __VA_ARGS__;       \
+#define INCLUDE_SUIT(filename, ...)             \
+	unittest_check_testdir_exist(TEST_DIR); \
+	unittest_include(TEST_DIR, filename);   \
+	extern UnitSuit __VA_ARGS__;            \
 	CATCH(__VA_ARGS__)
-#define INCLUDE_TEST_CASE(filename, ...) \
-	check_testdir_exist(TEST_DIR);   \
-	include(TEST_DIR, filename);     \
-	extern TestCase __VA_ARGS__;     \
+#define INCLUDE_TEST_CASE(filename, ...)        \
+	unittest_check_testdir_exist(TEST_DIR); \
+	unittest_include(TEST_DIR, filename);   \
+	extern UnitTestCase __VA_ARGS__;        \
 	CATCH(__VA_ARGS__)
 #define RUN(...)                        \
 	__VA_OPT__(CATCH(__VA_ARGS__)); \
-	run_tests();                    \
-	head_tc = NULL
+	unittest_run_tests();           \
+	unittest_head_tc = NULL
 #endif
 
-/*
-#define CATCH_GENERIC(X)						\
-	_Generic((X),							\
-		 void(*)(TestCase *): link_tcase,			\
-		 Suit : link_suit_tcase					\
-		 )(_Generic((X),					\
-			    void(*)(TestCase *): &(tcase_##X),		\
-			    Suit : &(X)					\
-			    ))
-*/
-
-#define CATCH_GENERIC(X) _Generic((X), TestCase : link_tcase, Suit : link_suit_tcase)(&X)
-
+#define CATCH_GENERIC(X)                         \
+	_Generic((X), UnitTestCase               \
+		 : unittest_link_tcase, UnitSuit \
+		 : unittest_link_suit_tcase)(&X)
 
 /* Simple recursive macros */
 #define CATCH(first, ...)   CATCH_GENERIC(first) __VA_OPT__(; CATCH1(__VA_ARGS__))

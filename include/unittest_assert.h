@@ -13,36 +13,37 @@
 
 #include <stdio.h>
 
-#define F TestInfoFailed
+#define F UnitTestInfoFailed
 
 /* The structure that captures all information needed for a failed test. */
 typedef struct F F;
 struct F {
-	const char *expr, *msg, *test, *tcase, *file;
+	const char *expr, *msg, *test, *unitcase, *file;
 	int	    line;
 };
 
 /* unittest_print_faild_test: This function prints the information for a failed test,
    including the expression, message, test name, testcase name and filename. */
-extern void unittest_print_faild_test(F *tcase);
+extern void unittest_print_faild_test(F *unitcase);
 
 #define FIRST(X, ...) X
 
 /* ASSERT: evaluates expression, records failed test info, increments failure count,
    outputs 'F',
    and jumps back to execute more tests using setjmp(). */
-#define ASSERT(EXPR, ...)                                                            \
-	if (!(EXPR)) {                                                               \
-		tcase->failed_info[tcase->amount_failed].expr = #EXPR;               \
-		tcase->failed_info[tcase->amount_failed].msg =                       \
-			FIRST(__VA_ARGS__ __VA_OPT__(, ) NULL);                      \
-		tcase->failed_info[tcase->amount_failed].test = tframe.current_test; \
-		tcase->failed_info[tcase->amount_failed].line = __LINE__;            \
-		tcase->amount_failed++;                                              \
-		/* Stops executing the test and jump to execute more tests */ \
-		putchar('F');						\
-		jmpback(&tframe.buf, tframe.state + 1);			\
-	} else 
+#define ASSERT(EXPR, ...)                                                       \
+	if (!(EXPR)) {                                                          \
+		unitcase->failed_info[unitcase->amount_failed].expr = #EXPR;    \
+		unitcase->failed_info[unitcase->amount_failed].msg =            \
+			FIRST(__VA_ARGS__ __VA_OPT__(, ) NULL);                 \
+		unitcase->failed_info[unitcase->amount_failed].test =           \
+			unitframe.current_test;                                 \
+		unitcase->failed_info[unitcase->amount_failed].line = __LINE__; \
+		unitcase->amount_failed++;                                      \
+		/* Stops executing the test and jump to execute more tests */   \
+		putchar('F');                                                   \
+		jmpback(&unitframe.buf, unitframe.state + 1);                   \
+	} else
 
 #undef F
 #endif

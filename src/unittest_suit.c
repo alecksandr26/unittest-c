@@ -10,13 +10,13 @@
 #include "../include/unittest_suit.h"
 
 #include "../include/unittest_tcase.h"
-#define S Suit
+#define S UnitSuit
 
-/* link_suit_tcase: to link together the test cases contained within the suit
+/* unittest_link_suit_tcase: to link together the test cases contained within the suit
  * structure to run them */
-void link_suit_tcase(S *suit)
+void unittest_link_suit_tcase(S *suit)
 {
 	for (size_t i = 0; i < suit->amount; i++)
-		link_tcase(suit->tcase[i]);
+		unittest_link_tcase(suit->tcase[i]);
 }
 #undef S

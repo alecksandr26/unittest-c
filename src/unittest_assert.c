@@ -13,14 +13,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#define F TestInfoFailed
+#define F UnitTestInfoFailed
 
 /* Sime implemention of an assert */
 void unittest_print_faild_test(F *info)
 {
 	puts("==========================================================================="
 	     "===========");
-	printf("FAIL:\t\t%s\t\t(%s.%s)\n", info->test, info->tcase, info->test);
+	printf("FAIL:\t\t%s\t\t(%s.%s)\n", info->test, info->unitcase, info->test);
 	puts("---------------------------------------------------------------------------"
 	     "-----------");
 	puts("Traceback...");

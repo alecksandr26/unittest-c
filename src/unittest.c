@@ -17,7 +17,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-void check_testdir_exist(const char *test_dir)
+void unittest_check_testdir_exist(const char *test_dir)
 {
 	DIR *dir;
 	if ((dir = opendir(test_dir)) == NULL) {
@@ -28,30 +28,31 @@ void check_testdir_exist(const char *test_dir)
 	closedir(dir);
 }
 
-void run_tests(void)
+void unittest_run_tests(void)
 {
-	assert(head_tc != NULL && "Should be at least one test");
-	size_t		count_tests, success_test, failed_test;
-	TestInfoFailed *infofails[MAX_AMOUNT_OF_TESTS_IN_TESTCASES];
+	assert(unittest_head_tc != NULL && "Should be at least one test");
+	size_t		    count_tests, success_test, failed_test;
+	UnitTestInfoFailed *infofails[MAX_AMOUNT_OF_TESTS_IN_TESTCASES];
 
 	/* Execute each testcase */
 	count_tests = success_test = failed_test = 0;
 	clock_t start_time			 = clock();
-	while (head_tc != NULL) {
+	while (unittest_head_tc != NULL) {
 		/* Run the testscase */
-		head_tc->test(head_tc);
-		count_tests += head_tc->amount;
-		success_test += head_tc->amount - head_tc->amount_failed;
+		unittest_head_tc->test(unittest_head_tc);
+		count_tests += unittest_head_tc->amount;
+		success_test +=
+			unittest_head_tc->amount - unittest_head_tc->amount_failed;
 
 		/* Catch its failes info */
-		for (size_t i = 0; i < head_tc->amount_failed; i++) {
-			infofails[failed_test]	       = &head_tc->failed_info[i];
-			infofails[failed_test]->tcase  = head_tc->name;
-			infofails[failed_test++]->file = head_tc->file;
+		for (size_t i = 0; i < unittest_head_tc->amount_failed; i++) {
+			infofails[failed_test] = &unittest_head_tc->failed_info[i];
+			infofails[failed_test]->unitcase = unittest_head_tc->name;
+			infofails[failed_test++]->file	 = unittest_head_tc->file;
 		}
 
 		/* Move to the next test */
-		head_tc = head_tc->next;
+		unittest_head_tc = unittest_head_tc->next;
 	}
 	clock_t end_time = clock();
 	printf("\n");

@@ -24,9 +24,9 @@
 #include <sys/stat.h> /* stat() */
 #include <time.h>     /* ctime() */
 #include <unistd.h>   /* access() */
-#define F TestFile
+#define F UnitTestFile
 
-F      *head_files	    = NULL;
+F      *unittest_head_files = NULL;
 uint8_t dumped		    = 0;
 size_t	amount_hashed_dates = 0;
 long	hashed_dates[MAX_AMOUNT_OF_FILES];
@@ -34,15 +34,17 @@ size_t	new_amount_hashed_dates = 0;
 long	new_hashed_dates[MAX_AMOUNT_OF_FILES];
 
 /* TODO: Rewrite this exceptions */
-Except UnittestErrorCreatingFile = {"Error creating a new file at \"TEST_DIR\""};
-Except UnittestErrorOpeningFile	 = {"Error opening a file at \"TEST_DIR\""};
-Except UnittestErrorReadingFile	 = {"Error reading a file at \"TEST_DIR\""};
-Except UnittestErrorWrittingFile = {"Error writting a file at \"TEST_DIR\""};
-Except UnittestNotEnoughMemory	 = {"Not enough memory on the heap"};
-Except UnittestErrorTestBaseDoesntExist = {"Error the default \"TEST_DIR\" doesn't exist"};
+Except UnittestErrorCreatingFile	= {"Error creating a new file at \"TEST_DIR\""};
+Except UnittestErrorOpeningFile		= {"Error opening a file at \"TEST_DIR\""};
+Except UnittestErrorReadingFile		= {"Error reading a file at \"TEST_DIR\""};
+Except UnittestErrorWrittingFile	= {"Error writting a file at \"TEST_DIR\""};
+Except UnittestNotEnoughMemory		= {"Not enough memory on the heap"};
+Except UnittestErrorTestBaseDoesntExist = {
+	"Error the default \"TEST_DIR\" doesn't exist"};
 
-/* put_new_dates: Puts new creation/modification dates of the test files in the file. */
-void put_new_dates(const char *test_dir, const char *filename)
+/* unittest_put_new_dates: Puts new creation/modification dates of the test files in the
+ * file. */
+void unittest_put_new_dates(const char *test_dir, const char *filename)
 {
 	FILE	    *fp;
 	const size_t len = strlen(test_dir) + strlen(filename);
@@ -67,9 +69,10 @@ void put_new_dates(const char *test_dir, const char *filename)
 	fclose(fp);
 }
 
-/* get_prev_dates: Gets the previous modification dates of a file in a specific directory.
+/* unittest_get_prev_dates: Gets the previous modification dates of a file in a specific
+ * directory.
  */
-void get_prev_dates(const char *test_dir, const char *filename)
+void unittest_get_prev_dates(const char *test_dir, const char *filename)
 {
 	FILE	    *fp;
 	const size_t len = strlen(test_dir) + strlen(filename);
@@ -101,10 +104,11 @@ void get_prev_dates(const char *test_dir, const char *filename)
 	fclose(fp);
 }
 
-/* get_creation_date: This function gets the creation time of a file located at a given
+/* unittest_get_creation_date: This function gets the creation time of a file located at a
+   given
    path
    and stores it as a string in the date parameter. */
-void get_creation_date(const char *path_file, char *date)
+void unittest_get_creation_date(const char *path_file, char *date)
 {
 	struct stat attr;
 
@@ -116,9 +120,10 @@ void get_creation_date(const char *path_file, char *date)
 	sprintf(date, "Last modified time: %s", ctime(&attr.st_mtime));
 }
 
-/* needs_update: checks if a file needs to be updated based on its hashed creation date.
+/* unittest_needs_update: checks if a file needs to be updated based on its hashed
+ * creation date.
  */
-uint8_t needs_update(long date_hashed)
+uint8_t unittest_needs_update(long date_hashed)
 {
 	size_t i;
 
@@ -132,9 +137,9 @@ uint8_t needs_update(long date_hashed)
 	return 1;
 }
 
-/* include: This function includes a file with a given filename into a specific test
- * directory. */
-void include(const char *test_dir, const char *filename)
+/* unittest_include: This function includes a file with a given filename into a specific
+ * test directory. */
+void unittest_include(const char *test_dir, const char *filename)
 {
 	assert(filename != NULL && test_dir != NULL && "Erro can't be null");
 
@@ -153,14 +158,14 @@ void include(const char *test_dir, const char *filename)
 	/* Map the name of the filename */
 	const uint8_t *ptr =
 		unittest_map_find((const uint8_t *) filename, strlen(filename));
-	if (ptr != NULL) /* It is already include it */
+	if (ptr != NULL) /* It is already don't include it */
 		return;
 
 	memset(path, 0, 255);
 	strcat(path, test_dir);
 	strcat(path, filename);
 
-	get_creation_date(path, date);
+	unittest_get_creation_date(path, date);
 	h = unittest_hash((const uint8_t *) date);
 
 	if ((new_file = malloc(sizeof(F))) == NULL) throw_except(UnittestNotEnoughMemory);
@@ -169,8 +174,8 @@ void include(const char *test_dir, const char *filename)
 	/* Map the file name */
 	new_file->filename =
 		(char *) unittest_map((const uint8_t *) filename, strlen(filename));
-	new_file->next = head_files;
-	head_files     = new_file;
+	new_file->next	    = unittest_head_files;
+	unittest_head_files = new_file;
 
 	/* Append the new hashed dates */
 	new_hashed_dates[new_amount_hashed_dates++] = h;
