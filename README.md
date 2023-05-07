@@ -443,8 +443,50 @@ clean:
 ```
 
 ## How to recompile the `executable` and each individual `test file`?
-blah blah blah.....
+1. To enable the recompilation feature of the framework, you need to redefine the macro UNITTEST_RECOMPILE inside your testrunner or main test executable file and set its value to 1. This can be done by adding the line #define UNITTEST_RECOMPILE 1 before including any test cases or suits.
+```C
+#include <unittest.h>
+#include <stdio.h>
 
+#undef TEST_DIR
+#define TEST_DIR "dir3/"
+
+
+int main(void)
+{
+	#undef UNITTEST_RECOMPILE
+	#define UNITTEST_RECOMPILE 1
+	
+	INCLUDE_TEST_CASE("simpletest.c", SimpleTest);
+	INCLUDE_SUIT("simpletest.c", MySuit);
+	
+	RUN();
+	return 0;
+}
+```
+2. In the second step, you need to ***recompile*** the test executable without ***any testfile source code***. 
+This means that you need to exclude the source code files of your test cases, which were previously included in the compilation command in the previous section.
+For example, if your test cases were included in the compilation command as follows:
+```
+gcc -o testrunner testrunner.c simpletest.c -lunittest -lexcept
+```
+Then, to exclude the source code file ***simpletest.c*** from the compilation, you can use the following command:
+```
+gcc -o testrunner testrunner.c -lunittest -lexcept
+```
+By doing this, you ensure that the test executable is compiled without any test source code files and is ready to use the recompilation feature of the framework.
+
+3. When you run the test executable, you will see a message indicating that the test files are being compiled, generating the .o files. After this compilation process, the tests will be executed as usual.
+```
+[COMPILING] dir3/simpletest.c -o dir3/.obj/simpletest.o
+........
+--------------------------------------------------------------------------------------
+Ran 8 test in 0.000008s
+
+Ok 
+
+```
+This recompilation feature allows you to focus solely on writing new code and its tests, instead of worrying about compiling your large code tests. The framework creates an ***.obj*** directory where it stores the ***.o*** files, and it will automatically recompile the test files when it detects a change, making the process of compilation and writing tests more efficient.
 
 # References
 1. Wikipedia contributors. (2022a). Boilerplate code. Wikipedia. https://en.wikipedia.org/wiki/Boilerplate_code
