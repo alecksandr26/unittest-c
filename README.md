@@ -311,7 +311,46 @@ int main(void)
 }
 ```
 ## How to include `Test Cases` or `Suits` from other files?
-blah blah blah....
+1. For example, let's create a simple test case called ***SimpleTest*** in a file called ***simpletest.c***:
+```C
+#include <unittest.h>
+
+TESTCASE(SimpleTest) {
+    int var = 1;
+
+    TEST(Test1) {
+        ASSERT(var == 1, "It should be one");
+    }
+
+    TEST(Test2) {
+        ASSERT(var > 0, "It should be greater than zero");
+    }
+
+    TEST(Test3) {
+        ASSERT(var < 2, "It should be lesser than 2");
+    }
+} ENDTESTCASE
+````
+2. Create a new file, e.g. ***testrunner.c***, which will serve as your main test runner. In this file, include the test case file that you want to run. 
+You can use the ***INCLUDE_TEST_CASE*** macro to do this. Also, make sure that the file path in the ***TEST_DIR*** macro matches the actual directory where 
+your ***simpletest.c*** is located. Here's an example:
+```C
+#include <unittest.h>
+#include <stdio.h>
+
+#undef TEST_DIR
+#define TEST_DIR "dir3/"
+
+
+int main(void)
+{
+	INCLUDE_TEST_CASE("simpletest.c", SimpleTest);
+	
+	RUN();
+	return 0;
+}
+```
+
 ## How to recompile the `executable` and each individual `test file`?
 blah blah blah.....
 
