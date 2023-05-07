@@ -350,6 +350,43 @@ int main(void)
 	return 0;
 }
 ```
+3. To compile the ***testrunner*** and the included test case, use the following command:
+```
+[term] $ gcc -o testrunner testrunner.c dir3/simpletest.c -lunittest -lexcept
+```
+The ***dir3/simpletest.c*** file is the test case that was included in the previous step using the ***INCLUDE_TEST_CASE*** macro and here its output.
+```
+[term] $ ./a.out
+...
+--------------------------------------------------------------------------------------
+Ran 3 test in 0.000003s
+
+Ok 
+```
+4. Since the source code for unit tests are essentially code themselves, it's common to use build automation tools such as make or cmake to simplify 
+the process of compiling and executing large test suites. These tools can create object files (.o) from your test source files, which can be 
+linked together to create the final executable.
+```Makefile
+CC = gcc
+CFLAGS = -Wall -Werror
+LDFLAGS = -lunittest -lexcept
+OBJECTS = simpletest.o testrunner.o
+
+all: testrunner
+
+testrunner: $(OBJECTS)
+	$(CC) $(LDFLAGS) $(OBJECTS) -o testrunner
+
+simpletest.o: simpletest.c
+	$(CC) $(CFLAGS) -c simpletest.c -o simpletest.o
+
+testrunner.o: testrunner.c
+	$(CC) $(CFLAGS) -c testrunner.c -o testrunner.o
+
+clean:
+	rm -f $(OBJECTS) testrunner
+```
+
 
 ## How to recompile the `executable` and each individual `test file`?
 blah blah blah.....
