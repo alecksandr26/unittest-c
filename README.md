@@ -472,7 +472,7 @@ gcc -o testrunner testrunner.c simpletest.c -lunittest -lexcept
 ```
 Then, to exclude the source code file ***simpletest.c*** from the compilation, you can use the following command:
 ```
-gcc -o testrunner testrunner.c -lunittest -lexcept
+gcc -o test testrunner.c -lunittest -lexcept
 ```
 By doing this, you ensure that the test executable is compiled without any test source code files and is ready to use the recompilation feature of the framework.
 
