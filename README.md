@@ -311,8 +311,9 @@ int main(void)
 }
 ```
 ## How to include `Test Cases` or `Suits` from other files?
-1. For example, let's create a simple test case called ***SimpleTest*** in a file called ***simpletest.c***:
+1. For example, let's create some testcases and a suit in a file called ***simpletest.c***:
 ```C
+// simpletest.c
 #include <unittest.h>
 
 TESTCASE(SimpleTest) {
@@ -329,10 +330,59 @@ TESTCASE(SimpleTest) {
     TEST(Test3) {
         ASSERT(var < 2, "It should be lesser than 2");
     }
+
+    TEST(Test4) {
+        ASSERT(var != 0, "It should not be zero");
+    }
 } ENDTESTCASE
+
+
+TESTCASE(MyTestCases1)
+{
+    // Set up any boilerplate code for all tests in the test case
+    int x = 42;
+
+    // Define individual tests using the TEST macro
+    TEST(Test1)
+    {
+        // Use ASSERT macro to check if x equals 42
+        ASSERT(x == 42, "x should equal 42");
+    }
+
+    TEST(Test2)
+    {
+        // Use ASSERT macro to check if x is less than 100
+        ASSERT(x < 100, "x should be less than 100");
+    }
+
+} ENDTESTCASE
+
+TESTCASE(MyTestCases2)
+{
+    // Set up any boilerplate code for all tests in the test case
+    int y = 100;
+
+    // Define individual tests using the TEST macro
+    TEST(Test3)
+    {
+        // Use ASSERT macro to check if y equals 100
+        ASSERT(y == 100, "y should equal 100");
+    }
+
+    TEST(Test4)
+    {
+        // Use ASSERT macro to check if y is greater than or equal to 50
+        ASSERT(y >= 50, "y should be greater than or equal to 50");
+    }
+
+} ENDTESTCASE
+
+NEW_SUIT(MySuit, MyTestCases1, MyTestCases2);
 ````
-2. Create a new file, e.g. ***testrunner.c***, which will serve as your main test runner. In this file, include the test case file that you want to run. 
-You can use the ***INCLUDE_TEST_CASE*** macro to do this. Also, make sure that the file path in the ***TEST_DIR*** macro matches the actual directory where 
+2. Create a new file, e.g. ***testrunner.c***, which will serve as your main test runner. In this file, include the test cases and the suit from the 
+file that you want to run. 
+You can use the ***INCLUDE_TEST_CASE*** and ***INCLUDE_SUIT*** macros to do this. Also, make sure that the file path in the ***TEST_DIR*** macro 
+matches the actual directory where 
 your ***simpletest.c*** is located. Here's an example:
 ```C
 #include <unittest.h>
@@ -344,7 +394,10 @@ your ***simpletest.c*** is located. Here's an example:
 
 int main(void)
 {
-	INCLUDE_TEST_CASE("simpletest.c", SimpleTest);
+	// Include a testcase
+	INCLUDE_TEST_CASE("simpletest.c", MyTestCases1);
+	// Include a suit
+	INCLUDE_SUIT("simpletest.c", MySuit);
 	
 	RUN();
 	return 0;
@@ -357,15 +410,17 @@ int main(void)
 The ***dir3/simpletest.c*** file is the test case that was included in the previous step using the ***INCLUDE_TEST_CASE*** macro and here its output.
 ```
 [term] $ ./a.out
-...
+........
 --------------------------------------------------------------------------------------
-Ran 3 test in 0.000003s
+Ran 8 test in 0.000006s
 
 Ok 
+
 ```
-4. Since the source code for unit tests are essentially code themselves, it's common to use build automation tools such as make or cmake to simplify 
+4. Since the source code for unit tests are essentially code themselves, it's common to use build automation tools such as make or `cmake` or `make` 
+to simplify 
 the process of compiling and executing large test suites. These tools can create object files (.o) from your test source files, which can be 
-linked together to create the final executable.
+linked together to create the final executable, heres is an example with a makefile.
 ```Makefile
 CC = gcc
 CFLAGS = -Wall -Werror
@@ -386,7 +441,6 @@ testrunner.o: testrunner.c
 clean:
 	rm -f $(OBJECTS) testrunner
 ```
-
 
 ## How to recompile the `executable` and each individual `test file`?
 blah blah blah.....
