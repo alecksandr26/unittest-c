@@ -1,21 +1,18 @@
 #include <unittest.h>
 #include <stdio.h>
 
-TESTCASE(Checking)
-{
-	/* This test will faild */
-	TEST(False) {
-		ASSERT(1 == 0, "Testing the message");
-	}
-} ENDTESTCASE
+#undef TEST_DIR
+#define TEST_DIR "dir3/"
 
-
-NEW_SUIT(MySuit, Checking);
 
 int main(void)
 {
-
-	RUN(MySuit);
-
+	#undef UNITTEST_RECOMPILE
+	#define UNITTEST_RECOMPILE 1
+	
+	INCLUDE_TEST_CASE("simpletest.c", SimpleTest);
+	INCLUDE_SUIT("simpletest.c", MySuit);
+	
+	RUN();
 	return 0;
 }
