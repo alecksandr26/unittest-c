@@ -443,7 +443,7 @@ clean:
 ```
 
 ## How to recompile the `executable` and each individual `test file`?
-1. To enable the recompilation feature of the framework, you need to redefine the macro UNITTEST_RECOMPILE inside your testrunner or main test executable file and set its value to 1. This can be done by adding the line #define UNITTEST_RECOMPILE 1 before including any test cases or suits.
+1. To enable the recompilation feature of the framework, you need to redefine the macro ***UNITTEST_RECOMPILE*** inside your testrunner or main test executable file and set its value to ***1***. This can be done by adding the line ***#define UNITTEST_RECOMPILE 1*** before including any test cases or suits.
 ```C
 #include <unittest.h>
 #include <stdio.h>
