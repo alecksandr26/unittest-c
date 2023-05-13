@@ -7,7 +7,7 @@
 - Divide everything in more components [X]
 - Wrap the malloc [ ]
 ---- 2023/05/03 ----
-- Deal with the bad string contaenations of the files and obj [ ]
+- Deal with the bad string concatenations of the files and obj [ ]
 - Write the documentation [ ]
 - Refactor the whole code [X]
 ---- 2023/05/05 ----
@@ -15,3 +15,7 @@
 - Deal better witht he possible errors during the recompilation [X]
 ---- 2023/05/06 ----
 - Find another method to know if a directory exist [ ]
+- Create a way to uses valgrind on the testcases [ ]
+- Try to be able to deifne macros from the compiler arguments [ ]
+- Create another flags variable for the external libraries [ ]
+- Try to find the base directory [ ]
