@@ -12,8 +12,8 @@
 
 int main()
 {
-	#undef UNITTEST_RECOMPILE
-	#define UNITTEST_RECOMPILE 1
+#undef UNITTEST_RECOMPILE
+#define UNITTEST_RECOMPILE 1
 
 	INCLUDE_SUIT("anothertest.c", SecondSuit2);
 

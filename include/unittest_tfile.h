@@ -35,11 +35,11 @@ extern F *unittest_head_files;
 
 /* unittest_put_new_dates: Puts new creation/modification dates of the test files in the
  * file. */
-extern void unittest_put_new_dates(const char *test_dir, const char *filename);
+extern void unittest_put_new_dates(void);
 
 /* unittest_get_prev_dates: Gets the previous modification dates of the test files from a
  * file. */
-extern void unittest_get_prev_dates(const char *test_dir, const char *filename);
+extern void unittest_get_prev_dates(void);
 
 /* unittest_needs_update: checks if a file needs to be updated based on its hashed
  * creation date.
@@ -47,14 +47,12 @@ extern void unittest_get_prev_dates(const char *test_dir, const char *filename);
 extern uint8_t unittest_needs_update(long date_hashed);
 
 /* unittest_get_creation_date: This function gets the creation time of a file located at a
-   given
-   path
-   and stores it as a string in the date parameter. */
+   given path and stores it as a string in the date parameter. */
 extern void unittest_get_creation_date(const char *path_file, char *date);
 
 /* unittest_include: This function includes a file with a given filename into a specific
  * test directory. */
-extern void unittest_include(const char *test_dir, const char *filename);
+extern void unittest_include(const char *filename);
 
 #undef F
 #endif

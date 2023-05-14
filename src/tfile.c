@@ -9,12 +9,10 @@
   @license This project is released under the MIT License
 */
 
+#include "../include/unittest_map.h"
 #include "../include/unittest_tfile.h"
 
-#include "../include/unittest_map.h"
-
 #include <assert.h> /* assert() */
-#include <dirent.h> /* opendir(), closedir() */
 #include <except.h> /* throw_except() */
 #include <fcntl.h>  /* create() */
 #include <malloc.h>
@@ -33,6 +31,10 @@ long	hashed_dates[MAX_AMOUNT_OF_FILES];
 size_t	new_amount_hashed_dates = 0;
 long	new_hashed_dates[MAX_AMOUNT_OF_FILES];
 
+/* Variables to have all the paths to file */
+extern const char unittest_basedir[100], unittest_file[100], unittest_outfile[100],
+	unittest_testdir[100], unittest_objdir[100], unittest_hashed_file[100];
+
 /* TODO: Rewrite this exceptions */
 Except UnittestErrorCreatingFile	= {"Error creating a new file at \"TEST_DIR\""};
 Except UnittestErrorOpeningFile		= {"Error opening a file at \"TEST_DIR\""};
@@ -44,20 +46,15 @@ Except UnittestErrorTestBaseDoesntExist = {
 
 /* unittest_put_new_dates: Puts new creation/modification dates of the test files in the
  * file. */
-void unittest_put_new_dates(const char *test_dir, const char *filename)
+void unittest_put_new_dates(void)
 {
-	FILE	    *fp;
-	const size_t len = strlen(test_dir) + strlen(filename);
-	char	     path[len];
+	FILE *fp;
 
-	memset(path, 0, len);
-	strcat(path, test_dir);
-	strcat(path, filename);
-
-	if (access(path, F_OK) == -1) /* Doens't exist the file */
+	if (access(unittest_hashed_file, F_OK) != 0) /* Doens't exist the file */
 		throw_except(UnittestErrorReadingFile);
 
-	if ((fp = fopen(path, "wb")) == NULL) throw_except(UnittestErrorOpeningFile);
+	if ((fp = fopen(unittest_hashed_file, "wb")) == NULL)
+		throw_except(UnittestErrorOpeningFile);
 
 	/* Read the hashed binaries*/
 	if (fwrite(&new_amount_hashed_dates, sizeof(size_t), 1, fp) != 1)
@@ -72,26 +69,21 @@ void unittest_put_new_dates(const char *test_dir, const char *filename)
 /* unittest_get_prev_dates: Gets the previous modification dates of a file in a specific
  * directory.
  */
-void unittest_get_prev_dates(const char *test_dir, const char *filename)
+void unittest_get_prev_dates(void)
 {
-	FILE	    *fp;
-	const size_t len = strlen(test_dir) + strlen(filename);
+	FILE *fp;
 
 	if (dumped != 0) return; /* Finish the function */
 	dumped = 1;
 
-	char path[len];
-
-	memset(path, 0, len);
-	strcat(path, test_dir);
-	strcat(path, filename);
-
-	if (access(path, F_OK) == -1) { /* Doens't exist the file */
-		if (creat(path, 0664) == -1) throw_except(UnittestErrorCreatingFile);
+	if (access(unittest_hashed_file, F_OK) == -1) { /* Doens't exist the file */
+		if (creat(unittest_hashed_file, 0664) == -1)
+			throw_except(UnittestErrorCreatingFile);
 		return;
 	}
 
-	if ((fp = fopen(path, "rb")) == NULL) throw_except(UnittestErrorOpeningFile);
+	if ((fp = fopen(unittest_hashed_file, "rb")) == NULL)
+		throw_except(UnittestErrorOpeningFile);
 
 	/* Read the hashed binaries*/
 	if (fread(&amount_hashed_dates, sizeof(size_t), 1, fp) != 1)
@@ -105,9 +97,7 @@ void unittest_get_prev_dates(const char *test_dir, const char *filename)
 }
 
 /* unittest_get_creation_date: This function gets the creation time of a file located at a
-   given
-   path
-   and stores it as a string in the date parameter. */
+   given path and stores it as a string in the date parameter. */
 void unittest_get_creation_date(const char *path_file, char *date)
 {
 	struct stat attr;
@@ -137,32 +127,28 @@ uint8_t unittest_needs_update(long date_hashed)
 	return 1;
 }
 
-/* unittest_include: This function includes a file with a given filename into a specific
- * test directory. */
-void unittest_include(const char *test_dir, const char *filename)
+/* unittest_include: This function includes a file with a given unittest_hashed_file into
+ * a specific test directory. */
+void unittest_include(const char *filename)
 {
-	assert(filename != NULL && test_dir != NULL && "Erro can't be null");
+	assert(filename != NULL && "Erro can't be null");
 
 	/* First check if the directoy exist */
-	DIR *dir;
-	if ((dir = opendir(test_dir)) == NULL) {
-		closedir(dir);
+	if (access(unittest_testdir, F_OK) != 0)
 		throw_except(UnittestErrorTestBaseDoesntExist);
-	}
-	closedir(dir);
 
 	long h;
 	char date[50], path[255];
 	F   *new_file;
 
-	/* Map the name of the filename */
+	/* Map the name of the unittest_hashed_file */
 	const uint8_t *ptr =
 		unittest_map_find((const uint8_t *) filename, strlen(filename));
 	if (ptr != NULL) /* It is already don't include it */
 		return;
 
 	memset(path, 0, 255);
-	strcat(path, test_dir);
+	strcat(path, unittest_testdir);
 	strcat(path, filename);
 
 	unittest_get_creation_date(path, date);

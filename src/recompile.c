@@ -11,7 +11,6 @@
 #include "../include/unittest_recompile.h"
 
 #include <assert.h>
-#include <dirent.h>
 #include <errno.h>
 #include <except.h>
 #include <stddef.h>
@@ -21,6 +20,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <wait.h>
+
 #define C UnitCompilerContex
 
 #include "../include/unittest_tfile.h"
@@ -28,31 +28,28 @@
 
 #include "../include/unittest_map.h"
 
-Except UnittestErrorCreatingDir = {
-	"Error creating the object dir \"OBJ_DIR\" at \"TEST_DIR\""};
+#ifndef NDEBUG
+#undef LIB_UNITTEST
+#define LIB_UNITTEST "../lib/libunittest.a"
+#endif
+
+/* Variables to have all the paths to file */
+extern const char unittest_basedir[100], unittest_file[100], unittest_outfile[100],
+	unittest_testdir[100], unittest_objdir[100], unittest_hashed_file[100];
+
+uint8_t unittest_run_valgrind	 = 0; /* By default it is not going to run valgrind  */
+Except	UnittestErrorCreatingDir = {
+	 "Error creating the object dir \"OBJ_DIR\" at \"TEST_DIR\""};
 
 char *args[50];	      /* Max 50 arguments */
 char  args_buf[1024]; /* Buffer where the args will be allocated */
 
-static void create_obj_directory(const char *test_dir, const char *obj_dir)
+static void create_obj_directory(void)
 {
-	const size_t len = strlen(test_dir) + strlen(obj_dir);
-
-	char path[len];
-
-	memset(path, 0, len);
-	strcat(path, test_dir);
-	strcat(path, obj_dir);
-
 	/* First check if the directoy exist */
-	DIR *dir = opendir(path);
-	if (dir) {
-		closedir(dir);
-		return; /* Already exist */
-	}
+	if (access(unittest_objdir, F_OK) == 0) return; /* Already exist */
 
-	closedir(dir);
-	if (mkdir(path, 0775) != 0) throw_except(UnittestErrorCreatingDir);
+	if (mkdir(unittest_objdir, 0775) != 0) throw_except(UnittestErrorCreatingDir);
 }
 
 /* compile: Compiles something running a child process and returns it status */
@@ -88,8 +85,8 @@ static int compile(const C c, const char *args[50])
 	return status;
 }
 
-/* execute: Executes the gived program. */
-static int execute(const char *outfile)
+/* execute: Executes the gived command. */
+static int execute(const char *command, const char *args[50])
 {
 	int   status;
 	pid_t pid = fork(); /* Creates the child process */
@@ -98,11 +95,7 @@ static int execute(const char *outfile)
 		fprintf(stderr, "Aborting....");
 		abort();
 	} else if (pid == 0) { /* Child process */
-		char path[255];
-		memset(path, 0, 255);
-		strcat(path, "./");
-		strcat(path, outfile);
-		int ret = execl(path, path, NULL);
+		int ret = execv(command, (char *const *) args);
 		if (ret == -1) { /* Somehting went wrong */
 			fprintf(stderr, "Error while testing: execl: %s",
 				strerror(errno));
@@ -146,21 +139,34 @@ static size_t add_args(char **args_buf_ptr, const char *some_args, size_t nargs)
 
 /* unittest_recompile_without_tests: Re-compiles the source file into an executable
  * without including any test files. */
-void unittest_recompile_without_tests(const C c, const char *file, const char *outfile)
+void unittest_recompile_without_tests(const C c)
 {
 	size_t nargs;
 
-	/* Recompile without tests */
+	/* Reset the buffer */
 	memset(args, 0, sizeof(args));
 	memset(args_buf, 0, sizeof(args_buf));
 
 	char *args_buf_ptr = args_buf;
 	nargs		   = add_args(&args_buf_ptr, c.compiler, 0);
-	nargs		   = add_args(&args_buf_ptr, file, nargs);
-	nargs		   = add_args(&args_buf_ptr, LIB_UNITTEST, nargs);
-	nargs		   = add_args(&args_buf_ptr, "-o", nargs);
-	nargs		   = add_args(&args_buf_ptr, outfile, nargs);
-	nargs		   = add_args(&args_buf_ptr, "-lexcept", nargs);
+	nargs		   = add_args(&args_buf_ptr, unittest_file, nargs);
+
+#ifndef NDEBUG
+	char	       libpath[100];
+	extern uint8_t is_root_folder;
+
+	memset(libpath, 0, sizeof(libpath));
+	if (is_root_folder) strcpy(libpath, (LIB_UNITTEST) + 3);
+	else strcpy(libpath, LIB_UNITTEST);
+
+	nargs = add_args(&args_buf_ptr, libpath, nargs);
+#else
+	nargs = add_args(&args_buf_ptr, LIB_UNITTEST, nargs);
+#endif
+
+	nargs = add_args(&args_buf_ptr, "-o", nargs);
+	nargs = add_args(&args_buf_ptr, unittest_outfile, nargs);
+	nargs = add_args(&args_buf_ptr, "-lexcept", nargs);
 
 	if (compile(c, (const char **) args) != 0) {
 		fprintf(stderr, "Aborting.....\n");
@@ -170,10 +176,35 @@ void unittest_recompile_without_tests(const C c, const char *file, const char *o
 
 /* unittest_rerun_with_tests: Re-executes the test program with the tests files already
  * loaded. */
-void unittest_rerun_with_tests(const char *outfile)
+void unittest_rerun_with_tests(void)
 {
+	size_t nargs = 0;
+	char   command[50], *args_buf_ptr = args_buf;
+
+	/* Reset the buffer */
+	memset(args, 0, sizeof(args));
+	memset(args_buf, 0, sizeof(args_buf));
+	memset(command, 0, sizeof(command));
+
+	if (unittest_run_valgrind) {
+		char executable[50];
+
+		memset(executable, 0, sizeof(executable));
+		strcpy(command, "/usr/bin/");
+		strcat(command, VALGRIND);
+		nargs = add_args(&args_buf_ptr, VALGRIND, 0);
+		nargs = add_args(&args_buf_ptr, VALGRIND_FLAGS, nargs);
+		strcpy(executable, "./");
+		strcat(executable, unittest_outfile);
+		nargs = add_args(&args_buf_ptr, executable, nargs);
+	} else {
+		strcpy(command, "./");
+		strcat(command, unittest_outfile);
+		nargs = add_args(&args_buf_ptr, command, nargs);
+	}
+
 	/* Exectues with the loaded tests */
-	if (execute(outfile) != 0) {
+	if (execute(command, (const char **) args) != 0) {
 		fprintf(stderr, "Aborting.....\n");
 		abort();
 	}
@@ -182,21 +213,19 @@ void unittest_rerun_with_tests(const char *outfile)
 /* unittest_recompile_with_tests: Re-compiles and links the source files including the
    tests files,
    Re-producing a new executable. */
-void unittest_recompile_with_tests(const C c, const char *test_dir, const char *obj_dir,
-				   const char *file, const char *outfile)
+void unittest_recompile_with_tests(const C c)
 {
 	char   output[MAX_AMOUNT_OF_FILES][255];
 	size_t n_outputs = 0;
 	size_t nargs;
 
-	create_obj_directory(test_dir, obj_dir); /* Create the object file  */
-
+	/* TODO: Chacnge the buggy str functions */
+	create_obj_directory(); /* Create the object directory  */
 	memset(output, 0, sizeof(output));
 
 	while (unittest_head_files != NULL) {
 		/* Catch the object file */
-		strcat(output[n_outputs], test_dir);
-		strcat(output[n_outputs], obj_dir);
+		strcat(output[n_outputs], unittest_objdir);
 		strcat(output[n_outputs], unittest_head_files->filename);
 
 		/* Change the last character test.c -> test.o */
@@ -209,7 +238,7 @@ void unittest_recompile_with_tests(const C c, const char *test_dir, const char *
 			memset(source, 0, 255);
 
 			/* TODO: Clean the outputs */
-			strcat(source, test_dir);
+			strcat(source, unittest_testdir);
 			strcat(source, unittest_head_files->filename);
 
 			/* Attach the arguments */
@@ -249,17 +278,30 @@ void unittest_recompile_with_tests(const C c, const char *test_dir, const char *
 	nargs = add_args(&args_buf_ptr, c.compiler, 0);
 	nargs = add_args(&args_buf_ptr, c.compiler_flags, nargs);
 	nargs = add_args(&args_buf_ptr, "-D UNITTEST_RECOMPILE=0", nargs);
-	nargs = add_args(&args_buf_ptr, file, nargs);
+	nargs = add_args(&args_buf_ptr, unittest_file,
+			 nargs); /* File it already has already the base dir */
 
 	/* Put all the object files */
 	for (size_t i = 0; i < n_outputs; i++)
 		nargs = add_args(&args_buf_ptr, output[i], nargs);
 
-	/* TODO: For the debugin purpuse for the moment to be able to compile
-	 * example/test.c */
+		/* TODO: For the debugin purpuse for the moment to be able to compile
+		 * example/test.c */
+#ifndef NDEBUG
+	char	       libpath[100];
+	extern uint8_t is_root_folder;
+
+	memset(libpath, 0, sizeof(libpath));
+	if (is_root_folder) strcpy(libpath, (LIB_UNITTEST) + 3);
+	else strcpy(libpath, LIB_UNITTEST);
+
+	nargs = add_args(&args_buf_ptr, libpath, nargs);
+#else
 	nargs = add_args(&args_buf_ptr, LIB_UNITTEST, nargs);
+#endif
+
 	nargs = add_args(&args_buf_ptr, "-o", nargs);
-	nargs = add_args(&args_buf_ptr, outfile, nargs);
+	nargs = add_args(&args_buf_ptr, unittest_outfile, nargs);
 	nargs = add_args(&args_buf_ptr, "-lexcept", nargs);
 
 	/* Compile with loaded tests */

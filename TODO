@@ -8,14 +8,16 @@
 - Wrap the malloc [ ]
 ---- 2023/05/03 ----
 - Deal with the bad string concatenations of the files and obj [ ]
-- Write the documentation [ ]
+- Write the documentation [X]
 - Refactor the whole code [X]
 ---- 2023/05/05 ----
-- Try To avoid to use dynamic memory in the include_file function [X] its impossible :')
+- Try To avoid to use dynamic memory in the include_file function [X] its impossible :') are you sure ?
 - Deal better witht he possible errors during the recompilation [X]
 ---- 2023/05/06 ----
 - Find another method to know if a directory exist [ ]
 - Create a way to uses valgrind on the testcases [ ]
-- Try to be able to deifne macros from the compiler arguments [ ]
 - Create another flags variable for the external libraries [ ]
-- Try to find the base directory [ ]
+- Try to find the base directory [X]
+---- 2023/05/13 ----
+- Think where to put these implementations executing_from_basedir, get_basedir [X]
+- Update the documentation being clear about how to do the recompilation [ ]

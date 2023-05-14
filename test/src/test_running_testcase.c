@@ -73,8 +73,7 @@ TESTCASE(NewCase)
 }
 ENDTESTCASE
 
-	int
-	main(void)
+int main(void)
 {
 	/* Run the tests case */
 

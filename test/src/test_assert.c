@@ -10,8 +10,7 @@ TESTCASE(Checking)
 }
 ENDTESTCASE
 
-	int
-	main(void)
+int main(void)
 {
 
 	RUN(Checking);

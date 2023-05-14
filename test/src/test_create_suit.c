@@ -55,8 +55,8 @@ TESTCASE(Testfoo)
 }
 ENDTESTCASE
 
-	/* Creats a new suit for testing */
-	NEW_SUIT(SimpleSuit, Testfoo, NewCase);
+/* Creats a new suit for testing */
+NEW_SUIT(SimpleSuit, Testfoo, NewCase);
 
 int main(void)
 {

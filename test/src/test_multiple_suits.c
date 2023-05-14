@@ -55,8 +55,8 @@ TESTCASE(Testfoo)
 }
 ENDTESTCASE
 
-	/* First suit */
-	NEW_SUIT(FirstSuit, Testfoo, NewCase);
+/* First suit */
+NEW_SUIT(FirstSuit, Testfoo, NewCase);
 
 TESTCASE(TestingMalloc)
 {
@@ -75,7 +75,7 @@ TESTCASE(TestingMalloc)
 }
 ENDTESTCASE
 
-	NEW_SUIT(SecondSuit, TestingMalloc);
+NEW_SUIT(SecondSuit, TestingMalloc);
 
 int main(void)
 {

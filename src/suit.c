@@ -8,7 +8,6 @@
   @license This project is released under the MIT License
 */
 #include "../include/unittest_suit.h"
-
 #include "../include/unittest_tcase.h"
 #define S UnitSuit
 

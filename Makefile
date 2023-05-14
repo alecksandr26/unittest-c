@@ -47,15 +47,17 @@ INTERFACES = $(addprefix $(INCLUDE_DIR)/, 	unittest_assert.h\
 						unittest_tfile.h)
 
 OBJS = $(addprefix $(OBJ_DIR)/, unittest.o \
-				unittest_map.o \
-				unittest_assert.o \
-				unittest_tcase.o\
-				unittest_suit.o\
-				unittest_tfile.o\
-				unittest_recompile.o)
+				map.o \
+				assert.o \
+				tcase.o\
+				suit.o\
+				tfile.o\
+				recompile.o)
 
 LIBS = $(addprefix $(LIB_DIR)/, libunittest.a)
-EXAMPLES = $(addprefix $(EXAMPLE_DIR)/, test)
+EXAMPLES = $(addprefix $(EXAMPLE_DIR)/, test.out \
+					testc.out \
+					valgrind_test.out)
 
 TESTS = $(addprefix $(TEST_BIN_DIR)/, 	test_running_testcase.out \
 					test_create_suit.out \
@@ -87,13 +89,16 @@ $(LIB_DIR)/%.a: $(OBJS) $(LIB_DIR)
 	@$(AR) $@ $(filter-out $(LIB_DIR), $^)
 	@ranlib $@
 
-$(EXAMPLE_DIR)/%: $(EXAMPLE_DIR)/%.c $(LIBS)
+# Trying to fetch the compiled directory
+$(EXAMPLE_DIR)/%.out: $(EXAMPLE_DIR)/%.c $(LIBS)
 	@echo Compiling: $< -o $@ 
-	@cd $(dir $@) && $(C) $(C_FLAGS) $(notdir $<) ../$(filter-out $<, $^) -o $(notdir $@) $(C_FLAGS_LIBS)
+	@$(C) $(C_FLAGS) $< $(filter-out $<, $^) -o $@ $(C_FLAGS_LIBS)
 
-example_%: $(EXAMPLE_DIR)/%
+example_%.out: $(EXAMPLE_DIR)/%.out
 	@echo Running
-	@cd $(dir $<) && $(V) $(V_FLAGS) ./$(notdir $<)
+	@./$<
+
+example: $(addprefix example_, $(notdir $(EXAMPLES)))
 
 # Compile the tests
 $(TEST_BIN_DIR)/test_%.out: $(TEST_SRC_DIR)/test_%.c $(LIBS) $(TEST_BIN_DIR)
