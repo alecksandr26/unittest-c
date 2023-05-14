@@ -15,9 +15,10 @@
 - Deal better witht he possible errors during the recompilation [X]
 ---- 2023/05/06 ----
 - Find another method to know if a directory exist [ ]
-- Create a way to uses valgrind on the testcases [ ]
+- Create a way to uses valgrind on the testcases [X]
 - Create another flags variable for the external libraries [ ]
 - Try to find the base directory [X]
 ---- 2023/05/13 ----
 - Think where to put these implementations executing_from_basedir, get_basedir [X]
 - Update the documentation being clear about how to do the recompilation [ ]
+- Start adding more asserts, also add some new features for debuggin [ ]
