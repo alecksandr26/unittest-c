@@ -24,6 +24,6 @@
 - Start adding more asserts, also add some new features for debuggin [ ]
 ---- 2023/05/22 ----
 - Add several tests for the new features implemented [X]
-- Check what happend when compilation of an object fails [X] We needs to deal with the memory on the heap
+- Check what happend when compilation of an object fails [X] We needs to deal with the memory on the heap [X]
 - Try to use fd instead of FILE pointers structure because they use dynamic memory [X]
 - Refactor the whole code [ ]

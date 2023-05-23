@@ -259,9 +259,29 @@ void unittest_recompile_with_tests(const C c)
 			LOG("[COMPILING] %s -o %s\n", source, output[n_outputs]);
 			if (compile(c, (const char **) args) != 0) {
 				/* TODO: Deal with the dynamic memory */
-				fprintf(stderr, "ERROR: While compiling %s\n", output[n_outputs]);
-				fprintf(stderr, "Exiting .....\n");
+				fprintf(stderr, "ERROR: While compiling: %s -o %s\n",
+					unittest_head_files->filename,
+					output[n_outputs]);
+				
+				/* Free all dynamic memory before exit */
+				do {
+					unittest_map_free((const uint8_t *) unittest_head_files->filename,
+							  strlen(unittest_head_files->filename));
+					
+					F *prev		    = unittest_head_files;
+					unittest_head_files = unittest_head_files->next;
+					free(prev);
+				} while (unittest_head_files);
+				
+				
+#ifndef NDEBUG
+				fprintf(stderr, "TESTING: Exiting with SUCCESS.....\n");
+				/* Because we are testing */
+				exit(EXIT_SUCCESS);
+#else
+				fprintf(stderr, "Exiting with FAILURE.....\n");
 				exit(EXIT_FAILURE);
+#endif
 			}
 		}
 
