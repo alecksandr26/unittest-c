@@ -3,7 +3,8 @@
   @brief This module provides functionality to create collections or suites of test cases for unit testing.
   It defines a struct S that contains an array of test cases, a count of the number of test cases, and a
   name for the suite. It also provides macros to create a new suite and to link the test cases in the suite.
-  The unittest_link_suit_tcase() function is used to link the test cases structures together for the running process.
+  The unittest_link_suit_tcase() function is used to link the test cases structures together for the running
+  process.
 
   @author Erick Carrillo.
   @copyright Copyright (C) 2022, Erick Alejandro Carrillo López, All rights reserved.

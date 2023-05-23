@@ -1,9 +1,9 @@
 #include "../../include/unittest.h"
 
-#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 
 float foo(float *arr, size_t n)
 {
@@ -23,13 +23,13 @@ TESTCASE(NewCase)
 	TEST(first_test)
 	{ /* First TEST */
 		var++;
-		assert(var == 2);
+		ASSERT(var == 2);
 	}
 
 	TEST(second_test)
 	{ /* Second test */
 		/* Do your assertions */
-		assert(var == 1);
+		ASSERT(var == 1);
 	}
 }
 ENDTESTCASE
@@ -48,7 +48,7 @@ TESTCASE(Testfoo)
 			arr[i] = ((float) i) / 100;
 
 		sum = foo(arr, amount);
-		assert(sum == (float) 49.500004);
+		ASSERT(sum == (float) 49.500004);
 	}
 
 	free(arr);
@@ -67,11 +67,11 @@ TESTCASE(TestingMalloc)
 	TEST(MallocNotNull)
 	{
 		pointer = malloc(sizeof(int) * amount);
-		assert(pointer != NULL);
+		ASSERT(pointer != NULL);
 		free(pointer);
 	}
 
-	TEST(ShouldBeNull) { assert(pointer == NULL); }
+	TEST(ShouldBeNull) { ASSERT(pointer == NULL); }
 }
 ENDTESTCASE
 
@@ -79,8 +79,22 @@ NEW_SUIT(SecondSuit, TestingMalloc);
 
 int main(void)
 {
+	/* RUN(FirstSuit, SecondSuit) */
 	CATCH(FirstSuit, SecondSuit);
 	/* Better */
+	
+	assert(unittest_head_tc != NULL);
+	assert(strcmp(unittest_head_tc->name, "TestingMalloc") == 0); /* Because it is pointing to newcase */
+	assert(unittest_head_tc->next != NULL);			/* Because it points to Testfoo */
+
+	MUTE_ACTIVE();
 
 	RUN();
+
+	/* Everything runs well */
+	assert(unittest_ret == 0);
+	
+	/* Check that the suits were created correctly */
+	assert(FirstSuit.amount == 2);
+	assert(SecondSuit.amount == 1);
 }

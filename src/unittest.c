@@ -20,11 +20,12 @@
 #include <unistd.h>
 
 extern uint8_t unittest_run_valgrind;
+FILE *unittest_stdout;
 
 /* All the paths to files */
-int  unittest_fetched_files_name = 0;
+int  unittest_fetched_files_name = 0, unittest_mute_mode = 0, unittest_ret = 0;
 char unittest_basedir[100], unittest_file[100], unittest_outfile[100],
-	unittest_testdir[100], unittest_objdir[100], unittest_hashed_file[100];
+	unittest_testdir[100], unittest_objdir[100], unittest_hashed_file[100], unittest_extra_flags[200];
 
 #ifndef NDEBUG
 uint8_t is_root_folder = 0;
@@ -124,6 +125,15 @@ void unittest_check_testdir_exist(void)
 		throw_except(UnittestErrorTestBaseDoesntExist);
 }
 
+/* unittest_attach_extra_flags: To attach new flags to the  */
+void unittest_attach_extra_flags(const char *flags)
+{
+	memset(unittest_extra_flags, 0, sizeof(unittest_extra_flags));
+	strcpy(unittest_extra_flags, unittest_basedir);
+	strcat(unittest_extra_flags, flags);
+}
+
+/* unittest_run_tests: Return 0 if there weren't any failed test otherwise return 1 */
 void unittest_run_tests(void)
 {
 	assert(unittest_head_tc != NULL && "Should be at least one test");
@@ -135,7 +145,7 @@ void unittest_run_tests(void)
 	clock_t start_time			 = clock();
 	while (unittest_head_tc != NULL) {
 		/* Run the testscase */
-		unittest_head_tc->test(unittest_head_tc);
+		unittest_head_tc->testcase(unittest_head_tc);
 		count_tests += unittest_head_tc->amount;
 		success_test +=
 			unittest_head_tc->amount - unittest_head_tc->amount_failed;
@@ -151,20 +161,22 @@ void unittest_run_tests(void)
 		unittest_head_tc = unittest_head_tc->next;
 	}
 	clock_t end_time = clock();
-	printf("\n");
+	fprintf(unittest_stdout, "\n");
 
 	for (size_t i = 0; i < failed_test; i++)
 		unittest_print_faild_test(infofails[i]);
 
-	puts("---------------------------------------------------------------------------"
-	     "-----------");
+	fprintf(unittest_stdout, "---------------------------------------------------------------------------"
+		"-----------\n");
 	if (failed_test == 0) {
-		printf("Ran %zu test in %fs\n", count_tests,
-		       (double) (end_time - start_time) / CLOCKS_PER_SEC);
-		printf("\nOk \n\n");
+		fprintf(unittest_stdout, "Ran %zu test in %fs\n", count_tests,
+			(double) (end_time - start_time) / CLOCKS_PER_SEC);
+		fprintf(unittest_stdout, "\nOk \n\n");
+		unittest_ret = 0;
 	} else {
-		printf("Ran %zu test in %fs\n", count_tests,
+		fprintf(unittest_stdout, "Ran %zu test in %fs\n", count_tests,
 		       (double) (end_time - start_time) / CLOCKS_PER_SEC);
-		printf("\nFAILED(failures=%zu)\n\n", failed_test);
+		fprintf(unittest_stdout, "\nFAILED(failures=%zu)\n\n", failed_test);
+		unittest_ret = -1;
 	}
 }

@@ -13,15 +13,14 @@
 #ifndef UNITTEST_INCLUDE
 #define UNITTEST_INCLUDE
 
+#include <unistd.h>
+#include <stdlib.h>
+
 #include "unittest_exceptions.h"
 #include "unittest_recompile.h"
 #include "unittest_suit.h"
 #include "unittest_tcase.h"
 #include "unittest_tfile.h"
-
-/* Variables to have all the paths to file */
-extern char *unittest_basedir, *unittest_file, *unittest_outfile, *unittest_testdir,
-	*unittest_objdir, *unittest_hashed_file;
 
 /* unittest_fetch_filesname: This functions gets the paths for the needed files */
 extern void unittest_fetch_filesname(const char *file, const char *outfile,
@@ -34,7 +33,14 @@ extern void unittest_check_testdir_exist(void);
 
 /* unittest_run_tests: Executes the test cases that were linked using the provided macros.
  */
-extern void unittest_run_tests(void);
+extern int unittest_run_tests(void);
+
+/* To muting the output from the tests */
+extern int unittest_mute_mode, unittest_ret;
+extern FILE *unittest_stdout;
+
+/* MUTE_ACTIVE: To active the mute mode */
+#define MUTE_ACTIVE() unittest_mute_mode = 1
 
 #ifndef UNITTEST_RECOMPILE
 #define UNITTEST_RECOMPILE 0
@@ -56,21 +62,24 @@ extern void unittest_run_tests(void);
 		CATCH(__VA_ARGS__);                                          \
 	} else unittest_include(filename)
 #define RUN(...)                                                                  \
+	unittest_stdout = (unittest_mute_mode) ? fopen("/dev/null", "w") : stdout; \
 	if (UNITTEST_RECOMPILE) {                                                 \
 		UnitCompilerContex c = {.compiler	= COMPILER,               \
 					.compiler_path	= COMPILER_PATH COMPILER, \
 					.compiler_flags = COMPILER_FLAGS};        \
-		unittest_get_prev_dates();                                        \
+		unittest_get_prev_dates();				\
 		unittest_check_testdir_exist();                                   \
 		unittest_recompile_with_tests(c);                                 \
 		unittest_put_new_dates();                                         \
-		unittest_rerun_with_tests();                                      \
-		unittest_recompile_without_tests(c);                              \
-		return 0;                                                         \
-	}                                                                         \
-	__VA_OPT__(CATCH(__VA_ARGS__));                                           \
-	unittest_run_tests();                                                     \
-	unittest_head_tc = NULL
+		unittest_rerun_with_tests();				\
+		unittest_recompile_without_tests(c);			\
+		if (unittest_mute_mode) fclose(unittest_stdout);	\
+		return 0;						\
+	} else {							\
+		__VA_OPT__(CATCH(__VA_ARGS__));				\
+		unittest_run_tests();					\
+		if (unittest_mute_mode) fclose(unittest_stdout);	\
+	}								
 #else
 #define INCLUDE_SUIT(filename, ...)  \
 	extern UnitSuit __VA_ARGS__; \
@@ -79,9 +88,10 @@ extern void unittest_run_tests(void);
 	extern UnitTestCase __VA_ARGS__; \
 	CATCH(__VA_ARGS__)
 #define RUN(...)                        \
-	__VA_OPT__(CATCH(__VA_ARGS__)); \
-	unittest_run_tests();           \
-	unittest_head_tc = NULL
+	unittest_stdout = (unittest_mute_mode) ? fopen("/dev/null", "w") : stdout; \
+	__VA_OPT__(CATCH(__VA_ARGS__));					\
+	unittest_run_tests();				\
+	if (unittest_mute_mode) fclose(unittest_stdout)
 #endif
 
 #define CATCH_GENERIC(X)                         \

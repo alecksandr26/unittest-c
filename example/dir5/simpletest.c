@@ -1,7 +1,7 @@
 #include "../../include/unittest.h"
 
 TESTCASE(SimpleTest) {
-	int var = 1, var2;
+	int var = 1;
 
     TEST(Test1) {
         ASSERT(var == 1, "It should be one");
@@ -61,6 +61,6 @@ TESTCASE(MyTestCases2)
 
 } ENDTESTCASE
 
+
+
 NEW_SUIT(MySuit, MyTestCases1, MyTestCases2);
-
-

@@ -22,5 +22,6 @@ extern Except UnittestErrorReadingFile;
 extern Except UnittestErrorCreatingDir;
 extern Except UnittestErrorTestBaseDoesntExist;
 extern Except UnittestErrorWrittingFile;
+extern Except UnittestNoneTests;
 
 #endif

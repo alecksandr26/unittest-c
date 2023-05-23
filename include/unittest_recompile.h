@@ -13,6 +13,7 @@
 #define C UnitCompilerContex
 
 #include <stdint.h>
+#include <string.h>
 
 /* For compiling the test files */
 #define VALGRIND	 "valgrind"
@@ -27,15 +28,21 @@
 #define TEST_OUT	 "test"
 #define LIB_UNITTEST	 "-lunittest"
 
+
 typedef struct C C;
 struct C {
 	const char *compiler, *compiler_path, *compiler_flags;
 };
 
+/* An external pointer that points to external or static libraries */
+extern void unittest_attach_extra_flags(const char *flags);
 extern uint8_t unittest_run_valgrind;
 
 /* ACTIVE_VALGRIND: To active valgrind into the execution */
-#define ACTIVE_VALGRIND() unittest_run_valgrind = 1;
+#define ACTIVE_VALGRIND() unittest_run_valgrind = 1
+
+/* Attach any extra flags needed for the compilation of the tests */
+#define ATTACH_EXTRA_FLAGS(FLAGS) unittest_attach_extra_flags(FLAGS)
 
 /* unittest_recompile_without_tests: Re-compiles the source file into an executable
  * without including any test files. */

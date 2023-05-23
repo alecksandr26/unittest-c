@@ -68,7 +68,7 @@ TESTCASE(NewCase)
 	TEST(second_test)
 	{
 		/* A failed test */
-		ASSERT(var == 1);
+		ASSERT(var == 2);
 	}
 }
 ENDTESTCASE
@@ -87,6 +87,25 @@ int main(void)
 	// CATCH(Testfoo, NewCase, TestingMalloc);
 
 	/*  Run the tree at once */
+	MUTE_ACTIVE();
+	
+	/* A few simple asserts */
+	/* after running it should know a few things  */
+	assert(TestingMalloc.testcase != NULL);
+	assert(TestingMalloc.name != NULL);
+	assert(TestingMalloc.file != NULL);
 
 	RUN(Testfoo, NewCase, TestingMalloc);
+
+	/* One test failed */
+	assert(unittest_ret == -1);
+
+	/* after running it should know a few things  */
+	assert(TestingMalloc.amount == 2);
+	assert(TestingMalloc.amount_failed == 0);
+
+	assert(NewCase.amount == 2);
+	assert(NewCase.amount_failed == 1);
+
+	
 }

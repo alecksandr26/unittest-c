@@ -15,7 +15,6 @@
 
 #include "unittest_assert.h"
 
-#include <assert.h>
 #include <except.h>
 #include <stddef.h>
 
@@ -23,6 +22,8 @@
 #define TC				 UnitTestCase
 #define TF				 UnitTestCaseFrame
 #define MAX_AMOUNT_OF_TESTS_IN_TESTCASES 1024
+
+
 
 /* The TC struct represents a test case and includes information such as file name, test
    name,
@@ -34,7 +35,7 @@ struct TC {
 	TC	   *next;
 
 	/* Catch the test function */
-	void (*test)(TC *);
+	void (*testcase)(TC *);
 	F failed_info[MAX_AMOUNT_OF_TESTS_IN_TESTCASES];
 };
 
@@ -56,11 +57,10 @@ struct TF {
 				       .amount	      = 0,                           \
 				       .amount_failed = 0,                           \
 				       .next	      = NULL,                        \
-				       .test	      = &(TESTCASE##TEST_CASE_NAME), \
-				       .failed_info   = {{0}}};                        \
+				       .testcase	      = &(TESTCASE##TEST_CASE_NAME), \
+				       .failed_info   = {{0}}};		\
 	void	     TESTCASE##TEST_CASE_NAME(UnitTestCase *unitcase)                \
 	{                                                                            \
-		assert(unitcase != NULL && "Can't be null unitcase tests");          \
 		UnitTestCaseFrame unitframe;                                         \
 		unitframe.state	  = stackjmp(&unitframe.buf);                        \
 		unitframe.counter = 0;                                               \
@@ -72,21 +72,27 @@ struct TF {
 	if (unitframe.state == 0) unitcase->amount++; \
 	if (unitframe.state == ++unitframe.counter)
 
-#define ENDTESTCASE                                                                  \
-	while (0)                                                                    \
-		;                                                                    \
-	assert(unitcase->amount > 0 && "The testcase should have atleast one test"); \
-	if (unitframe.state > 0 && unitframe.state <= (int) unitcase->amount)        \
-		putchar('.');                                                        \
-	if (unitframe.state < (int) unitcase->amount)                                \
-		jmpback(&unitframe.buf, unitframe.state + 1);                        \
+
+
+#define ENDTESTCASE							\
+	while (0)							\
+		;							\
+	if (unitcase->amount == 0)					\
+		throw_except(UnittestNoneTests);			\
+	if (unitframe.state > 0 && unitframe.state <= (int) unitcase->amount && !unittest_mute_mode) \
+		fprintf(unittest_stdout, ".");				\
+	if (unitframe.state < (int) unitcase->amount)			\
+		jmpback(&unitframe.buf, unitframe.state + 1);		\
 	}
+
 
 /* unittest_head_tc: A pointer to the last linked test case. */
 extern TC *unittest_head_tc;
+extern int unittest_mute_mode;
 
 /* link_tcases: Links test case structures together for the testing process. */
 extern void unittest_link_tcase(TC *unitcase);
+
 
 #undef F
 #undef TC
