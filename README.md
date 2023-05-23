@@ -6,6 +6,7 @@
 * [Getting started](https://github.com/alecksandr26/unittest-c#getting-started)
 	* [How to write Test Cases?](https://github.com/alecksandr26/unittest-c#how-to-write-test-cases)
 		* [Another testcase example](https://github.com/alecksandr26/unittest-c#another-testcase-example)
+		* [Print statements]()
 	* [How to create Suits?](https://github.com/alecksandr26/unittest-c#how-to-create-suits)
 	* [How to include Test Cases or Suits from other files?](https://github.com/alecksandr26/unittest-c#how-to-include-test-cases-or-suits-from-other-files)
 	* [How to recompile the executable and each individual test file?](https://github.com/alecksandr26/unittest-c#how-to-recompile-the-executable-and-each-individual-test-file)
@@ -167,7 +168,7 @@ int main(void)
 }
 ```
 Then the output says that the tests were exectued well, there is no error detected.
-```
+```shell
 [term]$ ./a.out
 ..
 --------------------------------------------------------------------------------------
@@ -178,6 +179,53 @@ Ok
 [term]$
 ```
 This output shows that ***unittest-c*** executed two tests without ***any errors***, and that all assertions passed.
+### Print Statements
+If you want to include a print statement within a testcase, you can use the LOG macro to display the desired information. Building upon the previous section's code, 
+you can incorporate a simple print statement like this:
+```C
+#include <unittest.h>
+
+TESTCASE(MyTests)
+{
+    // Set up any boilerplate code for all tests in the test case
+    int x = 42;
+
+    // Define individual tests using the TEST macro
+    TEST(Test1)
+    {
+        // Use ASSERT macro to check if x equals 42
+        ASSERT(x == 42, "x should equal 42");
+    }
+
+    TEST(Test2)
+    {
+        // Use ASSERT macro to check if x is less than 100
+        ASSERT(x < 100, "x should be less than 100");
+	
+	    // Print the value of x using the LOG macro
+        LOG("The value of x is: %i\n", x);
+    }
+
+} ENDTESTCASE
+
+int main(void)
+{
+    // Call RUN macro with the name of the test case to run the tests
+    RUN(MyTests);
+
+    return 0;
+}
+```
+With this modification, the output should include the print statement with the value of x. Here's an example of how the updated output might look:
+```shell
+[term]$ ./a.out
+.The value of x is: 42
+.
+--------------------------------------------------------------------------------------
+Ran 2 test in 0.010490s
+
+Ok 
+```
 ## How to create `Suits`?
 1. Create a new C file and include the ***unittest.h header*** at the beginning of your code.
 ```C
