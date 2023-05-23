@@ -10,6 +10,7 @@
 	* [How to create Suits?](https://github.com/alecksandr26/unittest-c#how-to-create-suits)
 	* [How to include Test Cases or Suits from other files?](https://github.com/alecksandr26/unittest-c#how-to-include-test-cases-or-suits-from-other-files)
 	* [How to recompile the executable and each individual test file?](https://github.com/alecksandr26/unittest-c#how-to-recompile-the-executable-and-each-individual-test-file)
+		* [Running Valgrind from the framework](https://github.com/alecksandr26/unittest-c#running-valgrind-from-the-framework)
 * [References](https://github.com/alecksandr26/unittest-c#references)
 # Unit Test C
 ***Unit Test c*** is a fast and simple macro-based unit testing framework for C. It's inspired by the Python unittest module and designed to reduce 
