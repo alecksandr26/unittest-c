@@ -1,4 +1,15 @@
+
+# For makepkg
+build/*
+*.pkg.tar.zst
+*.tar
+*.tar.gz
+
+
+# For testing
 example/test
+
+
 vgcore.*
 */vgcore.*
 *.bin
