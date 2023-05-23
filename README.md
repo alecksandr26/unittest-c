@@ -31,10 +31,7 @@ yay -Syu
 That's it! After completing these steps, ***unittest-c*** should be installed on your system and ready to use.
 
 ## Using `make`
-1. Clone the ***unittest-c repository*** from ***GitHub*** using the following command:
-```
-git clone https://github.com/alecksandr26/unittest-c.git
-```
+1. Download one of the [releases](https://github.com/alecksandr26/unittest-c/releases) verions and unpack the code.
 2. Change into the ***unittest-c*** directory:
 ```
 cd unittest-c
