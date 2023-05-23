@@ -11,6 +11,7 @@
 	* [How to include Test Cases or Suits from other files?](https://github.com/alecksandr26/unittest-c#how-to-include-test-cases-or-suits-from-other-files)
 	* [How to recompile the executable and each individual test file?](https://github.com/alecksandr26/unittest-c#how-to-recompile-the-executable-and-each-individual-test-file)
 		* [Running Valgrind from the framework](https://github.com/alecksandr26/unittest-c#running-valgrind-from-the-framework)
+		* [Attaching extra flags for the recompilation]()
 * [References](https://github.com/alecksandr26/unittest-c#references)
 # Unit Test C
 ***Unit Test c*** is a fast and simple macro-based unit testing framework for C. It's inspired by the Python unittest module and designed to reduce 
@@ -523,6 +524,7 @@ By doing this, you ensure that the test executable is compiled without any test 
 
 3. When you run the test executable, you will see a message indicating that the test files are being compiled, generating the .o files. After this compilation process, the tests will be executed as usual.
 ```shell
+[term] $ ./test
 [COMPILING] dir3/simpletest.c -o dir3/.obj/simpletest.o
 ........
 --------------------------------------------------------------------------------------
@@ -536,14 +538,14 @@ This recompilation feature allows you to focus solely on writing new code and it
 This feature is only available when the **recompilation mode** is enabled. Running your tests in this mode offers several benefits. To ensure that you are utilizing this feature, follow these steps:
 1. Confirm that you have enabled the **recompile mode** feature in your code:
 ```C
-#undef TEST_DIR
-#define TEST_DIR "dir3/"
-
 #undef UNITTEST_RECOMPILE
 #define UNITTEST_RECOMPILE 1
 ```
 2. Within your **main()** test runner binary, invoke the **ACTIVE_VALGRIND()** macro to enable the valgrind feature.
 ```C
+#undef TEST_DIR
+#define TEST_DIR "dir3/"
+
 int main(void)
 {
 	#undef UNITTEST_RECOMPILE
@@ -561,6 +563,7 @@ int main(void)
 ```
 Then, depending on the number of test cases present in **simpletest.c**, the output of this code will display something like the following:
 ```shell
+[term] $ ./test
 ==10498== Memcheck, a memory error detector
 ==10498== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
 ==10498== Using Valgrind-3.21.0 and LibVEX; rerun with -h for copyright info
@@ -581,7 +584,43 @@ Ok
 ==10498== 
 ==10498== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
 ```
+### Attaching extra flags for the recompilation
+If you intend to use a third-party library in your tests or if you wish to test a library or component, you might want to include it in the recompilation process. To achieve this, follow the steps below to learn how to proceed:
+1. Confirm that you have enabled the **recompile mode** feature in your code:
+```C
+#undef UNITTEST_RECOMPILE
+#define UNITTEST_RECOMPILE 1
+```
+2. Inide your **main()** test runner binary, use the **ATTACH_EXTRA_FLAGS(path)** macro, providing the path to the component you want to test or the flag you want to include in the compilation process:
+```C
+#undef TEST_DIR
+#define TEST_DIR "dir3/"
 
+int main()
+{
+	INCLUDE_SUIT("simpletest.c", MySuit);
+	INCLUDE_TEST_CASE("secondtest.c", TestingFoo);
+	
+	// Attaching obj/foo.o as an additional component for testing purposes
+	ATTACH_EXTRA_FLAGS("obj/foo.o");
+	RUN();
+	
+	return unittest_ret;
+}
+```
+3. In the code above, if you are trying to link object files for testing, it's important to consider the path where the file is located relative to the test runner. It's recommended to place the test runner at the root path of the project directory. In this example, the obj/foo.o file is attached for testing, assuming it is located in the project root directory. Adjust the path accordingly based on your project structure, for example look this structure.
+```shell
+[term] $ tree
+.
+├── dir3
+│   └── simpletest.c
+├── obj
+│   ├── foo.c
+│   └── foo.o
+├── test
+└── test.c
+2 directories, 5 files
+```
 # References
 1. Wikipedia contributors. (2022a). Boilerplate code. Wikipedia. https://en.wikipedia.org/wiki/Boilerplate_code
 2. Wikipedia contributors. (2023a). Test suite. Wikipedia. https://en.wikipedia.org/wiki/Test_suite
