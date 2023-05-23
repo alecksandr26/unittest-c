@@ -29,10 +29,11 @@ TEST_DIR = test
 LIB_DIR = lib
 INCLUDE_DIR = include
 EXAMPLE_DIR = example
+BUILD_DIR = build
 
 # For installation
-INSTALL_LIB_DIR = /usr/lib
-INSTALL_INCLUDE_DIR = /usr/include
+M = makepkg
+M_FLAGS = -f --config .makepkg.conf
 
 TEST_SRC_DIR = $(addprefix $(TEST_DIR)/, src)
 TEST_BIN_DIR = $(addprefix $(TEST_DIR)/, bin)
@@ -148,6 +149,21 @@ ifneq ("$(wildcard $(TEST_BIN_DIR))", "")
 	@rmdir $(TEST_BIN_DIR)
 endif
 
+# Delete all build pacakge files
+ifneq ("$(wildcard *.tar.zst)", "")
+	@echo Removing: $(wildcard *.tar.zst)
+	@rm $(wildcard *.tar.zst)
+endif
+
+ifneq ("$(wildcard *.tar.gz)", "")
+	@echo Removing: $(wildcard *.tar.gz)
+	@rm $(wildcard *.tar.gz)
+endif
+
+ifneq ("$(wildcard $(BUILD_DIR))", "")
+	@echo Removing: $(BUILD_DIR)
+	@rm -r $(BUILD_DIR)
+endif
 
 format_$(SRC_DIR)/%.c:
 	@echo Formatting: $(patsubst format_%, %, $@)
@@ -179,17 +195,9 @@ compile: $(OBJ_DIR) $(LIB_DIR) $(TEST_BIN_DIR) \
 				$(wildcard $(TEST_BIN_DIR)/*.out)) \
 	$(LIBS)
 
-# Install header files
-$(INSTALL_INCLUDE_DIR)/%.h: $(INCLUDE_DIR)/%.h
-	@echo Installing: $< -o $@
-	sudo install $< $@
+# Install the framework
+install: compile
+	@echo Building: package
+	@$(M) $(M_FLAGS)
+	sudo pacman -U *.pkg.tar.zst
 
-$(INSTALL_LIB_DIR)/%.a: $(LIB_DIR)/%.a
-	@echo Installing: $< -o $@
-	sudo install $< $@
-
-# Install the library
-install: 	compile \
-		$(addprefix $(INSTALL_INCLUDE_DIR)/, $(notdir $(INTERFACES)))\
-		$(addprefix $(INSTALL_LIB_DIR)/, $(notdir $(LIBS)))
-	@echo Installed:
