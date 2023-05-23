@@ -533,8 +533,8 @@ Ok
 ```
 This recompilation feature allows you to focus solely on writing new code and its tests, instead of worrying about compiling your large code tests. The framework creates an ***.obj*** directory where it stores the ***.o*** files, and it will automatically recompile the test files when it detects a change, making the process of compilation and writing tests more efficient.
 ### Running Valgrind from the framework
-This feature is only avaibale for the **reompilation mode**, so yeah it has its benefits to run your tests like this, then working with the code of the previous section.
-1. Make sure that you were running the code with the **recompile mode** feature activated with the tests dir marked.
+This feature is only available when the **recompilation mode** is enabled. Running your tests in this mode offers several benefits. To ensure that you are utilizing this feature, follow these steps:
+1. Confirm that you have enabled the **recompile mode** feature in your code:
 ```C
 #undef TEST_DIR
 #define TEST_DIR "dir3/"
@@ -542,7 +542,7 @@ This feature is only avaibale for the **reompilation mode**, so yeah it has its 
 #undef UNITTEST_RECOMPILE
 #define UNITTEST_RECOMPILE 1
 ```
-2. Then inside of your **main()** test runner binary, executes the macro that activates valgrind **ACTIVE_VALGRIND()**.
+2. Within your **main()** test runner binary, invoke the **ACTIVE_VALGRIND()** macro to enable the valgrind feature.
 ```C
 int main(void)
 {
@@ -559,8 +559,28 @@ int main(void)
 	return 0;
 }
 ```
-Then at the output from this code we are going to see an output like this depending on the amount of testcases that we have in **simpletest.c**.
+Then, depending on the number of test cases present in **simpletest.c**, the output of this code will display something like the following:
+```shell
+==10498== Memcheck, a memory error detector
+==10498== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
+==10498== Using Valgrind-3.21.0 and LibVEX; rerun with -h for copyright info
+==10498== Command: ./example/valgrind_test.out
+==10498== 
+.....
+--------------------------------------------------------------------------------------
+Ran 5 test in 0.008277s
 
+Ok 
+
+==10498== 
+==10498== HEAP SUMMARY:
+==10498==     in use at exit: 0 bytes in 0 blocks
+==10498==   total heap usage: 0 allocs, 0 frees, 0 bytes allocated
+==10498== 
+==10498== All heap blocks were freed -- no leaks are possible
+==10498== 
+==10498== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+```
 
 # References
 1. Wikipedia contributors. (2022a). Boilerplate code. Wikipedia. https://en.wikipedia.org/wiki/Boilerplate_code
