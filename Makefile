@@ -65,7 +65,8 @@ TESTS = $(addprefix $(TEST_BIN_DIR)/, 	test_running_testcase.out \
 					test_unittest_map.out\
 					test_assert.out\
 					test_recompile.out\
-					test_recompile_fails.out)
+					test_recompile_fails.out\
+					test_log.out)
 
 all: $(OBJ_DIR) $(LIB_DIR) $(TEST_BIN_DIR) $(OBJS) $(LIBS) $(TESTS) $(EXAMPLES)
 
@@ -86,7 +87,7 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@$(C) $(C_FLAGS) -c $< -o $@ $(C_FLAGS_LIBS)
 
 # Creates the library
-$(LIB_DIR)/%.a: $(OBJS) $(LIB_DIR)
+$(LIB_DIR)/%.a: $(OBJS)
 	@echo Archiving: $@ $(filter-out $(LIB_DIR), $^)
 	@$(AR) $@ $(filter-out $(LIB_DIR), $^)
 	@ranlib $@

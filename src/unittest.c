@@ -178,4 +178,9 @@ void unittest_run_tests(void)
 		LOG("\nFAILED(failures=%zu)\n\n", failed_test);
 		unittest_ret = -1;
 	}
+
+	/* Close the file */
+
+	if (unittest_mute_mode)
+		close(unittest_fd_stdout); /* Close /dev/null */
 }
