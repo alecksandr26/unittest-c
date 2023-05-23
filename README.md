@@ -39,20 +39,16 @@ That's it! After completing these steps, ***unittest-c*** should be installed on
 ```
 cd unittest-c
 ```
-3. ***Compile*** the unittest-c framework using make:
+3. ***Install unittest-c*** to your system by running:
 ```
-make compile
-```
-4. ***Install unittest-c*** to your system by running:
-```
-sudo make install
+make install
 ```
 This will copy the ***unittest-c*** executable to your system's default binary directory, which should be in your PATH. You may be prompted to enter your
 password for authentication.
 
-5. Optionally, run the test to verify that the installation was successful:
+4. Optionally, run the test to verify that the installation was successful:
 ```
-make example_test_installed
+make test
 ```
 That's it! After completing these five steps, unittest-c should be installed on your system and ready to use.
 # Getting started
