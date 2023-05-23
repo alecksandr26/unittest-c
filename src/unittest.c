@@ -23,7 +23,7 @@ extern uint8_t unittest_run_valgrind;
 FILE *unittest_stdout;
 
 /* All the paths to files */
-int  unittest_fetched_files_name = 0, unittest_mute_mode = 0, unittest_ret = 0;
+int  unittest_fetched_files_name = 0, unittest_mute_mode = 0, unittest_ret = 0, unittest_running_tests = 0;
 char unittest_basedir[100], unittest_file[100], unittest_outfile[100],
 	unittest_testdir[100], unittest_objdir[100], unittest_hashed_file[100], unittest_extra_flags[200];
 
@@ -168,14 +168,13 @@ void unittest_run_tests(void)
 
 	fprintf(unittest_stdout, "---------------------------------------------------------------------------"
 		"-----------\n");
-	if (failed_test == 0) {
-		fprintf(unittest_stdout, "Ran %zu test in %fs\n", count_tests,
+	fprintf(unittest_stdout, "Ran %zu test in %fs\n", count_tests,
 			(double) (end_time - start_time) / CLOCKS_PER_SEC);
+	
+	if (failed_test == 0) {
 		fprintf(unittest_stdout, "\nOk \n\n");
 		unittest_ret = 0;
 	} else {
-		fprintf(unittest_stdout, "Ran %zu test in %fs\n", count_tests,
-		       (double) (end_time - start_time) / CLOCKS_PER_SEC);
 		fprintf(unittest_stdout, "\nFAILED(failures=%zu)\n\n", failed_test);
 		unittest_ret = -1;
 	}

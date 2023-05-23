@@ -80,7 +80,7 @@ $(TEST_BIN_DIR):
 	@echo Creating: $@
 	@mkdir -p $@
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(OBJ_DIR)
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@echo Compiling: $@
 	@$(C) $(C_FLAGS) -c $< -o $@ $(C_FLAGS_LIBS)
 
@@ -102,7 +102,7 @@ example_%.out: $(EXAMPLE_DIR)/%.out
 example: $(addprefix example_, $(notdir $(EXAMPLES)))
 
 # Compile the tests
-$(TEST_BIN_DIR)/test_%.out: $(TEST_SRC_DIR)/test_%.c $(LIBS) $(TEST_BIN_DIR)
+$(TEST_BIN_DIR)/test_%.out: $(TEST_SRC_DIR)/test_%.c $(LIBS)
 	@echo Compiling: $(filter-out $(TEST_BIN_DIR), $^) -o $@
 	@$(C) $(C_FLAGS) $(filter-out $(TEST_BIN_DIR), $^) -o $@ $(C_FLAGS_LIBS)
 

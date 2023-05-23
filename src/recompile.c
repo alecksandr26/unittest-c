@@ -39,7 +39,6 @@ extern const char unittest_basedir[100], unittest_file[100], unittest_outfile[10
 
 extern FILE *unittest_stdout;
 extern int unittest_mute_mode;
-
 uint8_t unittest_run_valgrind	 = 0; /* By default it is not going to run valgrind  */
 Except	UnittestErrorCreatingDir = {
 	 "Error creating the object dir \"OBJ_DIR\" at \"TEST_DIR\""};
@@ -110,7 +109,7 @@ static int execute(const char *command, const char *args[50])
 		assert(0); /* Shouldn't exectue this  */
 	} else {	   /* Parent process */
 		pid_t child_pid =
-			waitpid(pid, &status, 0); /* waits the child process execute */
+			waitpid(pid, &status, 0); /* waits the child process finished its excecution */
 		if (child_pid == -1) {
 			fprintf(stderr, "Error while testing: waitpid: %s",
 				strerror(errno));
@@ -289,9 +288,7 @@ void unittest_recompile_with_tests(const C c)
 	for (size_t i = 0; i < n_outputs; i++)
 		nargs = add_args(&args_buf_ptr, output[i], nargs);
 
-		/* TODO: For the debugin purpuse for the moment to be able to compile
-		 * example/test.c */
-#ifndef NDEBUG
+#ifndef NDEBUG			/* For debugin the framework */
 	char	       libpath[100];
 	extern uint8_t is_root_folder;
 
@@ -313,7 +310,6 @@ void unittest_recompile_with_tests(const C c)
 
 	/* Compile with loaded tests */
 	if (compile(c, (const char **) args) != 0) {
-
 		fprintf(stderr, "Aborting.....\n");
 		abort();
 	}

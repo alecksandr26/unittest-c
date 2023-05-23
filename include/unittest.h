@@ -36,7 +36,7 @@ extern void unittest_check_testdir_exist(void);
 extern int unittest_run_tests(void);
 
 /* To muting the output from the tests */
-extern int unittest_mute_mode, unittest_ret;
+extern int unittest_mute_mode, unittest_ret, unittest_running_tests;
 extern FILE *unittest_stdout;
 
 /* MUTE_ACTIVE: To active the mute mode */
@@ -74,8 +74,8 @@ extern FILE *unittest_stdout;
 		unittest_rerun_with_tests();				\
 		unittest_recompile_without_tests(c);			\
 		if (unittest_mute_mode) fclose(unittest_stdout);	\
-		return 0;						\
 	} else {							\
+		unittest_running_tests = 1;				\
 		__VA_OPT__(CATCH(__VA_ARGS__));				\
 		unittest_run_tests();					\
 		if (unittest_mute_mode) fclose(unittest_stdout);	\
@@ -89,6 +89,7 @@ extern FILE *unittest_stdout;
 	CATCH(__VA_ARGS__)
 #define RUN(...)                        \
 	unittest_stdout = (unittest_mute_mode) ? fopen("/dev/null", "w") : stdout; \
+	unittest_running_tests = 1;					\
 	__VA_OPT__(CATCH(__VA_ARGS__));					\
 	unittest_run_tests();				\
 	if (unittest_mute_mode) fclose(unittest_stdout)

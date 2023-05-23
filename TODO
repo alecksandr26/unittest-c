@@ -26,3 +26,4 @@
 - Add several tests for the new features implemented [ ]
 - Check what happend when compilation of an object fails [ ]
 - Try to use fd instead of FILE pointers structure because they use dynamic memory [ ]
+- Refactor the whole code [ ]
