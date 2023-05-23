@@ -6,7 +6,7 @@
 * [Getting started](https://github.com/alecksandr26/unittest-c#getting-started)
 	* [How to write Test Cases?](https://github.com/alecksandr26/unittest-c#how-to-write-test-cases)
 		* [Another testcase example](https://github.com/alecksandr26/unittest-c#another-testcase-example)
-		* [Print statements]()
+		* [Print statements](https://github.com/alecksandr26/unittest-c#print-statements)
 	* [How to create Suits?](https://github.com/alecksandr26/unittest-c#how-to-create-suits)
 	* [How to include Test Cases or Suits from other files?](https://github.com/alecksandr26/unittest-c#how-to-include-test-cases-or-suits-from-other-files)
 	* [How to recompile the executable and each individual test file?](https://github.com/alecksandr26/unittest-c#how-to-recompile-the-executable-and-each-individual-test-file)
@@ -290,7 +290,7 @@ int main(void)
 }
 ```
 5. Compile the code with the ***flags mentioned in the previous section*** ([How to write Test Cases?](https://github.com/alecksandr26/unittest-c#how-to-write-test-cases)) and run the executable. You should see an output similar to this:
-```C
+```shell
 [term] $ cc mytestfile.c -lunittest -lexcept
 [term] $ ./a.out
 ....
@@ -453,7 +453,7 @@ int main(void)
 [term] $ gcc -o testrunner testrunner.c dir3/simpletest.c -lunittest -lexcept
 ```
 The ***dir3/simpletest.c*** file is the test case that was included in the previous step using the ***INCLUDE_TEST_CASE*** macro and here its output.
-```
+```shell
 [term] $ ./a.out
 ........
 --------------------------------------------------------------------------------------
@@ -496,7 +496,6 @@ clean:
 #undef TEST_DIR
 #define TEST_DIR "dir3/"
 
-
 int main(void)
 {
 	#undef UNITTEST_RECOMPILE
@@ -512,17 +511,17 @@ int main(void)
 2. In the second step, you need to ***recompile*** the test executable without ***any testfile source code***. 
 This means that you need to exclude the source code files of your test cases, which were previously included in the compilation command in the previous section.
 For example, if your test cases were included in the compilation command as follows:
-```
+```shell
 gcc -o testrunner testrunner.c simpletest.c -lunittest -lexcept
 ```
 Then, to exclude the source code file ***simpletest.c*** from the compilation, you can use the following command:
-```
+```shell
 gcc -o test testrunner.c -lunittest -lexcept
 ```
 By doing this, you ensure that the test executable is compiled without any test source code files and is ready to use the recompilation feature of the framework.
 
 3. When you run the test executable, you will see a message indicating that the test files are being compiled, generating the .o files. After this compilation process, the tests will be executed as usual.
-```
+```shell
 [COMPILING] dir3/simpletest.c -o dir3/.obj/simpletest.o
 ........
 --------------------------------------------------------------------------------------
@@ -532,6 +531,35 @@ Ok
 
 ```
 This recompilation feature allows you to focus solely on writing new code and its tests, instead of worrying about compiling your large code tests. The framework creates an ***.obj*** directory where it stores the ***.o*** files, and it will automatically recompile the test files when it detects a change, making the process of compilation and writing tests more efficient.
+### Running Valgrind from the framework
+This feature is only avaibale for the **reompilation mode**, so yeah it has its benefits to run your tests like this, then working with the code of the previous section.
+1. Make sure that you were running the code with the **recompile mode** feature activated with the tests dir marked.
+```C
+#undef TEST_DIR
+#define TEST_DIR "dir3/"
+
+#undef UNITTEST_RECOMPILE
+#define UNITTEST_RECOMPILE 1
+```
+2. Then inside of your **main()** test runner binary, executes the macro that activates valgrind **ACTIVE_VALGRIND()**.
+```C
+int main(void)
+{
+	#undef UNITTEST_RECOMPILE
+	#define UNITTEST_RECOMPILE 1
+	
+	INCLUDE_TEST_CASE("simpletest.c", SimpleTest);
+	INCLUDE_SUIT("simpletest.c", MySuit);
+	
+	// Activate Valgrind for memory leak detection
+	ACTIVE_VALGRIND();
+	
+	RUN();
+	return 0;
+}
+```
+Then at the output from this code we are going to see an output like this depending on the amount of testcases that we have in **simpletest.c**.
+
 
 # References
 1. Wikipedia contributors. (2022a). Boilerplate code. Wikipedia. https://en.wikipedia.org/wiki/Boilerplate_code
