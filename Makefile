@@ -64,7 +64,8 @@ TESTS = $(addprefix $(TEST_BIN_DIR)/, 	test_running_testcase.out \
 					test_multiple_suits.out\
 					test_unittest_map.out\
 					test_assert.out\
-					test_recompile.out)
+					test_recompile.out\
+					test_recompile_fails.out)
 
 all: $(OBJ_DIR) $(LIB_DIR) $(TEST_BIN_DIR) $(OBJS) $(LIBS) $(TESTS) $(EXAMPLES)
 

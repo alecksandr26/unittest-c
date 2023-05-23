@@ -21,6 +21,8 @@
 #include <unistd.h>
 #include <wait.h>
 
+#include "../include/unittest_debug.h"
+
 #define C UnitCompilerContex
 
 #include "../include/unittest_tfile.h"
@@ -37,12 +39,10 @@
 extern const char unittest_basedir[100], unittest_file[100], unittest_outfile[100],
 	unittest_testdir[100], unittest_objdir[100], unittest_hashed_file[100], unittest_extra_flags[200];
 
-extern FILE *unittest_stdout;
 extern int unittest_mute_mode;
 uint8_t unittest_run_valgrind	 = 0; /* By default it is not going to run valgrind  */
 Except	UnittestErrorCreatingDir = {
 	 "Error creating the object dir \"OBJ_DIR\" at \"TEST_DIR\""};
-
 
 char *args[50];	      /* Max 50 arguments */
 char  args_buf[1024]; /* Buffer where the args will be allocated */
@@ -78,8 +78,10 @@ static int compile(const C c, const char *args[50])
 		pid_t child_pid =
 			waitpid(pid, &status, 0); /* waits the child process execute */
 		if (child_pid == -1) {
+			/* ALERT the user that the compiled code doesn't work */
 			fprintf(stderr, "Error while compilig: waitpid: %s",
 				strerror(errno));
+
 			fprintf(stderr, "Aborting....");
 			abort();
 		}
@@ -237,10 +239,8 @@ void unittest_recompile_with_tests(const C c)
 		/* Check if there were changes */
 		if (unittest_needs_update(unittest_head_files->date_hashed)) {
 			char source[255];
-
 			memset(source, 0, 255);
 
-			/* TODO: Clean the outputs */
 			strcat(source, unittest_testdir);
 			strcat(source, unittest_head_files->filename);
 
@@ -256,16 +256,19 @@ void unittest_recompile_with_tests(const C c)
 			nargs = add_args(&args_buf_ptr, "-o", nargs);
 			nargs = add_args(&args_buf_ptr, output[n_outputs], nargs);
 
-			fprintf(unittest_stdout, "[COMPILING] %s -o %s\n", source, output[n_outputs]);
+			LOG("[COMPILING] %s -o %s\n", source, output[n_outputs]);
 			if (compile(c, (const char **) args) != 0) {
-				fprintf(stderr, "Aborting.....\n");
-				abort();
+				/* TODO: Deal with the dynamic memory */
+				fprintf(stderr, "ERROR: While compiling %s\n", output[n_outputs]);
+				fprintf(stderr, "Exiting .....\n");
+				exit(EXIT_FAILURE);
 			}
 		}
 
 		n_outputs++;
 		unittest_map_free((const uint8_t *) unittest_head_files->filename,
 				  strlen(unittest_head_files->filename));
+		
 		F *prev		    = unittest_head_files;
 		unittest_head_files = unittest_head_files->next;
 		free(prev);
@@ -310,7 +313,7 @@ void unittest_recompile_with_tests(const C c)
 
 	/* Compile with loaded tests */
 	if (compile(c, (const char **) args) != 0) {
-		fprintf(stderr, "Aborting.....\n");
+		fprintf(stderr, "ERROR Linking: Aborting.....\n");
 		abort();
 	}
 }

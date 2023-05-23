@@ -5,7 +5,7 @@ TESTCASE(SimpleTest) {
 
 	TEST(Test1) {
 		ASSERT(var == 1, "It should be one");
-	}
+
 
 	TEST(Test2) {
 		ASSERT(var > 0, "It should be greater than zero");

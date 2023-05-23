@@ -14,6 +14,7 @@
 #define UNITTEST_TESTCASE_INCLUDED
 
 #include "unittest_assert.h"
+#include "unittest_debug.h"
 
 #include <except.h>
 #include <stddef.h>
@@ -80,7 +81,7 @@ struct TF {
 	if (unitcase->amount == 0)					\
 		throw_except(UnittestNoneTests);			\
 	if (unitframe.state > 0 && unitframe.state <= (int) unitcase->amount && !unittest_mute_mode) \
-		fprintf(unittest_stdout, ".");				\
+		LOG(".");						\
 	if (unitframe.state < (int) unitcase->amount)			\
 		jmpback(&unitframe.buf, unitframe.state + 1);		\
 	}

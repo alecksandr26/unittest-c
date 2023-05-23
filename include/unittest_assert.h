@@ -12,6 +12,7 @@
 #define UNITTEST_ASSERT_INCLUDE
 
 #include <stdio.h>
+#include "unittest_debug.h"
 
 #define F UnitTestInfoFailed
 
@@ -25,9 +26,8 @@ struct F {
 /* unittest_print_faild_test: This function prints the information for a failed test,
    including the expression, message, test name, testcase name and filename. */
 extern void unittest_print_faild_test(F *unitcase);
-extern FILE *unittest_stdout;
 
-#define FIRST(X, ...) X
+#define UNITTEST_FIRST(X, ...) X
 
 /* ASSERT: evaluates expression, records failed test info, increments failure count,
    outputs 'F',
@@ -36,13 +36,13 @@ extern FILE *unittest_stdout;
 	if (!(EXPR)) {                                                          \
 		unitcase->failed_info[unitcase->amount_failed].expr = #EXPR;    \
 		unitcase->failed_info[unitcase->amount_failed].msg =            \
-			FIRST(__VA_ARGS__ __VA_OPT__(, ) NULL);                 \
+			UNITTEST_FIRST(__VA_ARGS__ __VA_OPT__(, ) NULL); \
 		unitcase->failed_info[unitcase->amount_failed].test =           \
 			unitframe.current_test;                                 \
 		unitcase->failed_info[unitcase->amount_failed].line = __LINE__; \
 		unitcase->amount_failed++;                                      \
 		/* Stops executing the test and jump to execute more tests */   \
-		fprintf(unittest_stdout, "F");				\
+		LOG("F");						\
 		jmpback(&unitframe.buf, unitframe.state + 1);                   \
 	} else
 

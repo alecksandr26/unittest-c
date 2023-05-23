@@ -8,6 +8,7 @@
 */
 
 #include "../include/unittest_assert.h"
+#include "../include/unittest_debug.h"
 
 #include <except.h>
 #include <stdio.h>
@@ -15,22 +16,19 @@
 #include <unistd.h>
 #define F UnitTestInfoFailed
 
-/* Fetch the out stream */
-extern FILE *unittest_stdout;
-
 /* Sime implemention of an assert */
 void unittest_print_faild_test(F *info)
 {
-	fprintf(unittest_stdout, "==========================================================================="
-		"===========\n");
-	fprintf(unittest_stdout, "FAIL:\t\t%s\t\t(%s.%s)\n", info->test, info->unitcase, info->test);
-	fprintf(unittest_stdout, "---------------------------------------------------------------------------"
-		"-----------\n");
-	fprintf(unittest_stdout, "Traceback...\n");
-	fprintf(unittest_stdout, "\tFile \"%s\", line %i, in %s\n", info->file, info->line, info->test);
+	LOG("==========================================================================="
+	    "===========\n");
+	LOG("FAIL:\t\t%s\t\t(%s.%s)\n", info->test, info->unitcase, info->test);
+	LOG("---------------------------------------------------------------------------"
+	    "-----------\n");
+	LOG("Traceback...\n");
+	LOG("\tFile \"%s\", line %i, in %s\n", info->file, info->line, info->test);
 	if (info->msg != NULL)
-		fprintf(unittest_stdout, "AssertionError:\t \"%s\",\t\"%s\" \n\n", info->expr, info->msg);
-	else fprintf(unittest_stdout, "AssertionError:\t \"%s\"\n\n", info->expr);
+		LOG("AssertionError:\t \"%s\",\t\"%s\" \n\n", info->expr, info->msg);
+	else LOG("AssertionError:\t \"%s\"\n\n", info->expr);
 }
 
 #undef F

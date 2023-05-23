@@ -20,10 +20,10 @@
 #include <unistd.h>
 
 extern uint8_t unittest_run_valgrind;
-FILE *unittest_stdout;
+uint8_t unittest_running_tests = 0;
 
 /* All the paths to files */
-int  unittest_fetched_files_name = 0, unittest_mute_mode = 0, unittest_ret = 0, unittest_running_tests = 0;
+int  unittest_fetched_files_name = 0, unittest_mute_mode = 0, unittest_ret = 0, unittest_fd_stdout = 1;
 char unittest_basedir[100], unittest_file[100], unittest_outfile[100],
 	unittest_testdir[100], unittest_objdir[100], unittest_hashed_file[100], unittest_extra_flags[200];
 
@@ -161,21 +161,21 @@ void unittest_run_tests(void)
 		unittest_head_tc = unittest_head_tc->next;
 	}
 	clock_t end_time = clock();
-	fprintf(unittest_stdout, "\n");
+	LOG("\n");
 
 	for (size_t i = 0; i < failed_test; i++)
 		unittest_print_faild_test(infofails[i]);
 
-	fprintf(unittest_stdout, "---------------------------------------------------------------------------"
-		"-----------\n");
-	fprintf(unittest_stdout, "Ran %zu test in %fs\n", count_tests,
-			(double) (end_time - start_time) / CLOCKS_PER_SEC);
+	LOG("---------------------------------------------------------------------------"
+	    "-----------\n");
+	LOG("Ran %zu test in %fs\n", count_tests,
+	    (double) (end_time - start_time) / CLOCKS_PER_SEC);
 	
 	if (failed_test == 0) {
-		fprintf(unittest_stdout, "\nOk \n\n");
+		LOG("\nOk \n\n");
 		unittest_ret = 0;
 	} else {
-		fprintf(unittest_stdout, "\nFAILED(failures=%zu)\n\n", failed_test);
+		LOG("\nFAILED(failures=%zu)\n\n", failed_test);
 		unittest_ret = -1;
 	}
 }

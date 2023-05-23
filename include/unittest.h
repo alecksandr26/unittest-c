@@ -21,6 +21,7 @@
 #include "unittest_suit.h"
 #include "unittest_tcase.h"
 #include "unittest_tfile.h"
+#include "unittest_debug.h"
 
 /* unittest_fetch_filesname: This functions gets the paths for the needed files */
 extern void unittest_fetch_filesname(const char *file, const char *outfile,
@@ -37,10 +38,6 @@ extern int unittest_run_tests(void);
 
 /* To muting the output from the tests */
 extern int unittest_mute_mode, unittest_ret, unittest_running_tests;
-extern FILE *unittest_stdout;
-
-/* MUTE_ACTIVE: To active the mute mode */
-#define MUTE_ACTIVE() unittest_mute_mode = 1
 
 #ifndef UNITTEST_RECOMPILE
 #define UNITTEST_RECOMPILE 0
@@ -62,23 +59,20 @@ extern FILE *unittest_stdout;
 		CATCH(__VA_ARGS__);                                          \
 	} else unittest_include(filename)
 #define RUN(...)                                                                  \
-	unittest_stdout = (unittest_mute_mode) ? fopen("/dev/null", "w") : stdout; \
 	if (UNITTEST_RECOMPILE) {                                                 \
 		UnitCompilerContex c = {.compiler	= COMPILER,               \
 					.compiler_path	= COMPILER_PATH COMPILER, \
 					.compiler_flags = COMPILER_FLAGS};        \
+		unittest_check_testdir_exist();				\
 		unittest_get_prev_dates();				\
-		unittest_check_testdir_exist();                                   \
-		unittest_recompile_with_tests(c);                                 \
-		unittest_put_new_dates();                                         \
+		unittest_recompile_with_tests(c);			\
+		unittest_put_new_dates();				\
 		unittest_rerun_with_tests();				\
 		unittest_recompile_without_tests(c);			\
-		if (unittest_mute_mode) fclose(unittest_stdout);	\
 	} else {							\
 		unittest_running_tests = 1;				\
 		__VA_OPT__(CATCH(__VA_ARGS__));				\
 		unittest_run_tests();					\
-		if (unittest_mute_mode) fclose(unittest_stdout);	\
 	}								
 #else
 #define INCLUDE_SUIT(filename, ...)  \
@@ -88,11 +82,9 @@ extern FILE *unittest_stdout;
 	extern UnitTestCase __VA_ARGS__; \
 	CATCH(__VA_ARGS__)
 #define RUN(...)                        \
-	unittest_stdout = (unittest_mute_mode) ? fopen("/dev/null", "w") : stdout; \
 	unittest_running_tests = 1;					\
 	__VA_OPT__(CATCH(__VA_ARGS__));					\
-	unittest_run_tests();				\
-	if (unittest_mute_mode) fclose(unittest_stdout)
+	unittest_run_tests()
 #endif
 
 #define CATCH_GENERIC(X)                         \

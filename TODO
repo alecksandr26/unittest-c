@@ -23,7 +23,7 @@
 - Update the documentation being clear about how to do the recompilation process [ ]
 - Start adding more asserts, also add some new features for debuggin [ ]
 ---- 2023/05/22 ----
-- Add several tests for the new features implemented [ ]
-- Check what happend when compilation of an object fails [ ]
-- Try to use fd instead of FILE pointers structure because they use dynamic memory [ ]
+- Add several tests for the new features implemented [X]
+- Check what happend when compilation of an object fails [X] We needs to deal with the memory on the heap
+- Try to use fd instead of FILE pointers structure because they use dynamic memory [X]
 - Refactor the whole code [ ]
