@@ -11,7 +11,7 @@
 	* [How to include Test Cases or Suits from other files?](https://github.com/alecksandr26/unittest-c#how-to-include-test-cases-or-suits-from-other-files)
 	* [How to recompile the executable and each individual test file?](https://github.com/alecksandr26/unittest-c#how-to-recompile-the-executable-and-each-individual-test-file)
 		* [Running Valgrind from the framework](https://github.com/alecksandr26/unittest-c#running-valgrind-from-the-framework)
-		* [Attaching extra flags for the recompilation]()
+		* [Attaching extra flags for the recompilation](https://github.com/alecksandr26/unittest-c#attaching-extra-flags-for-the-recompilation)
 * [References](https://github.com/alecksandr26/unittest-c#references)
 # Unit Test C
 ***Unit Test c*** is a fast and simple macro-based unit testing framework for C. It's inspired by the Python unittest module and designed to reduce 
@@ -621,6 +621,17 @@ int main()
 └── test.c
 2 directories, 5 files
 ```
+4. In the code above, after taking care of the paths and setting up the necessary test suites and test cases, you can run the test runner as you normally do. When executing the test runner, you should expect an output similar to the following:
+```shell
+[term] $ ./test
+.....
+--------------------------------------------------------------------------------------
+Ran 5 test in 0.008277s
+
+Ok 
+
+```
+
 # References
 1. Wikipedia contributors. (2022a). Boilerplate code. Wikipedia. https://en.wikipedia.org/wiki/Boilerplate_code
 2. Wikipedia contributors. (2023a). Test suite. Wikipedia. https://en.wikipedia.org/wiki/Test_suite
