@@ -20,10 +20,14 @@
 - Try to find the base directory [X]
 ---- 2023/05/13 ----
 - Think where to put these implementations executing_from_basedir, get_basedir [X]
-- Update the documentation being clear about how to do the recompilation process [ ]
+- Update the documentation being clear about how to do the recompilation process [X]
 - Start adding more asserts, also add some new features for debuggin [ ]
 ---- 2023/05/22 ----
 - Add several tests for the new features implemented [X]
 - Check what happend when compilation of an object fails [X] We needs to deal with the memory on the heap [X]
 - Try to use fd instead of FILE pointers structure because they use dynamic memory [X]
 - Refactor the whole code [ ]
+---- 2023/05/23 ----
+- Create an execption if someone trys to use valgrind without using the recompileation mode [ ]
+- Develop a way to use Absolute paths or things like that [ ]
+- Change the sections of the documentation [ ]

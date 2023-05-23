@@ -2,35 +2,28 @@
 #include <assert.h>
 #include "../../include/unittest.h"
 
-
-/* Creates a new test cases */
-TESTCASE(NewCase)
+TESTCASE(MyTests)
 {
-	/* Construct the tests case */
-	int var = 1;
+    // Set up any boilerplate code for all tests in the test case
+    int x = 42;
 
-	/* Start testing */
-	TEST(first_test)
-	{ /* First TEST */
-		var++;
+    // Define individual tests using the TEST macro
+    TEST(Test1)
+    {
+        // Use ASSERT macro to check if x equals 42
+        ASSERT(x == 42, "x should equal 42");
+    }
 
-		LOG("%i\n", var); /* To print inforamtion */
-		
-		/* This thing is unmuted so it should pass this simple assert */
-		extern int unittest_fd_stdout;
-		assert(unittest_fd_stdout == 1); /* It should be 1 */
-		
-		ASSERT(var == 2);
-	}
+    TEST(Test2)
+    {
+        // Use ASSERT macro to check if x is less than 100
+        ASSERT(x < 100, "x should be less than 100");
+	
+	    // Print the value of x using the LOG macro
+        LOG("The value of x is: %i\n", x);
+    }
 
-	TEST(second_test)
-	{ /* Second test */
-		/* Do your assertions */
-		ASSERT(var == 1);
-	}
 } ENDTESTCASE
-
-
 
 
 int main()
@@ -38,5 +31,5 @@ int main()
 	/* Simple demostration of the log macro works */
 	
 
-	RUN(NewCase);
+	RUN(MyTests);
 }
