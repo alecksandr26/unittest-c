@@ -28,14 +28,13 @@
 #define TEST_OUT	 "test"
 #define LIB_UNITTEST	 "-lunittest"
 
-
 typedef struct C C;
 struct C {
 	const char *compiler, *compiler_path, *compiler_flags;
 };
 
 /* An external pointer that points to external or static libraries */
-extern void unittest_attach_extra_flags(const char *flags);
+extern void    unittest_attach_extra_flags(const char *flags);
 extern uint8_t unittest_run_valgrind;
 
 /* ACTIVE_VALGRIND: To active valgrind into the execution */

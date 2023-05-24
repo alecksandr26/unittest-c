@@ -13,15 +13,17 @@
 #ifndef UNITTEST_DEBUG_INCLUDED
 #define UNITTEST_DEBUG_INCLUDED
 
-#include <stdio.h>
 #include <fcntl.h>
+#include <stdio.h>
 
 extern int unittest_fd_stdout;
 
 /* MUTE_ACTIVE: To active the mute mode */
-#define MUTE_ACTIVE() unittest_mute_mode = 1; unittest_fd_stdout = open("/dev/null", O_WRONLY)
+#define MUTE_ACTIVE()           \
+	unittest_mute_mode = 1; \
+	unittest_fd_stdout = open("/dev/null", O_WRONLY)
 
 /* LOG new information */
-#define LOG(M, ...) dprintf(unittest_fd_stdout, M __VA_OPT__(,) __VA_ARGS__)
+#define LOG(M, ...) dprintf(unittest_fd_stdout, M __VA_OPT__(, ) __VA_ARGS__)
 
 #endif

@@ -14,7 +14,7 @@ ENDTESTCASE
 int main(void)
 {
 	MUTE_ACTIVE();
-	
+
 	RUN(Checking);
 
 	/* It supouse to have an failed assertion */

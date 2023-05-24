@@ -1,9 +1,9 @@
 #include "../../include/unittest.h"
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
 
 float foo(float *arr, size_t n)
 {
@@ -82,10 +82,11 @@ int main(void)
 	/* RUN(FirstSuit, SecondSuit) */
 	CATCH(FirstSuit, SecondSuit);
 	/* Better */
-	
+
 	assert(unittest_head_tc != NULL);
-	assert(strcmp(unittest_head_tc->name, "TestingMalloc") == 0); /* Because it is pointing to newcase */
-	assert(unittest_head_tc->next != NULL);			/* Because it points to Testfoo */
+	assert(strcmp(unittest_head_tc->name, "TestingMalloc") ==
+	       0);				/* Because it is pointing to newcase */
+	assert(unittest_head_tc->next != NULL); /* Because it points to Testfoo */
 
 	MUTE_ACTIVE();
 
@@ -93,7 +94,7 @@ int main(void)
 
 	/* Everything runs well */
 	assert(unittest_ret == 0);
-	
+
 	/* Check that the suits were created correctly */
 	assert(FirstSuit.amount == 2);
 	assert(SecondSuit.amount == 1);

@@ -17,7 +17,6 @@ int main()
 	INCLUDE_SUIT("anothertest.c", SecondSuit2);
 
 	ACTIVE_VALGRIND();
-	
 
 	RUN();
 	return 0;

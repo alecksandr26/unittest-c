@@ -31,3 +31,4 @@
 - Create an execption if someone trys to use valgrind without using the recompileation mode [ ]
 - Develop a way to use Absolute paths or things like that [ ]
 - Change the sections of the documentation [ ]
+- Solve another bug with the hashed date files [ ]

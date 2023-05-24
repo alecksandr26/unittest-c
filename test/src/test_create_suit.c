@@ -62,16 +62,17 @@ NEW_SUIT(SimpleSuit, Testfoo, NewCase);
 int main(void)
 {
 	CATCH(SimpleSuit);
-	
+
 	/* Test the catching thing */
 	extern UnitTestCase *unittest_head_tc;
 
 	assert(unittest_head_tc != NULL);
-	assert(strcmp(unittest_head_tc->name, "NewCase") == 0); /* Because it is pointing to newcase */
-	assert(unittest_head_tc->next != NULL);			/* Because it points to Testfoo */
+	assert(strcmp(unittest_head_tc->name, "NewCase") ==
+	       0);				/* Because it is pointing to newcase */
+	assert(unittest_head_tc->next != NULL); /* Because it points to Testfoo */
 
 	MUTE_ACTIVE();
-	
+
 	RUN();
 
 	/* Just one test failed */
@@ -79,6 +80,6 @@ int main(void)
 
 	// RUN(SimpleSuit);
 	assert(SimpleSuit.amount == 2);
-	
+
 	return 0;
 }

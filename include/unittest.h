@@ -13,15 +13,15 @@
 #ifndef UNITTEST_INCLUDE
 #define UNITTEST_INCLUDE
 
-#include <unistd.h>
-#include <stdlib.h>
-
+#include "unittest_debug.h"
 #include "unittest_exceptions.h"
 #include "unittest_recompile.h"
 #include "unittest_suit.h"
 #include "unittest_tcase.h"
 #include "unittest_tfile.h"
-#include "unittest_debug.h"
+
+#include <stdlib.h>
+#include <unistd.h>
 
 /* unittest_fetch_filesname: This functions gets the paths for the needed files */
 extern void unittest_fetch_filesname(const char *file, const char *outfile,
@@ -63,17 +63,17 @@ extern int unittest_mute_mode, unittest_ret, unittest_running_tests;
 		UnitCompilerContex c = {.compiler	= COMPILER,               \
 					.compiler_path	= COMPILER_PATH COMPILER, \
 					.compiler_flags = COMPILER_FLAGS};        \
-		unittest_check_testdir_exist();				\
-		unittest_get_prev_dates();				\
-		unittest_recompile_with_tests(c);			\
-		unittest_put_new_dates();				\
-		unittest_rerun_with_tests();				\
-		unittest_recompile_without_tests(c);			\
-	} else {							\
-		unittest_running_tests = 1;				\
-		__VA_OPT__(CATCH(__VA_ARGS__));				\
-		unittest_run_tests();					\
-	}								
+		unittest_check_testdir_exist();                                   \
+		unittest_get_prev_dates();                                        \
+		unittest_recompile_with_tests(c);                                 \
+		unittest_put_new_dates();                                         \
+		unittest_rerun_with_tests();                                      \
+		unittest_recompile_without_tests(c);                              \
+	} else {                                                                  \
+		unittest_running_tests = 1;                                       \
+		__VA_OPT__(CATCH(__VA_ARGS__));                                   \
+		unittest_run_tests();                                             \
+	}
 #else
 #define INCLUDE_SUIT(filename, ...)  \
 	extern UnitSuit __VA_ARGS__; \
@@ -82,8 +82,8 @@ extern int unittest_mute_mode, unittest_ret, unittest_running_tests;
 	extern UnitTestCase __VA_ARGS__; \
 	CATCH(__VA_ARGS__)
 #define RUN(...)                        \
-	unittest_running_tests = 1;					\
-	__VA_OPT__(CATCH(__VA_ARGS__));					\
+	unittest_running_tests = 1;     \
+	__VA_OPT__(CATCH(__VA_ARGS__)); \
 	unittest_run_tests()
 #endif
 

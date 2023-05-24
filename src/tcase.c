@@ -8,13 +8,13 @@
   @license This project is released under the MIT License
 */
 
-#include <except.h>
-
 #include "../include/unittest_tcase.h"
+
+#include <except.h>
 #define TC UnitTestCase
 
 /* unittest_head_tc: A pointer to the last linked test case. */
-TC *unittest_head_tc = NULL;
+TC    *unittest_head_tc	 = NULL;
 Except UnittestNoneTests = {"The testcase should have at least one test"};
 
 /* link_tcases: Links test case structures together for the testing process. */

@@ -88,7 +88,7 @@ int main(void)
 
 	/*  Run the tree at once */
 	MUTE_ACTIVE();
-	
+
 	/* A few simple asserts */
 	/* after running it should know a few things  */
 	assert(TestingMalloc.testcase != NULL);
@@ -106,6 +106,4 @@ int main(void)
 
 	assert(NewCase.amount == 2);
 	assert(NewCase.amount_failed == 1);
-
-	
 }

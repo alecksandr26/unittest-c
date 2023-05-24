@@ -8,6 +8,7 @@
   @license This project is released under the MIT License
 */
 
+#include "../include/unittest_debug.h"
 #include "../include/unittest_recompile.h"
 
 #include <assert.h>
@@ -20,8 +21,6 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <wait.h>
-
-#include "../include/unittest_debug.h"
 
 #define C UnitCompilerContex
 
@@ -37,12 +36,13 @@
 
 /* Variables to have all the paths to file */
 extern const char unittest_basedir[100], unittest_file[100], unittest_outfile[100],
-	unittest_testdir[100], unittest_objdir[100], unittest_hashed_file[100], unittest_extra_flags[200];
+	unittest_testdir[100], unittest_objdir[100], unittest_hashed_file[100],
+	unittest_extra_flags[200];
 
 extern int unittest_mute_mode;
-uint8_t unittest_run_valgrind	 = 0; /* By default it is not going to run valgrind  */
-Except	UnittestErrorCreatingDir = {
-	 "Error creating the object dir \"OBJ_DIR\" at \"TEST_DIR\""};
+uint8_t	   unittest_run_valgrind    = 0; /* By default it is not going to run valgrind  */
+Except	   UnittestErrorCreatingDir = {
+	    "Error creating the object dir \"OBJ_DIR\" at \"TEST_DIR\""};
 
 char *args[50];	      /* Max 50 arguments */
 char  args_buf[1024]; /* Buffer where the args will be allocated */
@@ -111,7 +111,8 @@ static int execute(const char *command, const char *args[50])
 		assert(0); /* Shouldn't exectue this  */
 	} else {	   /* Parent process */
 		pid_t child_pid =
-			waitpid(pid, &status, 0); /* waits the child process finished its excecution */
+			waitpid(pid, &status,
+				0); /* waits the child process finished its excecution */
 		if (child_pid == -1) {
 			fprintf(stderr, "Error while testing: waitpid: %s",
 				strerror(errno));
@@ -260,20 +261,20 @@ void unittest_recompile_with_tests(const C c)
 			if (compile(c, (const char **) args) != 0) {
 				/* TODO: Deal with the dynamic memory */
 				fprintf(stderr, "ERROR: While compiling: %s -o %s\n",
-					unittest_head_files->filename,
-					output[n_outputs]);
-				
+					unittest_head_files->filename, output[n_outputs]);
+
 				/* Free all dynamic memory before exit */
 				do {
-					unittest_map_free((const uint8_t *) unittest_head_files->filename,
-							  strlen(unittest_head_files->filename));
-					
+					unittest_map_free(
+						(const uint8_t *)
+							unittest_head_files->filename,
+						strlen(unittest_head_files->filename));
+
 					F *prev		    = unittest_head_files;
 					unittest_head_files = unittest_head_files->next;
 					free(prev);
 				} while (unittest_head_files);
-				
-				
+
 #ifndef NDEBUG
 				fprintf(stderr, "TESTING: Exiting with SUCCESS.....\n");
 				/* Because we are testing */
@@ -288,7 +289,7 @@ void unittest_recompile_with_tests(const C c)
 		n_outputs++;
 		unittest_map_free((const uint8_t *) unittest_head_files->filename,
 				  strlen(unittest_head_files->filename));
-		
+
 		F *prev		    = unittest_head_files;
 		unittest_head_files = unittest_head_files->next;
 		free(prev);
@@ -311,7 +312,7 @@ void unittest_recompile_with_tests(const C c)
 	for (size_t i = 0; i < n_outputs; i++)
 		nargs = add_args(&args_buf_ptr, output[i], nargs);
 
-#ifndef NDEBUG			/* For debugin the framework */
+#ifndef NDEBUG /* For debugin the framework */
 	char	       libpath[100];
 	extern uint8_t is_root_folder;
 
@@ -327,8 +328,9 @@ void unittest_recompile_with_tests(const C c)
 	nargs = add_args(&args_buf_ptr, "-o", nargs);
 	nargs = add_args(&args_buf_ptr, unittest_outfile, nargs);
 	nargs = add_args(&args_buf_ptr, "-lexcept", nargs);
-	
-	if (strcmp(unittest_extra_flags, unittest_basedir)) /* If the user add extra flags */
+
+	if (strcmp(unittest_extra_flags,
+		   unittest_basedir)) /* If the user add extra flags */
 		nargs = add_args(&args_buf_ptr, unittest_extra_flags, nargs);
 
 	/* Compile with loaded tests */

@@ -20,12 +20,14 @@
 #include <unistd.h>
 
 extern uint8_t unittest_run_valgrind;
-uint8_t unittest_running_tests = 0;
+uint8_t	       unittest_running_tests = 0;
 
 /* All the paths to files */
-int  unittest_fetched_files_name = 0, unittest_mute_mode = 0, unittest_ret = 0, unittest_fd_stdout = 1;
+int unittest_fetched_files_name = 0, unittest_mute_mode = 0, unittest_ret = 0,
+    unittest_fd_stdout = 1;
 char unittest_basedir[100], unittest_file[100], unittest_outfile[100],
-	unittest_testdir[100], unittest_objdir[100], unittest_hashed_file[100], unittest_extra_flags[200];
+	unittest_testdir[100], unittest_objdir[100], unittest_hashed_file[100],
+	unittest_extra_flags[200];
 
 #ifndef NDEBUG
 uint8_t is_root_folder = 0;
@@ -170,7 +172,7 @@ void unittest_run_tests(void)
 	    "-----------\n");
 	LOG("Ran %zu test in %fs\n", count_tests,
 	    (double) (end_time - start_time) / CLOCKS_PER_SEC);
-	
+
 	if (failed_test == 0) {
 		LOG("\nOk \n\n");
 		unittest_ret = 0;
@@ -181,6 +183,5 @@ void unittest_run_tests(void)
 
 	/* Close the file */
 
-	if (unittest_mute_mode)
-		close(unittest_fd_stdout); /* Close /dev/null */
+	if (unittest_mute_mode) close(unittest_fd_stdout); /* Close /dev/null */
 }

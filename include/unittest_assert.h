@@ -11,8 +11,9 @@
 #ifndef UNITTEST_ASSERT_INCLUDE
 #define UNITTEST_ASSERT_INCLUDE
 
-#include <stdio.h>
 #include "unittest_debug.h"
+
+#include <stdio.h>
 
 #define F UnitTestInfoFailed
 
@@ -36,13 +37,13 @@ extern void unittest_print_faild_test(F *unitcase);
 	if (!(EXPR)) {                                                          \
 		unitcase->failed_info[unitcase->amount_failed].expr = #EXPR;    \
 		unitcase->failed_info[unitcase->amount_failed].msg =            \
-			UNITTEST_FIRST(__VA_ARGS__ __VA_OPT__(, ) NULL); \
+			UNITTEST_FIRST(__VA_ARGS__ __VA_OPT__(, ) NULL);        \
 		unitcase->failed_info[unitcase->amount_failed].test =           \
 			unitframe.current_test;                                 \
 		unitcase->failed_info[unitcase->amount_failed].line = __LINE__; \
 		unitcase->amount_failed++;                                      \
 		/* Stops executing the test and jump to execute more tests */   \
-		LOG("F");						\
+		LOG("F");                                                       \
 		jmpback(&unitframe.buf, unitframe.state + 1);                   \
 	} else
 

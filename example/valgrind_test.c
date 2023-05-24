@@ -24,6 +24,6 @@ int main()
 
 	ATTACH_EXTRA_FLAGS("obj/foo.o");
 	RUN();
-	
+
 	return unittest_ret;
 }
