@@ -1,4 +1,3 @@
-
 /* Testing the installed framework  */
 
 #include <unittest.h>
@@ -16,6 +15,9 @@ int main()
 #define UNITTEST_RECOMPILE 1
 
 	INCLUDE_SUIT("anothertest.c", SecondSuit2);
+
+	ACTIVE_VALGRIND();
+	
 
 	RUN();
 	return 0;
