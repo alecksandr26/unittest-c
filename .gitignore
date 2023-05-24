@@ -1,3 +1,5 @@
+# For uploading to AUR
+upload/
 
 # For makepkg
 build/*

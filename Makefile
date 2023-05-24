@@ -11,6 +11,7 @@ define \n
 
 endef
 
+PKGNAME = unittest-c
 C = cc
 C_DEBUG_FLAGS = -ggdb -pedantic -Wall
 C_COMPILE_FLAGS = -O2 -DNDEBUG -fno-stack-protector -z execstack -no-pie
@@ -30,6 +31,8 @@ LIB_DIR = lib
 INCLUDE_DIR = include
 EXAMPLE_DIR = example
 BUILD_DIR = build
+UPLOAD_DIR = upload
+GCU = ssh://aur@aur.archlinux.org/unittest-c.git # git clone
 
 # For installation
 M = makepkg
@@ -69,6 +72,7 @@ TESTS = $(addprefix $(TEST_BIN_DIR)/, 	test_running_testcase.out \
 					test_recompile_fails.out\
 					test_log.out)
 
+.PHONY: all compile install upload-aur
 all: $(OBJ_DIR) $(LIB_DIR) $(TEST_BIN_DIR) $(OBJS) $(LIBS) $(TESTS) $(EXAMPLES)
 
 $(OBJ_DIR):
@@ -80,6 +84,10 @@ $(LIB_DIR):
 	@mkdir -p $@
 
 $(TEST_BIN_DIR):
+	@echo Creating: $@
+	@mkdir -p $@
+
+$(UPLOAD_DIR):
 	@echo Creating: $@
 	@mkdir -p $@
 
@@ -165,6 +173,11 @@ ifneq ("$(wildcard $(BUILD_DIR))", "")
 	@rm -r $(BUILD_DIR)
 endif
 
+ifneq ("$(wildcard $(UPLOAD_DIR))", "")
+	@echo Removing: $(UPLOAD_DIR)
+	@rm -rf $(UPLOAD_DIR)
+endif
+
 format_$(SRC_DIR)/%.c:
 	@echo Formatting: $(patsubst format_%, %, $@)
 	@$(CF) $(patsubst format_%, %, $@)
@@ -201,3 +214,14 @@ install: compile
 	@$(M) $(M_FLAGS)
 	sudo pacman -U *.pkg.tar.zst
 
+$(UPLOAD_DIR)/$(PKGNAME): $(UPLOAD_DIR)
+	@cd $< && git clone $(GCU)
+
+upload-aur: $(UPLOAD_DIR)/$(PKGNAME)
+	@cp PKGBUILD $</
+	@cd $</ && $(M) --printsrcinfo > .SRCINFO
+	@cd $</ && git add PKGBUILD .SRCINFO
+	@echo -n "Commit-msg: "
+	@read commitmsg
+	@cd $</ && git commit -m commitmsg
+	@cd $</ && git push
