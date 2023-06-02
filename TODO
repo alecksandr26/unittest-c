@@ -32,3 +32,5 @@
 - Develop a way to use Absolute paths or things like that [ ]
 - Change the sections of the documentation [ ]
 - Solve another bug with the hashed date files [ ]
+---- 2023/05/27 ----
+- Start working in the way of start dealing with errors at testcases [ ]
