@@ -3,7 +3,7 @@
   @brief A few general implementations for the project.
 
   @author Erick Carrillo.
-  @copyright Copyright (C) 2022, Erick Alejandro Carrillo López, All rights reserved.
+  @copyright Copyright (C) 2023, Erick Alejandro Carrillo López, All rights reserved.
   @license This project is released under the MIT License
 */
 
@@ -11,7 +11,7 @@
 #include "../include/unittest_tcase.h"
 
 #include <assert.h>
-#include <except.h>
+#include <tc.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -124,7 +124,7 @@ void unittest_fetch_filesname(const char *file, const char *outfile, const char 
 void unittest_check_testdir_exist(void)
 {
 	if (access(unittest_testdir, F_OK) != 0)
-		throw_except(UnittestErrorTestBaseDoesntExist);
+		throw(UnittestErrorTestBaseDoesntExist);
 }
 
 /* unittest_attach_extra_flags: To attach new flags to the  */

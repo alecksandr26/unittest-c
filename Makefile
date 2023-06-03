@@ -16,7 +16,7 @@ C = cc
 C_DEBUG_FLAGS = -ggdb -pedantic -Wall
 C_COMPILE_FLAGS = -O2 -DNDEBUG -fno-stack-protector -z execstack -no-pie
 C_FLAGS = $(C_DEBUG_FLAGS)
-C_FLAGS_LIBS = -lexcept
+C_FLAGS_LIBS = -ltc
 
 AR = ar cr
 CF = clang-format -i

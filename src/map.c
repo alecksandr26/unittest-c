@@ -10,7 +10,7 @@
 #include "../include/unittest.h"
 
 #include <assert.h> /* For assert(...) */
-#include <except.h>
+#include <tc.h>
 #include <limits.h> /* For LONG_MIN and MAX */
 #include <stddef.h>
 #include <stdint.h>
@@ -169,7 +169,7 @@ const uint8_t *unittest_map(const uint8_t *data, size_t len)
 	/* Allocate a new entry, needs an extra byte for the null terminated byte
 	   and len bytes to allocate the string */
 	if ((b = (struct bucket *) malloc(sizeof(*b) + len + 1)) == NULL)
-		throw_except(UnittestNotEnoughMemory);
+		throw(UnittestNotEnoughMemory);
 
 	b->len	= len;
 	b->data = (uint8_t *) (b + 1); /* Move to the data space */

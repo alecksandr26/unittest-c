@@ -13,7 +13,7 @@
 #include "../include/unittest_tfile.h"
 
 #include <assert.h> /* assert() */
-#include <except.h> /* throw_except() */
+#include <tc.h> /* throw() */
 #include <fcntl.h>  /* create() */
 #include <malloc.h>
 #include <stdint.h>
@@ -51,18 +51,18 @@ void unittest_put_new_dates(void)
 	FILE *fp;
 
 	if (access(unittest_hashed_file, F_OK) != 0) /* Doens't exist the file */
-		throw_except(UnittestErrorReadingFile);
+		throw(UnittestErrorReadingFile);
 
 	if ((fp = fopen(unittest_hashed_file, "wb")) == NULL)
-		throw_except(UnittestErrorOpeningFile);
+		throw(UnittestErrorOpeningFile);
 
 	/* Read the hashed binaries*/
 	if (fwrite(&new_amount_hashed_dates, sizeof(size_t), 1, fp) != 1)
-		throw_except(UnittestErrorWrittingFile);
+		throw(UnittestErrorWrittingFile);
 
 	if (fwrite(new_hashed_dates, sizeof(long), new_amount_hashed_dates, fp) !=
 	    new_amount_hashed_dates)
-		throw_except(UnittestErrorWrittingFile);
+		throw(UnittestErrorWrittingFile);
 	fclose(fp);
 }
 
@@ -78,20 +78,20 @@ void unittest_get_prev_dates(void)
 
 	if (access(unittest_hashed_file, F_OK) == -1) { /* Doens't exist the file */
 		if (creat(unittest_hashed_file, 0664) == -1)
-			throw_except(UnittestErrorCreatingFile);
+			throw(UnittestErrorCreatingFile);
 		return;
 	}
 
 	if ((fp = fopen(unittest_hashed_file, "rb")) == NULL)
-		throw_except(UnittestErrorOpeningFile);
+		throw(UnittestErrorOpeningFile);
 
 	/* Read the hashed binaries*/
 	if (fread(&amount_hashed_dates, sizeof(size_t), 1, fp) != 1)
-		throw_except(UnittestErrorReadingFile);
+		throw(UnittestErrorReadingFile);
 
 	if (fread(hashed_dates, sizeof(long), amount_hashed_dates, fp) !=
 	    amount_hashed_dates)
-		throw_except(UnittestErrorReadingFile);
+		throw(UnittestErrorReadingFile);
 
 	fclose(fp);
 }
@@ -135,7 +135,7 @@ void unittest_include(const char *filename)
 
 	/* First check if the directoy exist */
 	if (access(unittest_testdir, F_OK) != 0)
-		throw_except(UnittestErrorTestBaseDoesntExist);
+		throw(UnittestErrorTestBaseDoesntExist);
 
 	long h;
 	char date[50], path[255];
@@ -154,7 +154,7 @@ void unittest_include(const char *filename)
 	unittest_get_creation_date(path, date);
 	h = unittest_hash((const uint8_t *) date);
 
-	if ((new_file = malloc(sizeof(F))) == NULL) throw_except(UnittestNotEnoughMemory);
+	if ((new_file = malloc(sizeof(F))) == NULL) throw(UnittestNotEnoughMemory);
 
 	new_file->date_hashed = h;
 	/* Map the file name */

@@ -13,7 +13,7 @@
 
 #include <assert.h>
 #include <errno.h>
-#include <except.h>
+#include <tc.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -52,7 +52,7 @@ static void create_obj_directory(void)
 	/* First check if the directoy exist */
 	if (access(unittest_objdir, F_OK) == 0) return; /* Already exist */
 
-	if (mkdir(unittest_objdir, 0775) != 0) throw_except(UnittestErrorCreatingDir);
+	if (mkdir(unittest_objdir, 0775) != 0) throw(UnittestErrorCreatingDir);
 }
 
 /* compile: Compiles something running a child process and returns it status */

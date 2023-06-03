@@ -10,7 +10,7 @@
 
 #include "../include/unittest_tcase.h"
 
-#include <except.h>
+#include <tc.h>
 #define TC UnitTestCase
 
 /* unittest_head_tc: A pointer to the last linked test case. */

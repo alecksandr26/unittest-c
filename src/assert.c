@@ -10,7 +10,6 @@
 #include "../include/unittest_assert.h"
 #include "../include/unittest_debug.h"
 
-#include <except.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>

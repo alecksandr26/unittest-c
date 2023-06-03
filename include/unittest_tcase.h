@@ -6,7 +6,7 @@
   The file also defines a function for linking together multiple test cases.
 
   @author Erick Carrillo.
-  @copyright Copyright (C) 2022, Erick Alejandro Carrillo López, All rights reserved.
+  @copyright Copyright (C) 2023, Erick Alejandro Carrillo López, All rights reserved.
   @license This project is released under the MIT License
 */
 
@@ -16,7 +16,7 @@
 #include "unittest_assert.h"
 #include "unittest_debug.h"
 
-#include <except.h>
+#include <tc.h>
 #include <stddef.h>
 
 #define F				 UnitTestInfoFailed
@@ -74,7 +74,7 @@ struct TF {
 #define ENDTESTCASE                                                             \
 	while (0)                                                               \
 		;                                                               \
-	if (unitcase->amount == 0) throw_except(UnittestNoneTests);             \
+	if (unitcase->amount == 0) throw(UnittestNoneTests);             \
 	if (unitframe.state > 0 && unitframe.state <= (int) unitcase->amount && \
 	    !unittest_mute_mode)                                                \
 		LOG(".");                                                       \
