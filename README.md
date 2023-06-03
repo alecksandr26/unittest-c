@@ -108,11 +108,11 @@ int main(void)
 }
 ```
 
-6. To compile the code, you must use the following two flags: ***-lunittest -lexcept***. The ***-lexcept*** flag is required because ***unittest-c*** uses an exception library ***c-exceptions*** in
+6. To compile the code, you must use the following two flags: ***-lunittest -ltc***. The ***-ltc*** flag is required because ***unittest-c*** uses an exception library ***trycatch-c*** in
 its source code. If you want to learn more about how to use ***exceptions*** in your C code, you can check out the 
-[c-exceptions](https://github.com/alecksandr26/c-exceptions) library, which is used by ***unittest-c.***
+[c-exceptions](https://github.com/alecksandr26/trycatch-c) library, which is used by ***unittest-c.***
 ```
-cc mytestfile.c -lunittest -lexcept
+cc mytestfile.c -lunittest -ltc
 ```
 Finally, the output of the program should look like this because it contains an assertion that causes the program to exit with a non-zero status:
 ```
