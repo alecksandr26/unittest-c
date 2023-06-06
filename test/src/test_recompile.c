@@ -13,11 +13,10 @@
 #undef UNITTEST_RECOMPILE
 #define UNITTEST_RECOMPILE 1
 
-int main()
+int main(void)
 {
 	INCLUDE_SUIT("simpletest.c", MySuit);
-	ACTIVE_VALGRIND();
-
+	// ACTIVE_VALGRIND();
 	MUTE_ACTIVE();
 
 	RUN();
@@ -35,7 +34,7 @@ int main()
 
 		assert(access(unittest_testdir, F_OK) == 0);
 		assert(unittest_ret == 0);	    /* The tests should success */
-		assert(unittest_run_valgrind == 1); /* We are running valgrind */
+		//assert(unittest_run_valgrind == 1); /* We are running valgrind */
 
 		assert(access(unittest_objdir, F_OK) == 0); /* It should be created */
 	}

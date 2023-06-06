@@ -172,7 +172,7 @@ void unittest_recompile_without_tests(const C c)
 
 	nargs = add_args(&args_buf_ptr, "-o", nargs);
 	nargs = add_args(&args_buf_ptr, unittest_outfile, nargs);
-	nargs = add_args(&args_buf_ptr, "-lexcept", nargs);
+	nargs = add_args(&args_buf_ptr, "-ltc", nargs);
 
 	if (compile(c, (const char **) args) != 0) {
 		fprintf(stderr, "Aborting.....\n");
@@ -327,7 +327,7 @@ void unittest_recompile_with_tests(const C c)
 
 	nargs = add_args(&args_buf_ptr, "-o", nargs);
 	nargs = add_args(&args_buf_ptr, unittest_outfile, nargs);
-	nargs = add_args(&args_buf_ptr, "-lexcept", nargs);
+	nargs = add_args(&args_buf_ptr, "-ltc", nargs);
 
 	if (strcmp(unittest_extra_flags,
 		   unittest_basedir)) /* If the user add extra flags */

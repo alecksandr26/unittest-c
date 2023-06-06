@@ -50,9 +50,6 @@ void unittest_put_new_dates(void)
 {
 	FILE *fp;
 
-	if (access(unittest_hashed_file, F_OK) != 0) /* Doens't exist the file */
-		throw(UnittestErrorReadingFile);
-
 	if ((fp = fopen(unittest_hashed_file, "wb")) == NULL)
 		throw(UnittestErrorOpeningFile);
 
@@ -76,11 +73,8 @@ void unittest_get_prev_dates(void)
 	if (dumped != 0) return; /* Finish the function */
 	dumped = 1;
 
-	if (access(unittest_hashed_file, F_OK) == -1) { /* Doens't exist the file */
-		if (creat(unittest_hashed_file, 0664) == -1)
-			throw(UnittestErrorCreatingFile);
+	if (access(unittest_hashed_file, F_OK) == -1) /* Doens't exist the file */
 		return;
-	}
 
 	if ((fp = fopen(unittest_hashed_file, "rb")) == NULL)
 		throw(UnittestErrorOpeningFile);
