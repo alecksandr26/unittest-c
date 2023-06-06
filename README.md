@@ -20,15 +20,15 @@ boilerplate code. With macros and a built-in test runner, it's ideal for large t
 ## Using `yay`
 1. First, ensure that you have the ***yay package manager*** installed. You can install it here: [install-and-use-yay-arch-linux](https://www.makeuseof.com/install-and-use-yay-arch-linux/).
 2. Once ***yay is installed***, you can search for ***the unittest-c package*** by running the following command:
-```
+```bash
 yay -Ss unittest-c
 ```
 3. If the package is found, you can proceed to install it by running the following command:
-```
+```bash
 yay -S unittest-c
 ```
 4. If the package is not found, you may need to update your package list by running the following command:
-```
+```bash
 yay -Syu
 ```
 That's it! After completing these steps, ***unittest-c*** should be installed on your system and ready to use.
@@ -36,20 +36,18 @@ That's it! After completing these steps, ***unittest-c*** should be installed on
 ## Using `make`
 1. Download one of the [releases](https://github.com/alecksandr26/unittest-c/releases) verions and unpack the code.
 2. Change into the ***unittest-c*** directory:
-```
+```bash
 cd unittest-c
 ```
-3. ***Install unittest-c*** to your system by running:
+3. ***Build the unittest-c package*** for your system by running:
+```bash
+make pkg
 ```
-make install
+4. ***Install the package***, to install the framework into an ARCH system by running:
+```bash
+sudo pacman -U unittest-c-x.x.x-x-x86_64.pkg.tar.zst
 ```
-This will copy the ***unittest-c*** executable to your system's default binary directory, which should be in your PATH. You may be prompted to enter your
-password for authentication.
 
-4. Optionally, run the test to verify that the installation was successful:
-```
-make test
-```
 That's it! After completing these five steps, unittest-c should be installed on your system and ready to use.
 # Getting started
 ## How to write Test Cases?
