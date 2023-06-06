@@ -36,7 +36,7 @@ GCU = ssh://aur@aur.archlinux.org/unittest-c.git # git clone
 
 # For installation
 M = makepkg
-M_FLAGS = -f --config .makepkg.conf
+M_FLAGS = -f --config .makepkg.conf --skipinteg --noextract
 
 TEST_SRC_DIR = $(addprefix $(TEST_DIR)/, src)
 TEST_BIN_DIR = $(addprefix $(TEST_DIR)/, bin)
@@ -72,7 +72,7 @@ TESTS = $(addprefix $(TEST_BIN_DIR)/, 	test_running_testcase.out \
 					test_recompile_fails.out\
 					test_log.out)
 
-.PHONY: all compile install upload-aur
+.PHONY: all compile pkg  upload-aur
 all: $(OBJ_DIR) $(LIB_DIR) $(TEST_BIN_DIR) $(OBJS) $(LIBS) $(TESTS) $(EXAMPLES)
 
 $(OBJ_DIR):
@@ -209,10 +209,8 @@ compile: $(OBJ_DIR) $(LIB_DIR) $(TEST_BIN_DIR) \
 	$(LIBS)
 
 # Install the framework
-install: compile
-	@echo Building: package
+pkg:
 	@$(M) $(M_FLAGS)
-	sudo pacman -U *.pkg.tar.zst
 
 $(UPLOAD_DIR)/$(PKGNAME): $(UPLOAD_DIR)
 	@cd $< && git clone $(GCU)
