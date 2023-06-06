@@ -91,20 +91,20 @@ $(UPLOAD_DIR):
 	@echo Creating: $@
 	@mkdir -p $@
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 	@echo Compiling: $@
 	@$(C) $(C_FLAGS) -c $< -o $@ $(C_FLAGS_LIBS)
 
 # Creates the library
-$(LIB_DIR)/%.a: $(OBJS)
+$(LIB_DIR)/%.a: $(OBJS) $(LIB_DIR)
 	@echo Archiving: $@ $(filter-out $(LIB_DIR), $^)
 	@$(AR) $@ $(filter-out $(LIB_DIR), $^)
 	@ranlib $@
 
 # Trying to fetch the compiled directory
-$(EXAMPLE_DIR)/%.out: $(EXAMPLE_DIR)/%.c $(LIBS)
+$(EXAMPLE_DIR)/%.out: $(EXAMPLE_DIR)/%.c $(LIBS) $(EXAMPLE_DIR)
 	@echo Compiling: $< -o $@ 
-	@$(C) $(C_FLAGS) $< $(filter-out $<, $^) -o $@ $(C_FLAGS_LIBS)
+	@$(C) $(C_FLAGS) $< $(filter-out $(EXAMPLE_DIR), $^) -o $@ $(C_FLAGS_LIBS)
 
 example_%.out: $(EXAMPLE_DIR)/%.out
 	@echo Running
@@ -113,7 +113,7 @@ example_%.out: $(EXAMPLE_DIR)/%.out
 example: $(addprefix example_, $(notdir $(EXAMPLES)))
 
 # Compile the tests
-$(TEST_BIN_DIR)/test_%.out: $(TEST_SRC_DIR)/test_%.c $(LIBS)
+$(TEST_BIN_DIR)/test_%.out: $(TEST_SRC_DIR)/test_%.c $(LIBS) $(TEST_BIN_DIR)
 	@echo Compiling: $(filter-out $(TEST_BIN_DIR), $^) -o $@
 	@$(C) $(C_FLAGS) $(filter-out $(TEST_BIN_DIR), $^) -o $@ $(C_FLAGS_LIBS)
 
