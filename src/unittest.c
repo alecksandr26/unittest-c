@@ -11,11 +11,11 @@
 #include "../include/unittest_tcase.h"
 
 #include <assert.h>
-#include <tc.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <tc.h>
 #include <time.h>
 #include <unistd.h>
 
@@ -123,8 +123,7 @@ void unittest_fetch_filesname(const char *file, const char *outfile, const char 
 
 void unittest_check_testdir_exist(void)
 {
-	if (access(unittest_testdir, F_OK) != 0)
-		throw(UnittestErrorTestBaseDoesntExist);
+	if (access(unittest_testdir, F_OK) != 0) throw(UnittestErrorTestBaseDoesntExist);
 }
 
 /* unittest_attach_extra_flags: To attach new flags to the  */

@@ -8,19 +8,19 @@
   @license This project is released under the MIT License
 */
 
-#include "../include/unittest_debug.h"
-#include "../include/unittest_recompile.h"
-
 #include <assert.h>
 #include <errno.h>
-#include <tc.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <tc.h>
 #include <unistd.h>
 #include <wait.h>
+
+#include "../include/unittest_debug.h"
+#include "../include/unittest_recompile.h"
 
 #define C UnitCompilerContex
 

@@ -16,8 +16,8 @@
 #include "unittest_assert.h"
 #include "unittest_debug.h"
 
-#include <tc.h>
 #include <stddef.h>
+#include <tc.h>
 
 #define F				 UnitTestInfoFailed
 #define TC				 UnitTestCase
@@ -74,7 +74,7 @@ struct TF {
 #define ENDTESTCASE                                                             \
 	while (0)                                                               \
 		;                                                               \
-	if (unitcase->amount == 0) throw(UnittestNoneTests);             \
+	if (unitcase->amount == 0) throw(UnittestNoneTests);                    \
 	if (unitframe.state > 0 && unitframe.state <= (int) unitcase->amount && \
 	    !unittest_mute_mode)                                                \
 		LOG(".");                                                       \

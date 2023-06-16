@@ -16,7 +16,7 @@ int main()
 {
 	INCLUDE_SUIT("simpletest.c", MySuit);
 	// ACTIVE_VALGRIND();
-	
+
 	MUTE_ACTIVE();
 	RUN();
 
@@ -26,14 +26,14 @@ int main()
 		assert(unittest_ret == 0); /* The tests should success */
 	} else {
 		/* The father program */
-		
+
 		/* Do a smiple assserts */
 		extern char unittest_testdir[100], unittest_objdir[100];
 
 		assert(access(unittest_testdir, F_OK) == 0);
-		assert(unittest_ret == 0);	    /* The tests should success */
+		assert(unittest_ret == 0); /* The tests should success */
 		// assert(unittest_run_valgrind == 1); /* We are running valgrind */
-		
+
 		assert(access(unittest_objdir, F_OK) == 0); /* It should be created */
 	}
 

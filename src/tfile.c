@@ -13,13 +13,13 @@
 #include "../include/unittest_tfile.h"
 
 #include <assert.h> /* assert() */
-#include <tc.h> /* throw() */
 #include <fcntl.h>  /* create() */
 #include <malloc.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 #include <sys/stat.h> /* stat() */
+#include <tc.h>	      /* throw() */
 #include <time.h>     /* ctime() */
 #include <unistd.h>   /* access() */
 #define F UnitTestFile
@@ -128,8 +128,7 @@ void unittest_include(const char *filename)
 	assert(filename != NULL && "Erro can't be null");
 
 	/* First check if the directoy exist */
-	if (access(unittest_testdir, F_OK) != 0)
-		throw(UnittestErrorTestBaseDoesntExist);
+	if (access(unittest_testdir, F_OK) != 0) throw(UnittestErrorTestBaseDoesntExist);
 
 	long h;
 	char date[50], path[255];

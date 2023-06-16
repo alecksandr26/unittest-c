@@ -10,12 +10,12 @@
 #include "../include/unittest.h"
 
 #include <assert.h> /* For assert(...) */
-#include <tc.h>
 #include <limits.h> /* For LONG_MIN and MAX */
 #include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h> /* For malloc(...) */
 #include <string.h> /* For strlen(...) */
+#include <tc.h>
 
 /* The size of the table */
 #define TABLE_LENGTH (MAX_AMOUNT_OF_FILES * 10)

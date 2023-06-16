@@ -18,12 +18,12 @@
    cc test_test_directory.c ../../lib/libunittest.a -lexcept -o test
 */
 
-int main(void)
-{
 /* flags to start the automate recompilation mode */
 #undef UNITTEST_RECOMPILE
 #define UNITTEST_RECOMPILE 1
 
+int main(void)
+{
 	INCLUDE_SUIT("simpletest.c", SecondSuit);
 	INCLUDE_TEST_CASE("simpletest.c", NewCase);
 	INCLUDE_TEST_CASE("simpletest2.c", NewCase2);
