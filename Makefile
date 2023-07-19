@@ -24,6 +24,12 @@ CF = clang-format -i
 V = valgrind
 V_FLAGS = --leak-check=full --track-origins=yes -s  --show-leak-kinds=all
 
+M = makepkg
+M_FLAGS = -f --config .makepkg.conf --skipinteg --noextract
+
+GCU = ssh://aur@aur.archlinux.org/unittest-c.git # git clone
+
+# Direcotories
 OBJ_DIR = obj
 SRC_DIR = src
 TEST_DIR = test
@@ -32,11 +38,6 @@ EXAMPLE_DIR = example
 INCLUDE_DIR = include
 BUILD_DIR = build
 UPLOAD_DIR = upload
-GCU = ssh://aur@aur.archlinux.org/unittest-c.git # git clone
-
-# For installation
-M = makepkg
-M_FLAGS = -f --config .makepkg.conf --skipinteg --noextract
 
 TEST_SRC_DIR = $(addprefix $(TEST_DIR)/, src)
 TEST_BIN_DIR = $(addprefix $(TEST_DIR)/, bin)
@@ -64,7 +65,7 @@ TESTS = $(addprefix $(TEST_BIN_DIR)/, 	test_running_testcase.out \
 					test_log.out)
 
 .PHONY: all compile pkg  upload-aur examples
-all: $(OBJ_DIR) $(LIB_DIR) $(TEST_BIN_DIR) $(EXAMPLE_DIR) $(OBJS) $(LIBS) $(TESTS) $(EXAMPLES)
+all: $(OBJS) $(LIBS) $(TESTS) $(EXAMPLES)
 
 $(OBJ_DIR):
 	@echo Creating: $@
@@ -145,11 +146,6 @@ endif
 ifneq ("$(wildcard *.tar.gz)", "")
 	@echo Removing: $(wildcard *.tar.gz)
 	@rm $(wildcard *.tar.gz)
-endif
-
-ifneq ("$(wildcard $(BUILD_DIR))", "")
-	@echo Removing: $(BUILD_DIR)
-	@rm -r $(BUILD_DIR)
 endif
 
 ifneq ("$(wildcard $(UPLOAD_DIR))", "")

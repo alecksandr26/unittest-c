@@ -17,7 +17,7 @@
 #include "unittest_debug.h"
 
 #include <stddef.h>
-#include <tc.h>
+#include <trycatch.h>
 
 #define F				 UnitTestInfoFailed
 #define TC				 UnitTestCase

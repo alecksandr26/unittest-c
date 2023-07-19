@@ -15,7 +15,7 @@
 #include <stdint.h>
 #include <stdlib.h> /* For malloc(...) */
 #include <string.h> /* For strlen(...) */
-#include <tc.h>
+#include <trycatch.h>
 
 /* The size of the table */
 #define TABLE_LENGTH (MAX_AMOUNT_OF_FILES * 10)

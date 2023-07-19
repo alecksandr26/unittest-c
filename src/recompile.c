@@ -15,7 +15,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
-#include <tc.h>
+#include <trycatch.h>
 #include <unistd.h>
 #include <wait.h>
 

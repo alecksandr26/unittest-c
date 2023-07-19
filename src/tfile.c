@@ -19,7 +19,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <sys/stat.h> /* stat() */
-#include <tc.h>	      /* throw() */
+#include <trycatch.h>	      /* throw() */
 #include <time.h>     /* ctime() */
 #include <unistd.h>   /* access() */
 #define F UnitTestFile

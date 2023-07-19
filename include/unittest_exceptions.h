@@ -13,7 +13,7 @@
 /* Uses another moulde that I wrote :)
    link: https://github.com/alecksandr26/c-exceptions
  */
-#include <tc.h>
+#include <trycatch.h>
 
 extern Except UnittestNotEnoughMemory;
 extern Except UnittestErrorOpeningFile;
