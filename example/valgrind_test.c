@@ -22,7 +22,7 @@ int main()
 	  COMPILE: cc -c obj/foo.c -o obj/foo.o, to be able to run this example
 	 */
 
-	ATTACH_EXTRA_FLAGS("obj/foo.o");
+	ATTACH_EXTRA_LINKING_FLAGS("obj/foo.o");
 	RUN();
 
 	return unittest_ret;

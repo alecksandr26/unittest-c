@@ -1,5 +1,5 @@
 /*!
-  @file unittest_recompile.h
+  @file unittest_compile.h
   @brief his module provides functionality for managing the compilation and recompilation of test files.
   The module defines a C structure for a compiler context and two functions: "recompile" and "rerun".
 
@@ -8,8 +8,8 @@
   @license This project is released under the MIT License
 */
 
-#ifndef UNITTEST_RECOMPILE_INCLUDE
-#define UNITTEST_RECOMPILE_INCLUDE
+#ifndef UNITTEST_COMPILE_INCLUDE
+#define UNITTEST_COMPILE_INCLUDE
 #define C UnitCompilerContex
 
 #include <stdint.h>
@@ -34,14 +34,18 @@ struct C {
 };
 
 /* An external pointer that points to external or static libraries */
-extern void    unittest_attach_extra_flags(const char *flags);
+extern void    unittest_attach_extra_linking_flags(const char *flags);
+extern void    unittest_attach_extra_compile_flags(const char *flags);
 extern uint8_t unittest_run_valgrind;
 
 /* ACTIVE_VALGRIND: To active valgrind into the execution */
 #define ACTIVE_VALGRIND() unittest_run_valgrind = 1
 
-/* Attach any extra flags needed for the compilation of the tests */
-#define ATTACH_EXTRA_FLAGS(FLAGS) unittest_attach_extra_flags(FLAGS)
+/* Attach any extra flags needed for the linking compilation process of the tests */
+#define ATTACH_EXTRA_LINKING_FLAGS(FLAGS) unittest_attach_extra_linking_flags(FLAGS)
+
+/* Attach any extra flags needed for the compilation of each test */
+#define ATTACH_EXTRA_COMPILE_FLAGS(FLAGS) unittest_attach_extra_compile_flags(FLAGS)
 
 /* unittest_recompile_without_tests: Re-compiles the source file into an executable
  * without including any test files. */

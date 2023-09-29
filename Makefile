@@ -48,7 +48,7 @@ OBJS = $(addprefix $(OBJ_DIR)/, unittest.o \
 				tcase.o\
 				suit.o\
 				tfile.o\
-				recompile.o)
+				compile.o)
 
 LIBS = $(addprefix $(LIB_DIR)/, libunittest.a)
 EXAMPLES = $(addprefix $(EXAMPLE_DIR)/, test.out \
@@ -60,8 +60,8 @@ TESTS = $(addprefix $(TEST_BIN_DIR)/, 	test_running_testcase.out \
 					test_multiple_suits.out\
 					test_unittest_map.out\
 					test_assert.out\
-					test_recompile.out\
-					test_recompile_fails.out\
+					test_compile.out\
+					test_compile_fails.out\
 					test_log.out)
 
 .PHONY: all compile pkg  upload-aur examples

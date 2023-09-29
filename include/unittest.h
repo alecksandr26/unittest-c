@@ -15,7 +15,7 @@
 
 #include "unittest_debug.h"
 #include "unittest_exceptions.h"
-#include "unittest_recompile.h"
+#include "unittest_compile.h"
 #include "unittest_suit.h"
 #include "unittest_tcase.h"
 #include "unittest_tfile.h"

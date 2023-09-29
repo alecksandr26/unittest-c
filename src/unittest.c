@@ -27,7 +27,7 @@ int unittest_fetched_files_name = 0, unittest_mute_mode = 0, unittest_ret = 0,
     unittest_fd_stdout = 1;
 char unittest_basedir[100], unittest_file[100], unittest_outfile[100],
 	unittest_testdir[100], unittest_objdir[100], unittest_hashed_file[100],
-	unittest_extra_flags[200];
+	unittest_extra_linking_flags[200], unittest_extra_compile_flags[200];
 
 #ifndef NDEBUG
 uint8_t is_root_folder = 0;
@@ -126,12 +126,21 @@ void unittest_check_testdir_exist(void)
 	if (access(unittest_testdir, F_OK) != 0) throw(UnittestErrorTestBaseDoesntExist);
 }
 
-/* unittest_attach_extra_flags: To attach new flags to the  */
-void unittest_attach_extra_flags(const char *flags)
+/* unittest_attach_extra_linking_flags: To attach more flags to the linking compilation */
+void unittest_attach_extra_linking_flags(const char *flags)
 {
-	memset(unittest_extra_flags, 0, sizeof(unittest_extra_flags));
-	strcpy(unittest_extra_flags, unittest_basedir);
-	strcat(unittest_extra_flags, flags);
+	assert(flags != NULL);
+	memset(unittest_extra_linking_flags, 0, sizeof(unittest_extra_linking_flags));
+	strcpy(unittest_extra_linking_flags, unittest_basedir);
+	strcat(unittest_extra_linking_flags, flags);
+}
+
+void unittest_attach_extra_compile_flags(const char *flags)
+{
+	assert(flags != NULL);
+	memset(unittest_extra_compile_flags, 0, sizeof(unittest_extra_compile_flags));
+	strcpy(unittest_extra_compile_flags, unittest_basedir);
+	strcat(unittest_extra_compile_flags, flags);
 }
 
 /* unittest_run_tests: Return 0 if there weren't any failed test otherwise return 1 */
