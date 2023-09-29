@@ -446,7 +446,7 @@ int main(void)
 ```
 3. To compile the ***testrunner*** and the included test case, use the following command:
 ```
-[term] $ gcc -o testrunner testrunner.c dir3/simpletest.c -lunittest -lexcept
+[term] $ gcc -o testrunner testrunner.c dir3/simpletest.c -lunittest -ltc
 ```
 The ***dir3/simpletest.c*** file is the test case that was included in the previous step using the ***INCLUDE_TEST_CASE*** macro and here its output.
 ```shell
@@ -508,7 +508,7 @@ int main(void)
 This means that you need to exclude the source code files of your test cases, which were previously included in the compilation command in the previous section.
 For example, if your test cases were included in the compilation command as follows:
 ```shell
-gcc -o testrunner testrunner.c simpletest.c -lunittest -lexcept
+gcc -o testrunner testrunner.c simpletest.c -lunittest -ltc
 ```
 Then, to exclude the source code file ***simpletest.c*** from the compilation, you can use the following command:
 ```shell
