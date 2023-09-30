@@ -5,7 +5,7 @@
 ---- 2023/05/03 ----
 - Rewrite the exceptions in a better way [X]
 - Divide everything in more components [X]
-- Wrap the malloc [ ]
+- Wrap the malloc [ ] Not doing it
 ---- 2023/05/03 ----
 - Deal with the bad string concatenations of the files and obj [X]
 - Write the documentation [X]
@@ -33,4 +33,4 @@
 - Change the sections of the documentation [X]
 - Solve another bug with the hashed date files [X]
 ---- 2023/05/27 ----
-- Start working in the way of start dealing with errors at testcases [ ]
+- Start working in the way of start dealing with errors at testcases [X]
