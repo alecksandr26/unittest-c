@@ -34,3 +34,5 @@
 - Solve another bug with the hashed date files [X]
 ---- 2023/05/27 ----
 - Start working in the way of start dealing with errors at testcases [X]
+---- 2023/09/30 ----
+- Solve the bug of the measured time [ ]
