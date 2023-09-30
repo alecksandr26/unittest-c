@@ -585,7 +585,7 @@ If you intend to use a third-party library in your tests or if you wish to test 
 #undef UNITTEST_RECOMPILE
 #define UNITTEST_RECOMPILE 1
 ```
-2. Inide your **main()** test runner binary, use the **ATTACH_EXTRA_FLAGS(path)** macro, providing the path to the component you want to test or the flag you want to include in the compilation process:
+2. Inide your **main()** test runner binary, use the **ATTACH_EXTRA_LINKING_FLAGS(path)** macro or **ATTACH_EXTRA_COMPILE_FLAGS(path)**, providing the path to the component you want to test or the flag you want to include in the compilation process:
 ```C
 #undef TEST_DIR
 #define TEST_DIR "dir3/"
@@ -594,6 +594,9 @@ int main()
 {
 	INCLUDE_SUIT("simpletest.c", MySuit);
 	INCLUDE_TEST_CASE("secondtest.c", TestingFoo);
+
+	// Attaching compile flag
+	ATTACH_EXTRA_COMPILE_FLAGS("-DTESTING");
 	
 	// Attaching obj/foo.o as an additional component for testing purposes
 	ATTACH_EXTRA_LINKING_FLAGS("obj/foo.o");
