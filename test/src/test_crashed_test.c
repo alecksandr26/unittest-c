@@ -6,43 +6,47 @@
 
 struct Student {
 	char *name;
-	int age;
+	int   age;
 };
 
 TESTCASE(Crashing)
 {
 	struct Student *s = NULL;
 
-	TEST(NotCrashingTest) {
+	TEST(NotCrashingTest)
+	{
 		/* Not Craching test */
 		ASSERT(s == NULL);
 		// LOG("Before crashing : (!!!!\n");
 	}
-	
-	TEST(CrashingTest) {
+
+	TEST(CrashingTest)
+	{
 		/* Crashing the testcase */
 		printf("His mame: %s\n", s->name);
 	}
 
-
-	TEST(NotCrashingTest) {
+	TEST(NotCrashingTest)
+	{
 		/* Not Craching test */
 		ASSERT(s == NULL);
 		// LOG("After crashing : (!!!!\n");
 	}
-} ENDTESTCASE
-
+}
+ENDTESTCASE
 
 TESTCASE(NotCrashing)
 {
 	struct Student *s = NULL;
-	
-	TEST(NotCrashingTest) {
+
+	TEST(NotCrashingTest)
+	{
 		/* Not Craching test */
 		ASSERT(s == NULL);
 	}
 
-	TEST(NotCrashingTest2) {
+	TEST(NotCrashingTest2)
+	{
 		/* Not Craching test */
 		ASSERT(s == NULL);
 	}
@@ -52,25 +56,27 @@ ENDTESTCASE
 TESTCASE(NotCrashing2)
 {
 	struct Student *s = NULL;
-	
-	TEST(NotCrashingTest) {
+
+	TEST(NotCrashingTest)
+	{
 		/* Not Craching test */
 		ASSERT(s == NULL);
 	}
 
-	TEST(NotCrashingTest2) {
+	TEST(NotCrashingTest2)
+	{
 		/* Not Craching test */
 		ASSERT(s == NULL);
 	}
 }
 ENDTESTCASE
 
-
 TESTCASE(ExitFailure)
 {
 	struct Student *s = NULL;
-	
-	TEST(ExitingWithFailure) {
+
+	TEST(ExitingWithFailure)
+	{
 		ASSERT(s == NULL);
 		exit(EXIT_FAILURE);
 	}
@@ -82,10 +88,6 @@ int main(void)
 	// MUTE_ACTIVE();
 
 	RUN(NotCrashing2, Crashing, NotCrashing, ExitFailure);
-	
+
 	return 0;
 }
-
-
-
-

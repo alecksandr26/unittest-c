@@ -19,8 +19,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <sys/stat.h> /* stat() */
-#include <trycatch.h>	      /* throw() */
 #include <time.h>     /* ctime() */
+#include <trycatch.h> /* throw() */
 #include <unistd.h>   /* access() */
 #define F UnitTestFile
 

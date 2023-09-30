@@ -24,8 +24,8 @@
 #define TC				 UnitTestCase
 #define TF				 UnitTestCaseFrame
 #define MAX_AMOUNT_OF_TESTS_IN_TESTCASES 1024
-#define MAX_AMOUNT_OF_CRASHED_TESTCASES 1024
-#define TEST_CASE_OUTPUT_BUFF_SIZE 1024
+#define MAX_AMOUNT_OF_CRASHED_TESTCASES	 1024
+#define TEST_CASE_OUTPUT_BUFF_SIZE	 1024
 
 /* The TC struct represents a test case and includes information such as file name, test
    name,
@@ -35,7 +35,7 @@ struct TC {
 	const char *file, *name;
 	size_t	    amount, amount_failed;
 	TC	   *next;
-	int line;
+	int	    line;
 
 	/* Catch the test function */
 	void (*testcase)(TC *);
@@ -52,11 +52,10 @@ struct TF {
 	JmpBuf	     buf;
 };
 
-
 typedef struct TE TE;
 struct TE {
 	char *file, *unitcase, sigmsg[200];
-	int line;
+	int   line;
 };
 
 /* These are macros used to define and run test cases. */
@@ -68,8 +67,8 @@ struct TE {
 				       .amount_failed = 0,                           \
 				       .next	      = NULL,                        \
 				       .testcase      = &(TESTCASE##TEST_CASE_NAME), \
-				       .failed_info   = {{0}},		\
-				       .line = __LINE__};		\
+				       .failed_info   = {{0}},                       \
+				       .line	      = __LINE__};                            \
 	void	     TESTCASE##TEST_CASE_NAME(UnitTestCase *unitcase)                \
 	{                                                                            \
 		UnitTestCaseFrame unitframe;                                         \
@@ -97,7 +96,7 @@ struct TE {
 /* unittest_head_tc: A pointer to the last linked test case. */
 extern TC *unittest_head_tc;
 extern int unittest_mute_mode;
-extern TE unittest_info_crashed_testcases[MAX_AMOUNT_OF_CRASHED_TESTCASES];
+extern TE  unittest_info_crashed_testcases[MAX_AMOUNT_OF_CRASHED_TESTCASES];
 
 /* link_tcases: Links test case structures together for the testing process. */
 extern void unittest_link_tcase(TC *unitcase);

@@ -17,7 +17,7 @@
 /* unittest_head_tc: A pointer to the last linked test case. */
 TC    *unittest_head_tc	 = NULL;
 Except UnittestNoneTests = {"The testcase should have at least one test"};
-TE unittest_info_crashed_testcases[MAX_AMOUNT_OF_CRASHED_TESTCASES];
+TE     unittest_info_crashed_testcases[MAX_AMOUNT_OF_CRASHED_TESTCASES];
 
 /* link_tcases: Links test case structures together for the testing process. */
 void unittest_link_tcase(TC *tc)

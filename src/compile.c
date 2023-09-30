@@ -8,6 +8,9 @@
   @license This project is released under the MIT License
 */
 
+#include "../include/unittest_compile.h"
+#include "../include/unittest_debug.h"
+
 #include <assert.h>
 #include <errno.h>
 #include <stddef.h>
@@ -18,9 +21,6 @@
 #include <trycatch.h>
 #include <unistd.h>
 #include <wait.h>
-
-#include "../include/unittest_debug.h"
-#include "../include/unittest_compile.h"
 
 #define C UnitCompilerContex
 
@@ -42,8 +42,7 @@ extern const char unittest_basedir[100], unittest_file[100], unittest_outfile[10
 extern int unittest_mute_mode;
 uint8_t	   unittest_run_valgrind    = 0; /* By default it is not going to run valgrind  */
 Except	   UnittestErrorCreatingDir = {
-	"Error creating the object dir \"OBJ_DIR\" at \"TEST_DIR\""
-};
+	    "Error creating the object dir \"OBJ_DIR\" at \"TEST_DIR\""};
 
 char *args[50];	      /* Max 50 arguments */
 char  args_buf[1024]; /* Buffer where the args will be allocated */
@@ -174,7 +173,7 @@ void unittest_recompile_without_tests(const C c)
 	nargs = add_args(&args_buf_ptr, "-o", nargs);
 	nargs = add_args(&args_buf_ptr, unittest_outfile, nargs);
 	nargs = add_args(&args_buf_ptr, "-ltc", nargs);
-	
+
 	if (compile(c, (const char **) args) != 0) {
 		fprintf(stderr, "Aborting.....\n");
 		abort();
@@ -261,31 +260,34 @@ void unittest_recompile_with_tests(const C c)
 			/* Adding the extra compile flags */
 			if (strcmp(unittest_extra_compile_flags,
 				   unittest_basedir)) /* If the user add extra flags */
-				nargs = add_args(&args_buf_ptr, unittest_extra_compile_flags, nargs);
+				nargs = add_args(&args_buf_ptr,
+						 unittest_extra_compile_flags, nargs);
 
 			LOG("[COMPILING]:\t%s -o %s\n", source, output[n_outputs]);
 			if (compile(c, (const char **) args) != 0) {
-				fprintf(stderr, "\n[ERROR]:\tCompiling %s -o %s aborting...\n\n",
+				fprintf(stderr,
+					"\n[ERROR]:\tCompiling %s -o %s aborting...\n\n",
 					unittest_head_files->filename, output[n_outputs]);
 
 #ifndef NDEBUG /* For debugin the framework */
-				LOG("[TESTING]: Compiling error catched, exiting with success...");
+				LOG("[TESTING]: Compiling error catched, exiting with "
+				    "success...");
 				exit(EXIT_SUCCESS);
 #else
 				abort();
 #endif
 			}
 		}
-		
+
 		n_outputs++;
 		unittest_map_free((const uint8_t *) unittest_head_files->filename,
 				  strlen(unittest_head_files->filename));
-		
+
 		F *prev		    = unittest_head_files;
 		unittest_head_files = unittest_head_files->next;
 		free(prev);
 	}
-	
+
 	/* Reset the buffer */
 	memset(args, 0, sizeof(args));
 	memset(args_buf, 0, sizeof(args_buf));
@@ -323,9 +325,9 @@ void unittest_recompile_with_tests(const C c)
 	if (strcmp(unittest_extra_linking_flags,
 		   unittest_basedir)) /* If the user add extra flags */
 		nargs = add_args(&args_buf_ptr, unittest_extra_linking_flags, nargs);
-	
+
 	/* Compile with loaded tests */
-	
+
 	if (compile(c, (const char **) args) != 0) {
 		fprintf(stderr, "\n[ERROR]:\tLinking all the testfiles aborting...\n\n");
 		abort();

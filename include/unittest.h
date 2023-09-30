@@ -13,9 +13,9 @@
 #ifndef UNITTEST_INCLUDE
 #define UNITTEST_INCLUDE
 
+#include "unittest_compile.h"
 #include "unittest_debug.h"
 #include "unittest_exceptions.h"
-#include "unittest_compile.h"
 #include "unittest_suit.h"
 #include "unittest_tcase.h"
 #include "unittest_tfile.h"
@@ -65,9 +65,9 @@ extern int unittest_mute_mode, unittest_ret, unittest_running_tests;
 					.compiler_flags = COMPILER_FLAGS};        \
 		unittest_check_testdir_exist();                                   \
 		unittest_get_prev_dates();                                        \
-		unittest_recompile_with_tests(c);			\
-		unittest_put_new_dates();				\
-		unittest_rerun_with_tests();				\
+		unittest_recompile_with_tests(c);                                 \
+		unittest_put_new_dates();                                         \
+		unittest_rerun_with_tests();                                      \
 		unittest_recompile_without_tests(c);                              \
 	} else {                                                                  \
 		unittest_running_tests = 1;                                       \
@@ -87,10 +87,10 @@ extern int unittest_mute_mode, unittest_ret, unittest_running_tests;
 	unittest_run_tests()
 #endif
 
-#define CATCH_GENERIC(X)                         \
-	_Generic((X), UnitTestCase               \
-		 : unittest_link_tcase, UnitSuit \
-		 : unittest_link_suit_tcase)(&X)
+#define CATCH_GENERIC(X)                           \
+	_Generic((X),                              \
+		UnitTestCase: unittest_link_tcase, \
+		UnitSuit: unittest_link_suit_tcase)(&X)
 
 /* Simple recursive macros */
 #define CATCH(first, ...)   CATCH_GENERIC(first) __VA_OPT__(; CATCH1(__VA_ARGS__))

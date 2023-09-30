@@ -15,20 +15,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <trycatch.h>
-#include <time.h>
-
-#include <unistd.h>
-#include <stdlib.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <time.h>
+#include <trycatch.h>
+#include <unistd.h>
 
 extern uint8_t unittest_run_valgrind;
 uint8_t	       unittest_running_tests = 0;
 
 /* All the paths to files */
 int unittest_fetched_files_name = 0, unittest_mute_mode = 0, unittest_ret = 0,
-	unittest_fd_stdout = 1;
+    unittest_fd_stdout = 1;
 char unittest_basedir[100], unittest_file[100], unittest_outfile[100],
 	unittest_testdir[100], unittest_objdir[100], unittest_hashed_file[100],
 	unittest_extra_linking_flags[200], unittest_extra_compile_flags[200];
@@ -147,13 +145,12 @@ void unittest_attach_extra_compile_flags(const char *flags)
 	strcat(unittest_extra_compile_flags, flags);
 }
 
-
 /* running_isolated_testcase: To execut an isolated testcase */
 void running_isolated_testcase(UnitTestCase *tcase, int *sigstatus, int *retstatus)
 {
 	pid_t child_pid;
-	int pipefd[2]; // File descriptors for the pipe
-	int status;
+	int   pipefd[2];	// File descriptors for the pipe
+	int   status;
 
 	if (pipe(pipefd) == -1) {
 		LOG("IMPOSSIBLE TO BUILT THE PIPES\n");
@@ -162,7 +159,7 @@ void running_isolated_testcase(UnitTestCase *tcase, int *sigstatus, int *retstat
 
 	/* create the child process */
 	child_pid = fork();
-	
+
 	if (child_pid == -1) {
 		LOG("IMPOSSIBLE TO FORK\n");
 		exit(EXIT_FAILURE);
@@ -173,7 +170,7 @@ void running_isolated_testcase(UnitTestCase *tcase, int *sigstatus, int *retstat
 
 		// Close the read end of the pipes
 		close(pipefd[0]);
-		
+
 		/* Execute the testcase */
 		tcase->testcase(tcase);
 
@@ -182,22 +179,22 @@ void running_isolated_testcase(UnitTestCase *tcase, int *sigstatus, int *retstat
 
 		// Close the write end of the pipe
 		close(pipefd[1]);
-		
+
 		/* Terminated the program with success */
 		exit(EXIT_SUCCESS);
 	} else {
 		/* Father process */
-		
+
 		// Close the write end of the pipes
 		close(pipefd[1]);
 
 		/* Wait for the execution of the testcase */
 		wait(&status);
-		
+
 		if (WIFEXITED(status)) {
 			if (WEXITSTATUS(status) == EXIT_SUCCESS) {
 				read(pipefd[0], tcase, sizeof(*tcase));
-			
+
 				/* Close the read pipe */
 				close(pipefd[0]);
 				*retstatus = EXIT_SUCCESS;
@@ -224,7 +221,7 @@ void unittest_print_crashed_testcase(UnitTestCaseErrorInfo *info)
 {
 	LOG("==========================================================================="
 	    "===========\n");
-	
+
 	LOG("ERROR:\t\t(%s)\n", info->unitcase);
 	LOG("---------------------------------------------------------------------------"
 	    "-----------\n");
@@ -233,33 +230,26 @@ void unittest_print_crashed_testcase(UnitTestCaseErrorInfo *info)
 	LOG("ErrorDescription:\t \"%s\"\n\n", info->sigmsg);
 }
 
-
-
 const char *signal_error_msg(int signum)
 {
 	switch (signum) {
-        case SIGSEGV:
-		return "Segmentation fault (SIGSEGV): Invalid memory access";
-        case SIGABRT:
-		return "Aborted (SIGABRT): Program has been explicitly aborted";
-        case SIGILL:
-		return "Illegal Instruction (SIGILL): Invalid machine instruction";
-        case SIGFPE:
-		return "Floating-Point Exception (SIGFPE): Illegal floating-point operation";
-        case SIGBUS:
-		return "Bus Error (SIGBUS): Invalid memory access or misalignment";
-        case SIGTRAP:
-		return "Trace Trap (SIGTRAP): Debugging event";
-        case SIGSYS:
-		return "Bad System Call (SIGSYS): Invalid system call";
-        case SIGPIPE:
-		return "Broken Pipe (SIGPIPE): Write to a closed pipe/socket";
-        case SIGXCPU:
-		return "Cputime Limit Exceeded (SIGXCPU): Process exceeded CPU time limit";
-        case SIGXFSZ:
-		return "File Size Limit Exceeded (SIGXFSZ): Process exceeded file size limit";
-        default:
-		return "Unknown Signal";
+	case SIGSEGV: return "Segmentation fault (SIGSEGV): Invalid memory access";
+	case SIGABRT: return "Aborted (SIGABRT): Program has been explicitly aborted";
+	case SIGILL: return "Illegal Instruction (SIGILL): Invalid machine instruction";
+	case SIGFPE:
+		return "Floating-Point Exception (SIGFPE): Illegal floating-point "
+		       "operation";
+	case SIGBUS: return "Bus Error (SIGBUS): Invalid memory access or misalignment";
+	case SIGTRAP: return "Trace Trap (SIGTRAP): Debugging event";
+	case SIGSYS: return "Bad System Call (SIGSYS): Invalid system call";
+	case SIGPIPE: return "Broken Pipe (SIGPIPE): Write to a closed pipe/socket";
+	case SIGXCPU:
+		return "Cputime Limit Exceeded (SIGXCPU): Process exceeded CPU time "
+		       "limit";
+	case SIGXFSZ:
+		return "File Size Limit Exceeded (SIGXFSZ): Process exceeded file size "
+		       "limit";
+	default: return "Unknown Signal";
 	}
 }
 
@@ -269,10 +259,10 @@ void unittest_run_tests(void)
 	assert(unittest_head_tc != NULL && "Should be at least one test");
 	size_t		    count_test, success_test, failed_test, crashed_test;
 	UnitTestInfoFailed *infofails[MAX_AMOUNT_OF_TESTS_IN_TESTCASES];
-	
+
 	/* Execute each testcase */
 	crashed_test = count_test = success_test = failed_test = 0;
-	clock_t start_time			 = clock();
+	clock_t start_time				       = clock();
 	while (unittest_head_tc != NULL) {
 		/* Run the testscase */
 		int retstatus, sigstatus;
@@ -280,14 +270,18 @@ void unittest_run_tests(void)
 
 		if (sigstatus == 0) {
 			if (retstatus == EXIT_SUCCESS) {
-				success_test +=
-				unittest_head_tc->amount - unittest_head_tc->amount_failed;
-			
+				success_test += unittest_head_tc->amount -
+						unittest_head_tc->amount_failed;
+
 				/* Catch its failes info */
-				for (size_t i = 0; i < unittest_head_tc->amount_failed; i++) {
-					infofails[failed_test] = &unittest_head_tc->failed_info[i];
-					infofails[failed_test]->unitcase = unittest_head_tc->name;
-					infofails[failed_test++]->file	 = unittest_head_tc->file;
+				for (size_t i = 0; i < unittest_head_tc->amount_failed;
+				     i++) {
+					infofails[failed_test] =
+						&unittest_head_tc->failed_info[i];
+					infofails[failed_test]->unitcase =
+						unittest_head_tc->name;
+					infofails[failed_test++]->file =
+						unittest_head_tc->file;
 				}
 			} else {
 				LOG("E"); /* Print for a crash  */
@@ -295,22 +289,25 @@ void unittest_run_tests(void)
 					(char *) unittest_head_tc->file;
 				unittest_info_crashed_testcases[crashed_test].unitcase =
 					(char *) unittest_head_tc->name;
-				sprintf(unittest_info_crashed_testcases[crashed_test].sigmsg,
-					"Encountered an error, exited with status %i", retstatus);
-				unittest_info_crashed_testcases[crashed_test++].line = unittest_head_tc->line;
+				sprintf(unittest_info_crashed_testcases[crashed_test]
+						.sigmsg,
+					"Encountered an error, exited with status %i",
+					retstatus);
+				unittest_info_crashed_testcases[crashed_test++].line =
+					unittest_head_tc->line;
 			}
 		} else {
 			LOG("E"); /* Print for a crash  */
-			unittest_info_crashed_testcases[crashed_test].file = (char *) unittest_head_tc->file;
+			unittest_info_crashed_testcases[crashed_test].file =
+				(char *) unittest_head_tc->file;
 			unittest_info_crashed_testcases[crashed_test].unitcase =
 				(char *) unittest_head_tc->name;
 			strcpy(unittest_info_crashed_testcases[crashed_test].sigmsg,
 			       signal_error_msg(sigstatus));
-			unittest_info_crashed_testcases[crashed_test++].line = unittest_head_tc->line;
-
-			
+			unittest_info_crashed_testcases[crashed_test++].line =
+				unittest_head_tc->line;
 		}
-		
+
 		count_test += unittest_head_tc->amount;
 
 		/* Move to the next test */
@@ -318,7 +315,6 @@ void unittest_run_tests(void)
 	}
 	clock_t end_time = clock();
 	LOG("\n");
-
 
 	for (size_t i = 0; i < crashed_test; i++)
 		unittest_print_crashed_testcase(&unittest_info_crashed_testcases[i]);
@@ -340,14 +336,11 @@ void unittest_run_tests(void)
 		LOG("\nCRASHED(crashes=%zu)\n", crashed_test);
 		unittest_ret = -1;
 	}
-	
+
 	if (failed_test) {
 		LOG("\nFAILED(failures=%zu)\n\n", failed_test);
 		unittest_ret = -1;
 	}
-
-	
-	
 
 	/* Close the file */
 
