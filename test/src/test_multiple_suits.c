@@ -87,7 +87,7 @@ int main(void)
 	assert(strcmp(unittest_head_tc->name, "TestingMalloc") ==
 	       0);				/* Because it is pointing to newcase */
 	assert(unittest_head_tc->next != NULL); /* Because it points to Testfoo */
-
+	
 	MUTE_ACTIVE();
 
 	RUN();

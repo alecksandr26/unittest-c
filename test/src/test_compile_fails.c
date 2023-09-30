@@ -4,7 +4,7 @@
 #include <stdio.h>
 
 #undef TEST_OUT
-#define TEST_OUT "test_recompile.out"
+#define TEST_OUT "test_compile_fails.out"
 
 #undef TEST_DIR
 #define TEST_DIR "tests_for_testing2/"
@@ -17,7 +17,7 @@ int main()
 	INCLUDE_SUIT("simpletest.c", MySuit);
 	// ACTIVE_VALGRIND();
 
-	MUTE_ACTIVE();
+	// MUTE_ACTIVE();
 	RUN();
 
 	/* To test recompilation we need to know which process we are */

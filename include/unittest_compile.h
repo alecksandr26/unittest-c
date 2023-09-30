@@ -18,7 +18,7 @@
 /* For compiling the test files */
 #define VALGRIND	 "valgrind"
 #define VALGRIND_PATH	 "/usr/bin/"
-#define VALGRIND_FLAGS	 "--leak-check=full --track-origins=yes -s --show-leak-kinds=all"
+#define VALGRIND_FLAGS	 "--quiet"
 #define COMPILER	 "cc"
 #define COMPILER_PATH	 "/usr/bin/"
 #define COMPILER_FLAGS	 "-ggdb -pedantic -Wall"

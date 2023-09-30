@@ -20,7 +20,7 @@
 #include <wait.h>
 
 #include "../include/unittest_debug.h"
-#include "../include/unittest_recompile.h"
+#include "../include/unittest_compile.h"
 
 #define C UnitCompilerContex
 
@@ -222,7 +222,7 @@ void unittest_rerun_with_tests(void)
    Re-producing a new executable. */
 void unittest_recompile_with_tests(const C c)
 {
-	char   output[MAX_AMOUNT_OF_FILES][255];
+	char   output[MAX_AMOUNT_OF_FILES][255]; /* Files */
 	size_t n_outputs = 0;
 	size_t nargs;
 
@@ -263,44 +263,29 @@ void unittest_recompile_with_tests(const C c)
 				   unittest_basedir)) /* If the user add extra flags */
 				nargs = add_args(&args_buf_ptr, unittest_extra_compile_flags, nargs);
 
-			LOG("[COMPILING] %s -o %s\n", source, output[n_outputs]);
+			LOG("[COMPILING]:\t%s -o %s\n", source, output[n_outputs]);
 			if (compile(c, (const char **) args) != 0) {
-				/* TODO: Deal with the dynamic memory */
-				fprintf(stderr, "ERROR: While compiling: %s -o %s\n",
+				fprintf(stderr, "\n[ERROR]:\tCompiling %s -o %s aborting...\n\n",
 					unittest_head_files->filename, output[n_outputs]);
 
-				/* Free all dynamic memory before exit */
-				do {
-					unittest_map_free(
-						(const uint8_t *)
-							unittest_head_files->filename,
-						strlen(unittest_head_files->filename));
-
-					F *prev		    = unittest_head_files;
-					unittest_head_files = unittest_head_files->next;
-					free(prev);
-				} while (unittest_head_files);
-
-#ifndef NDEBUG
-				fprintf(stderr, "TESTING: Exiting with SUCCESS.....\n");
-				/* Because we are testing */
+#ifndef NDEBUG /* For debugin the framework */
+				LOG("[TESTING]: Compiling error catched, exiting with success...");
 				exit(EXIT_SUCCESS);
 #else
-				fprintf(stderr, "Exiting with FAILURE.....\n");
-				exit(EXIT_FAILURE);
+				abort();
 #endif
 			}
 		}
-
+		
 		n_outputs++;
 		unittest_map_free((const uint8_t *) unittest_head_files->filename,
 				  strlen(unittest_head_files->filename));
-
+		
 		F *prev		    = unittest_head_files;
 		unittest_head_files = unittest_head_files->next;
 		free(prev);
 	}
-
+	
 	/* Reset the buffer */
 	memset(args, 0, sizeof(args));
 	memset(args_buf, 0, sizeof(args_buf));
@@ -338,10 +323,11 @@ void unittest_recompile_with_tests(const C c)
 	if (strcmp(unittest_extra_linking_flags,
 		   unittest_basedir)) /* If the user add extra flags */
 		nargs = add_args(&args_buf_ptr, unittest_extra_linking_flags, nargs);
-
+	
 	/* Compile with loaded tests */
+	
 	if (compile(c, (const char **) args) != 0) {
-		fprintf(stderr, "ERROR Linking: Aborting.....\n");
+		fprintf(stderr, "\n[ERROR]:\tLinking all the testfiles aborting...\n\n");
 		abort();
 	}
 }

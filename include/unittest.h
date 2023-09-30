@@ -65,9 +65,9 @@ extern int unittest_mute_mode, unittest_ret, unittest_running_tests;
 					.compiler_flags = COMPILER_FLAGS};        \
 		unittest_check_testdir_exist();                                   \
 		unittest_get_prev_dates();                                        \
-		unittest_recompile_with_tests(c);                                 \
-		unittest_put_new_dates();                                         \
-		unittest_rerun_with_tests();                                      \
+		unittest_recompile_with_tests(c);			\
+		unittest_put_new_dates();				\
+		unittest_rerun_with_tests();				\
 		unittest_recompile_without_tests(c);                              \
 	} else {                                                                  \
 		unittest_running_tests = 1;                                       \

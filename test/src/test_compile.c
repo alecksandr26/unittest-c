@@ -5,7 +5,7 @@
 #include <stdio.h>
 
 #undef TEST_OUT
-#define TEST_OUT "test_recompile.out"
+#define TEST_OUT "test_compile.out"
 
 #undef TEST_DIR
 #define TEST_DIR "tests_for_testing/"

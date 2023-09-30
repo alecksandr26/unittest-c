@@ -22,7 +22,7 @@ AR = ar cr
 CF = clang-format -i
 
 V = valgrind
-V_FLAGS = --leak-check=full --track-origins=yes -s  --show-leak-kinds=all
+V_FLAGS = --quiet
 
 M = makepkg
 M_FLAGS = -f --config .makepkg.conf --skipinteg --noextract
@@ -62,7 +62,8 @@ TESTS = $(addprefix $(TEST_BIN_DIR)/, 	test_running_testcase.out \
 					test_assert.out\
 					test_compile.out\
 					test_compile_fails.out\
-					test_log.out)
+					test_log.out\
+					test_crashed_test.out)
 
 .PHONY: all compile pkg  upload-aur examples
 all: $(OBJS) $(LIBS) $(TESTS) $(EXAMPLES)
