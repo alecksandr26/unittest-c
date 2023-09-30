@@ -596,7 +596,7 @@ int main()
 	INCLUDE_TEST_CASE("secondtest.c", TestingFoo);
 	
 	// Attaching obj/foo.o as an additional component for testing purposes
-	ATTACH_EXTRA_FLAGS("obj/foo.o");
+	ATTACH_EXTRA_LINKING_FLAGS("obj/foo.o");
 	RUN();
 	
 	return unittest_ret;
