@@ -39,46 +39,30 @@ extern int unittest_run_tests(void);
 /* To muting the output from the tests */
 extern int unittest_mute_mode, unittest_ret, unittest_running_tests;
 
-#ifndef UNITTEST_RECOMPILE
-#define UNITTEST_RECOMPILE 0
-#define INCLUDE_SUIT(filename, ...)                                          \
-	unittest_fetch_filesname(__FILE__, TEST_OUT, TEST_DIR, TEST_OBJ_DIR, \
-				 DATE_HASHED_FILE);                          \
-	unittest_check_testdir_exist();                                      \
-	if (!UNITTEST_RECOMPILE) {                                           \
-		extern UnitSuit __VA_ARGS__;                                 \
-		CATCH(__VA_ARGS__);                                          \
-	} else unittest_include(filename)
-
-#define INCLUDE_TEST_CASE(filename, ...)                                     \
-	unittest_fetch_filesname(__FILE__, TEST_OUT, TEST_DIR, TEST_OBJ_DIR, \
-				 DATE_HASHED_FILE);                          \
-	unittest_check_testdir_exist();                                      \
-	if (!UNITTEST_RECOMPILE) {                                           \
-		extern UnitTestCase __VA_ARGS__;                             \
-		CATCH(__VA_ARGS__);                                          \
-	} else unittest_include(filename)
+#ifdef UNITTEST_RECOMPILE
 #define RUN(...)                                                                  \
-	if (UNITTEST_RECOMPILE) {                                                 \
-		UnitCompilerContex c = {.compiler	= COMPILER,               \
+	if (UNITTEST_RECOMPILE) {					\
+		UnitCompiler compiler_contex = {.compiler	= COMPILER, \
 					.compiler_path	= COMPILER_PATH COMPILER, \
 					.compiler_flags = COMPILER_FLAGS};        \
 		unittest_check_testdir_exist();                                   \
-		unittest_get_prev_dates();                                        \
-		unittest_recompile_with_tests(c);                                 \
+		unittest_get_prev_dates();				\
+		unittest_recompile_with_tests(&compiler_contex);	\
 		unittest_put_new_dates();                                         \
-		unittest_rerun_with_tests();                                      \
+		unittest_rerun_with_tests();				\
 		unittest_recompile_without_tests(c);                              \
 	} else {                                                                  \
 		unittest_running_tests = 1;                                       \
 		__VA_OPT__(CATCH(__VA_ARGS__));                                   \
-		unittest_run_tests();                                             \
+		unittest_run_tests();					\
 	}
 #else
+#undef INCLUDE_SUIT
 #define INCLUDE_SUIT(filename, ...)  \
 	extern UnitSuit __VA_ARGS__; \
 	CATCH(__VA_ARGS__)
-#define INCLUDE_TEST_CASE(filename, ...) \
+#undef INCLUDE_TESTCASE
+#define INCLUDE_TESTCASE(filename, ...)	 \
 	extern UnitTestCase __VA_ARGS__; \
 	CATCH(__VA_ARGS__)
 #define RUN(...)                        \

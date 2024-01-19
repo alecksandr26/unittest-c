@@ -87,7 +87,7 @@ int main(void)
 	// CATCH(Testfoo, NewCase, TestingMalloc);
 
 	/*  Run the tree at once */
-	MUTE_ACTIVE();
+	MUTE_ACTIVE(true);
 
 	/* A few simple asserts */
 	/* after running it should know a few things  */

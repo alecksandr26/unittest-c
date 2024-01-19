@@ -17,7 +17,7 @@ int main(void)
 {
 	INCLUDE_SUIT("simpletest.c", MySuit);
 	// ACTIVE_VALGRIND();
-	MUTE_ACTIVE();
+	MUTE_ACTIVE(true);
 
 	RUN();
 

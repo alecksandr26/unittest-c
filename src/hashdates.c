@@ -1,34 +1,40 @@
-/*!
-  @file unittest_c_hash.h
-  @brief As simple implementation of some hash function.
+/*
+  @file hashdates.c
+  @brief This is the source implementation of the component of 'unittest_hashdates.h'.
 
   @author Erick Carrillo.
   @copyright Copyright (C) 2022, Erick Alejandro Carrillo López, All rights reserved.
-  @license This project is released under the MIT License
+  @license This project is released under the MIT License.
 */
 
-#include "../include/unittest.h"
-
-#include <assert.h> /* For assert(...) */
-#include <limits.h> /* For LONG_MIN and MAX */
-#include <stddef.h>
+#include <stdio.h>
+#include <stdbool.h>
+#include <string.h>
 #include <stdint.h>
-#include <stdlib.h> /* For malloc(...) */
-#include <string.h> /* For strlen(...) */
+#include <unistd.h>
 #include <trycatch.h>
+#include <time.h>
+#include <assert.h>
+#include <fcntl.h>
+#include <sys/stat.h>
 
-/* The size of the table */
-#define TABLE_LENGTH (MAX_AMOUNT_OF_FILES * 10)
 
-/* To fetch the number of elements */
-#define NELEMS(x) ((sizeof(x)) / (sizeof((x)[0])))
+#include "../include/unittest_def.h"
+#include "../include/unittest_dir.h"
+#include "../include/unittest_tfile.h"
+#include "../include/unittest_hashdates.h"
 
-/* Creates the table */
-static struct bucket {
-	struct bucket *link;
-	size_t	       len;
-	uint8_t	      *data;
-} *table[TABLE_LENGTH] = {NULL};
+bool dumped		    = false;
+size_t	amount_hashed_dates = 0;
+size_t	new_amount_hashed_dates = 0;
+
+long	hashed_dates[MAX_AMOUNT_OF_TEST_FILES];
+
+/* TODO: Rewrite this exceptions */
+Except UnittestErrorCreatingFile	= {"Error creating a new file at \"TEST_DIR\""};
+Except UnittestErrorOpeningFile		= {"Error opening a file at \"TEST_DIR\""};
+Except UnittestErrorReadingFile		= {"Error reading a file at \"TEST_DIR\""};
+Except UnittestErrorWrittingFile	= {"Error writting a file at \"TEST_DIR\""};
 
 /* scatter is a 256 entry array that maps bytes to random numbers. */
 static unsigned long scatter[] = {
@@ -76,7 +82,7 @@ static unsigned long scatter[] = {
 	2143346068, 1975249606, 1136476375, 262925046,	92778659,   1856406685,
 	1884137923, 53392249,	1735424165, 1602280572};
 
-/* unittest_hash: To hash some string and return some random integer */
+/* unittest_hash: To hash some string and return some random unsinged integer */
 unsigned long unittest_hash(const uint8_t *data)
 {
 	unsigned long h;
@@ -89,97 +95,65 @@ unsigned long unittest_hash(const uint8_t *data)
 	return h;
 }
 
-/* unittest_map_find: Trys to find some mapped bytes if they weren't mapped return NULL
-   otheriwese
-   return its address */
-const uint8_t *unittest_map_find(const uint8_t *data, size_t len)
+
+/* unittest_get_creation_date: This function gets the creation time of a file located at a
+   given path and stores it as a string in the date parameter. */
+void unittest_get_creation_date(const char *path_file, char *date)
 {
-	unsigned long  h;
-	size_t	       i;
-	struct bucket *b;
+	struct stat attr;
 
-	/* map the string in the table */
-	h = unittest_hash(data) % NELEMS(table);
+	assert(date != NULL && path_file != NULL && "You can't pass null arguemnt");
 
-	/* Searcht it it where mapped previously */
-	for (b = table[h]; b; b = b->link)
-		if (len == b->len) {
-			for (i = 0; i < len && b->data[i] == data[i];)
-				i++;
-			if (i == len)
-				return b->data; /* Return if that data has been mapped
-						   previously */
-		}
+	/* TODO: Check if the file exist */
 
-	return NULL;
+	stat(path_file, &attr);
+	sprintf(date, "Last modified time: %s", ctime(&attr.st_mtime));
 }
 
-/* unittest_map_free: Frees mapped data and the bucket. */
-void unittest_map_free(const uint8_t *data, size_t len)
+
+/* unittest_put_new_dates: Puts new creation/modification dates of the test files in the
+ * file. */
+void unittest_put_new_dates(void)
 {
-	unsigned long  h;
-	size_t	       i;
-	struct bucket *b, *prev;
+	FILE *fp;
 
-	assert(data != NULL && "Data shouldn't be null");
+	if ((fp = fopen(unittest_hashed_file, "wb")) == NULL)
+		throw(UnittestErrorOpeningFile);
 
-	/* map the string in the table */
-	h = unittest_hash(data) % NELEMS(table);
+	/* Read the hashed binaries*/
+	if (fwrite(&new_amount_hashed_dates, sizeof(size_t), 1, fp) != 1)
+		throw(UnittestErrorWrittingFile);
 
-	/* Searcht it it where mapped previously */
-	prev = NULL;
-	for (b = table[h]; b; b = b->link) {
-		if (len == b->len) {
-			for (i = 0; i < len && b->data[i] == data[i];)
-				i++;
-			if (i == len) break;
-		}
-		prev = b;
-	}
-
-	assert(b != NULL && "The data should exist in the map");
-
-	if (prev != NULL) prev->link = b->link;
-	else table[h] = b->link;
-
-	/* Frees the memory */
-	free(b);
+	for (size_t i = 0; i < unittest_tfile_count; i++)
+		if (fwrite(&unittest_tfiles[i].date_hashed, sizeof(long), 1, fp) !=
+		    new_amount_hashed_dates)
+			throw(UnittestErrorWrittingFile);
+	fclose(fp);
 }
 
-/* unittest_map: Maps and makes a set of bytes unique and returns a new copy of the */
-const uint8_t *unittest_map(const uint8_t *data, size_t len)
+/* unittest_get_prev_dates: Gets the previous modification dates of a file in a specific
+ * directory.
+ */
+void unittest_get_prev_dates(void)
 {
-	unsigned long  h;
-	size_t	       i;
-	struct bucket *b;
+	FILE *fp;
 
-	/* map the string in the table */
-	h = unittest_hash(data) % NELEMS(table);
+	if (dumped != 0) return; /* Finish the function */
+	dumped = 1;
 
-	/* Searcht it it where mapped previously */
-	for (b = table[h]; b; b = b->link)
-		if (len == b->len) {
-			for (i = 0; i < len && b->data[i] == data[i];)
-				i++;
-			if (i == len)
-				return b->data; /* Return if that data has been mapped
-						   previously */
-		}
+	if (access(unittest_hashed_file, F_OK) == -1) /* Doens't exist the file */
+		return;
 
-	/* Allocate a new entry, needs an extra byte for the null terminated byte
-	   and len bytes to allocate the string */
-	if ((b = (struct bucket *) malloc(sizeof(*b) + len + 1)) == NULL)
-		throw(UnittestNotEnoughMemory);
+	if ((fp = fopen(unittest_hashed_file, "rb")) == NULL)
+		throw(UnittestErrorOpeningFile);
 
-	b->len	= len;
-	b->data = (uint8_t *) (b + 1); /* Move to the data space */
+	/* Read the hashed binaries*/
+	if (fread(&amount_hashed_dates, sizeof(size_t), 1, fp) != 1)
+		throw(UnittestErrorReadingFile);
 
-	if (len > 0) memcpy(b->data, data, len); /* Copy the source */
+	if (fread(hashed_dates, sizeof(long), amount_hashed_dates, fp) !=
+	    amount_hashed_dates)
+		throw(UnittestErrorReadingFile);
 
-	/* Stack the buckets */
-	b->data[len] = '\0'; /* Null terminated */
-	b->link	     = table[h];
-	table[h]     = b;
-
-	return (const uint8_t *) b->data;
+	fclose(fp);
 }

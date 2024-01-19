@@ -88,7 +88,7 @@ int main(void)
 	       0);				/* Because it is pointing to newcase */
 	assert(unittest_head_tc->next != NULL); /* Because it points to Testfoo */
 
-	MUTE_ACTIVE();
+	MUTE_ACTIVE(true);
 
 	RUN();
 

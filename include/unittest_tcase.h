@@ -13,54 +13,41 @@
 #ifndef UNITTEST_TESTCASE_INCLUDED
 #define UNITTEST_TESTCASE_INCLUDED
 
-#include "unittest_assert.h"
+#include "unittest_def.h"
 #include "unittest_debug.h"
+#include "unittest_assert.h"
 
 #include <stddef.h>
 #include <trycatch.h>
 
-#define F				 UnitTestInfoFailed
-#define TE				 UnitTestCaseErrorInfo
-#define TC				 UnitTestCase
-#define TF				 UnitTestCaseFrame
-#define MAX_AMOUNT_OF_TESTS_IN_TESTCASES 1024
-#define MAX_AMOUNT_OF_CRASHED_TESTCASES	 1024
-#define TEST_CASE_OUTPUT_BUFF_SIZE	 1024
 
-/* The TC struct represents a test case and includes information such as file name, test
-   name,
-   test function, and an array of failed test info. */
-typedef struct TC TC;
-struct TC {
+/* The UnitTestCase struct represents a test case and includes information such as file name, test
+   name, test function, and an array of failed test info. */
+typedef struct UnitTestCase UnitTestCase;
+struct  UnitTestCase {
 	const char *file, *name;
 	size_t	    amount, amount_failed;
-	TC	   *next;
-	int	    line;
+	UnitTestCase	   *next;
+	int	    line, retstatus, sigstatus;
 
 	/* Catch the test function */
-	void (*testcase)(TC *);
-	F failed_info[MAX_AMOUNT_OF_TESTS_IN_TESTCASES];
+	void (*testcase)(UnitTestCase *);
+	UnitTestInfoFailed failed_info[MAX_AMOUNT_OF_TESTS_IN_TESTCASES];
+	UnitTestCaseErrorInfo crashed_info;
 };
 
-/* The TF structure is a data structure that contains information about the state of a
+/* The UnitTestCaseFrame structure is a data structure that contains information about the state of a
  * test case. */
-typedef struct TF TF;
-struct TF {
+typedef struct  {
 	volatile int state;
 	const char  *current_test;
 	int	     counter;
 	JmpBuf	     buf;
-};
-
-typedef struct TE TE;
-struct TE {
-	char *file, *unitcase, sigmsg[200];
-	int   line;
-};
+} UnitTestCaseFrame;
 
 /* These are macros used to define and run test cases. */
 #define TESTCASE(TEST_CASE_NAME)                                                     \
-	void	     TESTCASE##TEST_CASE_NAME(UnitTestCase *unitcase);               \
+	void	     TESTCASE##TEST_CASE_NAME(UnitTestCase *unitcase);	\
 	UnitTestCase TEST_CASE_NAME = {.file	      = __FILE__,                    \
 				       .name	      = #TEST_CASE_NAME,             \
 				       .amount	      = 0,                           \
@@ -94,15 +81,29 @@ struct TE {
 	}
 
 /* unittest_head_tc: A pointer to the last linked test case. */
-extern TC *unittest_head_tc;
+extern UnitTestCase *unittest_head_tc;
 extern int unittest_mute_mode;
-extern TE  unittest_info_crashed_testcases[MAX_AMOUNT_OF_CRASHED_TESTCASES];
 
-/* link_tcases: Links test case structures together for the testing process. */
-extern void unittest_link_tcase(TC *unitcase);
+/* link_tcases: Links test case structures together and then be executed. */
+inline void unittest_link_tcase(UnitTestCase *tc)
+{
+	tc->next	 = unittest_head_tc;
+	unittest_head_tc = tc;
+}
 
-#undef F
-#undef TC
-#undef TF
-#undef TE
+/* unittest_run_isolated_testcase:  Executes a test case in isolation, capturing the signal status
+   and, in case of a crash, the return status. */
+extern void unittest_run_isolated_testcase(UnitTestCase *tcase);
+
+/* unittest_catch_info_faild: Catch the information from a test failed. */
+inline void unittest_catch_info_faild(UnitTestInfoFailed *info, UnitTestCase *tc)
+{
+	info->unitcase = tc->name;
+	info->file = tc->file;
+}
+
+/* unittest_catch_info_crashed: Catch the information from a crashed testcase. */
+extern void unittest_catch_info_crashed(UnitTestCaseErrorInfo *info, UnitTestCase *tcase);
+
+
 #endif

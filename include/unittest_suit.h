@@ -1,7 +1,7 @@
 /*!
   @file unittest_suit.h
   @brief This module provides functionality to create collections or suites of test cases for unit testing.
-  It defines a struct S that contains an array of test cases, a count of the number of test cases, and a
+  It defines a struct UnitSuit that contains an array of test cases, a count of the number of test cases, and a
   name for the suite. It also provides macros to create a new suite and to link the test cases in the suite.
   The unittest_link_suit_tcase() function is used to link the test cases structures together for the running
   process.
@@ -14,32 +14,32 @@
 #ifndef UNITTEST_SUIT_INCLUDED
 #define UNITTEST_SUIT_INCLUDED
 
+#include "unittest_def.h"
 #include "unittest_tcase.h"
-#define TC			     UnitTestCase
-#define S			     UnitSuit
-
-#define MAX_AMOUNT_OF_TESTS_IN_SUITS 30
 
 /* This structure defines a test suite, consisting of an array of test cases, the number
    of test
    cases, and the name of the suite. */
-typedef struct S S;
-struct S {
-	TC	   *tcase[MAX_AMOUNT_OF_TESTS_IN_SUITS];
+typedef struct {
+	UnitTestCase	   *tcase[MAX_AMOUNT_OF_TESTCASES_IN_SUITS];
 	size_t	    amount;
 	const char *name;
-};
+} UnitSuit;
 
 /* NEW_SUIT: creates a new test suite with a given name and a list of test cases.  */
 #define NEW_SUIT(SUIT_NAME, ...)                                                         \
 	UnitSuit SUIT_NAME = {.tcase  = {ADDR(__VA_ARGS__)},                             \
 			      .amount = sizeof((UnitTestCase *[]) {ADDR(__VA_ARGS__)}) / \
-					sizeof(UnitTestCase *),                          \
+			      sizeof(UnitTestCase *),			\
 			      .name = #SUIT_NAME}
 
 /* unittest_link_suit_tcase: to link together the test cases contained within the suit
  * structure to run them */
-extern void unittest_link_suit_tcase(S *suit);
+inline void unittest_link_suit_tcase(UnitSuit *suit)
+{
+	for (size_t i = 0; i < suit->amount; i++)
+		unittest_link_tcase(suit->tcase[i]);
+}
 
 #define AMPR(...) __VA_OPT__(&) __VA_ARGS__
 
@@ -80,6 +80,4 @@ extern void unittest_link_suit_tcase(S *suit);
 #define ADDR33(var, ...) AMPR(var) __VA_OPT__(, ) ADDR34(__VA_ARGS__)
 #define ADDR34(...)
 
-#undef TC
-#undef S
 #endif

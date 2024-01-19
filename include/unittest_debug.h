@@ -13,17 +13,38 @@
 #ifndef UNITTEST_DEBUG_INCLUDED
 #define UNITTEST_DEBUG_INCLUDED
 
-#include <fcntl.h>
 #include <stdio.h>
+#include <stdbool.h>
 
-extern int unittest_fd_stdout;
+#include "unittest_def.h"
 
-/* MUTE_ACTIVE: To active the mute mode */
-#define MUTE_ACTIVE()           \
-	unittest_mute_mode = 1; \
-	unittest_fd_stdout = open("/dev/null", O_WRONLY)
+typedef struct {
+	const char *file, *unitcase;
+	char msg[ERROR_INFO_MSG_SIZE];
+	int   line;
+} UnitTestCaseErrorInfo;
 
-/* LOG new information */
-#define LOG(M, ...) dprintf(unittest_fd_stdout, M __VA_OPT__(, ) __VA_ARGS__)
+/* MUTE_ACTIVE: To mute the output of the test cases. */
+#define MUTE_ACTIVE(BOOL) unittest_mute_active(BOOL)
+
+/* LOG: Prints information through the actual debug file descriptor.  */
+#define LOG(M, ...) dprintf(unittest_debug_fd_stdout, M __VA_OPT__(, ) __VA_ARGS__)
+
+/* ERROR: Prints information through the error file descriptor.  */
+#define ERROR(M, ...) dprintf(UNITTEST_STD_ERR, M __VA_OPT__(, ) __VA_ARGS__)
+
+/* The file descriptor to know where to send the information. */
+extern int unittest_debug_fd_stdout;
+
+extern UnitTestCaseErrorInfo  *unittest_info_crashed_testcases[MAX_AMOUNT_OF_TESTCASES];
+
+/* unittest_signal_error_str: Get the corresponding singal error msg, if testcase crashed. */
+extern const char *unittest_signal_error_str(int signum);
+
+/* unittest_mute_active: To mute or unmute the printed information. */
+extern void unittest_mute_active(bool state);
+
+/* unittest_print_crashed_testcase: To print the corresponding information from a crashed testcase  */
+extern  void unittest_print_crashed_testcase(UnitTestCaseErrorInfo *info);
 
 #endif

@@ -12,10 +12,9 @@
 
 /* Uses another moulde that I wrote :)
    link: https://github.com/alecksandr26/c-exceptions
- */
+*/
 #include <trycatch.h>
 
-extern Except UnittestNotEnoughMemory;
 extern Except UnittestErrorOpeningFile;
 extern Except UnittestErrorCreatingFile;
 extern Except UnittestErrorReadingFile;
@@ -23,5 +22,8 @@ extern Except UnittestErrorCreatingDir;
 extern Except UnittestErrorTestBaseDoesntExist;
 extern Except UnittestErrorWrittingFile;
 extern Except UnittestNoneTests;
+extern Except UnittestTooMuchArgs;
+extern Except UnittestTooLongCommand;
+extern Except UnittestTooMuchArgs;
 
 #endif

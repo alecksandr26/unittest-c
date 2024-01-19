@@ -42,13 +42,8 @@ UPLOAD_DIR = upload
 TEST_SRC_DIR = $(addprefix $(TEST_DIR)/, src)
 TEST_BIN_DIR = $(addprefix $(TEST_DIR)/, bin)
 
-OBJS = $(addprefix $(OBJ_DIR)/, unittest.o \
-				map.o \
-				assert.o \
-				tcase.o\
-				suit.o\
-				tfile.o\
-				compile.o)
+OBJS = $(addprefix $(OBJ_DIR)/, debug.o assert.o tcase.o valgrind.o command.o compile.o tfile.o dir.o \
+				hashdates.o rerun.o unittest.o)
 
 LIBS = $(addprefix $(LIB_DIR)/, libunittest.a)
 EXAMPLES = $(addprefix $(EXAMPLE_DIR)/, test.out \
@@ -125,17 +120,17 @@ test: $(notdir $(TESTS))
 clean: 
 ifneq ("$(wildcard $(OBJ_DIR))", "")
 	@echo Removing: $(OBJ_DIR) $(wildcard $(OBJ_DIR)/*.o)
-	@rm -r $(OBJ_DIR)
+	@rm -r -v $(OBJ_DIR)
 endif
 
 ifneq ("$(wildcard $(LIB_DIR))", "")
 	@echo Removing: $(LIB_DIR) $(wildcard $(LIB_DIR)/*.a)
-	@rm -r $(LIB_DIR)
+	@rm -r -v $(LIB_DIR)
 endif
 
 ifneq ("$(wildcard $(TEST_BIN_DIR))", "")
 	@echo Removing: $(TEST_BIN_DIR) $(wildcard $(TEST_BIN_DIR)/*.out)
-	@rm -r $(TEST_BIN_DIR)
+	@rm -r -v $(TEST_BIN_DIR)
 endif
 
 # Delete all build pacakge files

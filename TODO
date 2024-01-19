@@ -2,37 +2,55 @@
 - Create different type of assertion [X]
 - Create macros to include files and load suits [x]
 - Make a way of creating and compiling multiples files [x]
+
 ---- 2023/05/03 ----
 - Rewrite the exceptions in a better way [X]
 - Divide everything in more components [X]
-- Wrap the malloc [ ] Not doing it
+- Wrap the malloc [X] Not doing it, Not necessary
+
 ---- 2023/05/03 ----
 - Deal with the bad string concatenations of the files and obj [X]
 - Write the documentation [X]
 - Refactor the whole code [X]
+
 ---- 2023/05/05 ----
-- Try To avoid to use dynamic memory in the include_file function [X] its impossible :') are you sure ?
+- Try To avoid to use dynamic memory in the include_file function [X]
 - Deal better witht he possible errors during the recompilation [X]
+
 ---- 2023/05/06 ----
 - Find another method to know if a directory exist [X]
 - Create a way to uses valgrind on the testcases [X]
 - Create another flags variable for the external libraries [X]
 - Try to find the base directory [X]
+
 ---- 2023/05/13 ----
 - Think where to put these implementations executing_from_basedir, get_basedir [X]
 - Update the documentation being clear about how to do the recompilation process [X]
 - Start adding more asserts, also add some new features for debuggin [ ]
+
 ---- 2023/05/22 ----
 - Add several tests for the new features implemented [X]
 - Check what happend when compilation of an object fails [X] We needs to deal with the memory on the heap [X]
 - Try to use fd instead of FILE pointers structure because they use dynamic memory [X]
-- Refactor the whole code [ ]
+- Refactor the whole code [X]
+
 ---- 2023/05/23 ----
 - Create an execption if someone trys to use valgrind without using the recompileation mode [ ]
 - Develop a way to use Absolute paths or things like that [ ]
 - Change the sections of the documentation [X]
 - Solve another bug with the hashed date files [X]
+
 ---- 2023/05/27 ----
 - Start working in the way of start dealing with errors at testcases [X]
+
 ---- 2023/09/30 ----
-- Solve the bug of the measured time [ ]
+- Solve the bug of the measured time [X]
+
+---- 2024/01/17 ----
+- Make the library shared dynamically linked [ ]
+
+---- 2024/01/18 ----
+- Try to compile and run the other testfiles, you will require edit
+  the testrunner files and comment the line where the macro include is
+  been executed [ ]
+

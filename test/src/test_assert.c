@@ -1,4 +1,3 @@
-
 #include "../../include/unittest.h"
 
 #include <assert.h>
@@ -8,12 +7,11 @@ TESTCASE(Checking)
 {
 	/* This test will faild */
 	TEST(False) { ASSERT(1 == 0, "Testing the message"); }
-}
-ENDTESTCASE
+} ENDTESTCASE
 
 int main(void)
 {
-	MUTE_ACTIVE();
+	MUTE_ACTIVE(true);
 
 	RUN(Checking);
 
