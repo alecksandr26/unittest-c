@@ -35,11 +35,7 @@ typedef struct {
 
 /* unittest_link_suit_tcase: to link together the test cases contained within the suit
  * structure to run them */
-inline void unittest_link_suit_tcase(UnitSuit *suit)
-{
-	for (size_t i = 0; i < suit->amount; i++)
-		unittest_link_tcase(suit->tcase[i]);
-}
+extern void unittest_link_suit_tcase(UnitSuit *suit);
 
 #define AMPR(...) __VA_OPT__(&) __VA_ARGS__
 

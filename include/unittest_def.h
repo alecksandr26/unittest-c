@@ -18,34 +18,59 @@
 #define MAX_AMOUNT_OF_SUITS 1024
 #define MAX_AMOUNT_OF_TEST_FILES	     128
 #define MAX_AMOUNT_OF_SUITS_IN_FILES 128
-#define TEST_FILE_NAME_SIZE 100
+#define MAX_AMOUNT_OF_ARGUMENTS 128
+
+#ifndef COMPILER
 #define COMPILER	 "cc"
+#endif
+
+#ifndef COMPILER_PATH
 #define COMPILER_PATH	 "/usr/bin/"
+#endif
+
+#ifndef COMPILER_FLAGS
 #define COMPILER_FLAGS	 "-ggdb -pedantic -Wall"
+#endif
+
 #define LIB_UNITTEST	 "-lunittest"
 #define VALGRIND	 "valgrind"
 #define VALGRIND_PATH	 "/usr/bin/"
+
+#ifndef VALGRIND_FLAGS
 #define VALGRIND_FLAGS	 "--quiet"
+#endif
+
+#ifndef DATE_HASHED_FILE
 #define DATE_HASHED_FILE ".date_hashed.bin"
+#endif
+
+#ifndef TEST_OBJ_DIR
 #define TEST_OBJ_DIR	 ".obj/"
+#endif
+
+#ifndef TEST_DIR
 #define TEST_DIR	 "./"
+#endif
+
+#ifndef TEST_OUT
 #define TEST_OUT	 "testrunner"
-#define MAX_AMOUNT_OF_ARGUMENTS 128
+#endif
+
 #define COMMAND_SIZE 1024
 #define BINARY_COMMAND_SIZE 128
 #define LINKING_FLAGS_SIZE 1024
 #define COMPILING_FLAGS_SIZE 1024
 #define FLAGS_BUFF_SIZE 1024
+#define ERROR_INFO_MSG_SIZE 256
+#define EXPR_LENGHT_SIZE 256
+
+#define DIR_SIZE_NAME 256
+#define FILE_SIZE_NAME 256
+
 #define COMPILED_FAILD 1
 #define COMPILED_SUCCESS 0
 #define UNITTEST_STD_OUT 1
 #define UNITTEST_STD_ERR 2
-#define FILE_SIZE_NAME 256
-#define ERROR_INFO_MSG_SIZE 256
-
-
-#define TEST_CASE_OUTPUT_BUFF_SIZE	 1024
-
 
 #endif
 

@@ -18,11 +18,13 @@
 #ifndef NDEBUG
 extern bool is_root_folder;
 #endif
-extern char unittest_basedir[FILE_SIZE_NAME];
+
+extern char unittest_basedir[DIR_SIZE_NAME];
+extern char unittest_testdir[DIR_SIZE_NAME];
+extern char unittest_objdir[DIR_SIZE_NAME];
+
 extern char unittest_file[FILE_SIZE_NAME];
 extern char unittest_outfile[FILE_SIZE_NAME];
-extern char unittest_testdir[FILE_SIZE_NAME];
-extern char unittest_objdir[FILE_SIZE_NAME];
 extern char unittest_hashed_file[FILE_SIZE_NAME];
 
 /* unittest_fetch_filesname: This functions gets the paths for the needed recompilation. */

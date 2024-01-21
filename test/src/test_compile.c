@@ -1,17 +1,17 @@
 
+
+#define TEST_OUT "test_compile.out"
+#define TEST_DIR "tests_for_testing/"
+
+#define UNITTEST_RECOMPILE
 #include "../../include/unittest.h"
+
+
 
 #include <assert.h>
 #include <stdio.h>
+#include <unistd.h>
 
-#undef TEST_OUT
-#define TEST_OUT "test_compile.out"
-
-#undef TEST_DIR
-#define TEST_DIR "tests_for_testing/"
-
-#undef UNITTEST_RECOMPILE
-#define UNITTEST_RECOMPILE 1
 
 int main(void)
 {
@@ -30,7 +30,7 @@ int main(void)
 		/* The father program */
 
 		/* Do a smiple assserts */
-		extern char unittest_testdir[100], unittest_objdir[100];
+		extern char unittest_testdir[DIR_SIZE_NAME], unittest_objdir[DIR_SIZE_NAME];
 
 		assert(access(unittest_testdir, F_OK) == 0);
 		assert(unittest_ret == 0); /* The tests should success */

@@ -11,6 +11,7 @@
 #include "../include/unittest_def.h"
 #include "../include/unittest_debug.h"
 
+#include <string.h>
 #include <assert.h>
 #include <stdbool.h>
 #include <fcntl.h>
@@ -76,5 +77,31 @@ void unittest_print_crashed_testcase(UnitTestCaseErrorInfo *info)
 	LOG("Traceback...\n");
 	LOG("\tFile \"%s\", line %i, in %s\n", info->file, info->line, info->unitcase);
 	LOG("ErrorDescription:\t \"%s\"\n\n", info->msg);
+}
+
+/* unittest_memory_cmp: Compares two blocks of memory and returns the index where they differ.
+   If the function returns 'n', it means that the first 'n' bytes are equal. */
+size_t unittest_memory_cmp(const char *var1, const char *var2, size_t n)
+{
+	assert(var1 != NULL && var2 != NULL);  // Assert that pointers are not null
+
+	for (size_t i = 0; i < n; ++i)
+		if (var1[i] != var2[i])
+			return i;  // Difference found at index i
+	
+	return n;  // Memory blocks are equal up to 'n' bytes
+}
+
+void capture_n_hexvals(const char *memory, size_t size, char *hex_string, size_t str_size)
+{
+	assert(memory != NULL);
+	assert(hex_string != NULL);
+	assert(size > 0 && str_size > 0);
+
+	// Convert each byte to hexadecimal and concatenate to the string
+	for (size_t i = 0; i < size; ++i)
+		snprintf(hex_string + (i * 2), str_size - (i * 2), "%02X", memory[i]);
+	
+	hex_string[size * 2] = '\0';  // Null-terminate the string
 }
 

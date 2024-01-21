@@ -85,22 +85,14 @@ extern UnitTestCase *unittest_head_tc;
 extern int unittest_mute_mode;
 
 /* link_tcases: Links test case structures together and then be executed. */
-inline void unittest_link_tcase(UnitTestCase *tc)
-{
-	tc->next	 = unittest_head_tc;
-	unittest_head_tc = tc;
-}
+extern  void unittest_link_tcase(UnitTestCase *tc);
 
 /* unittest_run_isolated_testcase:  Executes a test case in isolation, capturing the signal status
    and, in case of a crash, the return status. */
 extern void unittest_run_isolated_testcase(UnitTestCase *tcase);
 
 /* unittest_catch_info_faild: Catch the information from a test failed. */
-inline void unittest_catch_info_faild(UnitTestInfoFailed *info, UnitTestCase *tc)
-{
-	info->unitcase = tc->name;
-	info->file = tc->file;
-}
+extern void unittest_catch_info_faild(UnitTestInfoFailed *info, UnitTestCase *tc);
 
 /* unittest_catch_info_crashed: Catch the information from a crashed testcase. */
 extern void unittest_catch_info_crashed(UnitTestCaseErrorInfo *info, UnitTestCase *tcase);

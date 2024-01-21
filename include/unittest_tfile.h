@@ -18,16 +18,18 @@
 #include "unittest_def.h"
 #include <stdbool.h>
 #include <stddef.h>
+#include <string.h>
 
 /* The struct that stores information about test files, including the filename and a hash
    of the file creation date. */
 typedef struct {
-	const char *filename;
+	char *name;
 	long	    date_hashed;
 } UnitTestFile;
 
-#define INCLUDE_SUIT(filename, ...) unittest_tfiles[unittest_tfile_count++].filename = filename
-#define INCLUDE_TESTCASE(filename, ...) unittest_tfiles[unittest_tfile_count++].filename = filename
+#define INCLUDE_SUIT(filename, ...) unittest_tfiles[unittest_tfile_count++].name = filename
+	
+#define INCLUDE_TESTCASE(filename, ...) unittest_tfiles[unittest_tfile_count++].name = filename
 
 extern size_t unittest_tfile_count;
 extern UnitTestFile unittest_tfiles[MAX_AMOUNT_OF_TEST_FILES];

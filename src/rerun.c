@@ -119,7 +119,7 @@ void unittest_recompile_with_tests(const UnitCompiler *compiler_contex)
 	for (size_t i = 0; i < unittest_tfile_count; i++) {
 		/* Catch the object file */
 		strcat(objs[n_objs], unittest_objdir);
-		strcat(objs[n_objs], unittest_tfiles[i].filename);
+		strcat(objs[n_objs], unittest_tfiles[i].name);
 		
 		/* Change the last character test.c -> test.o */
 		objs[n_objs][strlen(objs[n_objs]) - 1] = 'o';
@@ -129,7 +129,7 @@ void unittest_recompile_with_tests(const UnitCompiler *compiler_contex)
 			char source[FILE_SIZE_NAME];
 			memset(source, 0, FILE_SIZE_NAME);
 			strcat(source, unittest_testdir);
-			strcat(source, unittest_tfiles[i].filename);
+			strcat(source, unittest_tfiles[i].name);
 			
 			LOG("[COMPILING]:\t%s -o %s\n", source, objs[n_objs]);
 			if (compile_obj(compiler_contex, source, objs[n_objs]) != 0) {

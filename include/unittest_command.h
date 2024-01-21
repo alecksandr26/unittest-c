@@ -10,9 +10,6 @@
 #ifndef UNITTEST_COMMAND_INCLUDED
 #define UNITTEST_COMMAND_INCLUDED
 
-#include <assert.h>
-#include <string.h>
-
 #include "unittest_def.h"
 
 typedef struct  {
@@ -28,13 +25,7 @@ extern void unittest_attach_args(UnitCommand *command, const char *args);
 extern int unittest_execute(const UnitCommand *command);
 
 /* unittest_init_command: To inialized a command structure with it default attributes. */
-inline void unittest_init_command(UnitCommand *command)
-{
-	assert(command != NULL && "Can't be null");
-	memset(command, 0, sizeof(UnitCommand));
-	command->buff_ptr = command->args_buff;
-}
-
+extern  void unittest_init_command(UnitCommand *command);
 
 #endif
 

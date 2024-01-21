@@ -114,3 +114,18 @@ void unittest_catch_info_crashed(UnitTestCaseErrorInfo *info, UnitTestCase *tc)
 		strcpy(info->msg, unittest_signal_error_str(tc->sigstatus));
 }
 
+/* link_tcases: Links test case structures together and then be executed. */
+void unittest_link_tcase(UnitTestCase *tc)
+{
+	tc->next	 = unittest_head_tc;
+	unittest_head_tc = tc;
+}
+
+/* unittest_catch_info_faild: Catch the information from a test failed. */
+void unittest_catch_info_faild(UnitTestInfoFailed *info, UnitTestCase *tc)
+{
+	info->unitcase = tc->name;
+	info->file = tc->file;
+}
+
+

@@ -4,10 +4,11 @@
 #include <string.h>
 
 /* To reompile it self */
+
+#define TEST_DIR "dir/"
+#define UNITTEST_RECOMPILE
 #include "../include/unittest.h"
 
-#undef TEST_DIR
-#define TEST_DIR "dir/"
 
 /* To compile without recomiple:
 
@@ -18,15 +19,12 @@
    cc test_test_directory.c ../../lib/libunittest.a -lexcept -o test
 */
 
-/* flags to start the automate recompilation mode */
-#undef UNITTEST_RECOMPILE
-#define UNITTEST_RECOMPILE 1
 
 int main(void)
 {
 	INCLUDE_SUIT("simpletest.c", SecondSuit);
-	INCLUDE_TEST_CASE("simpletest.c", NewCase);
-	INCLUDE_TEST_CASE("simpletest2.c", NewCase2);
+	INCLUDE_TESTCASE("simpletest.c", NewCase);
+	INCLUDE_TESTCASE("simpletest2.c", NewCase2);
 	INCLUDE_SUIT("anothertest.c", SecondSuit2);
 
 	RUN();

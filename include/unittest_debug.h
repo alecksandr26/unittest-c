@@ -47,4 +47,11 @@ extern void unittest_mute_active(bool state);
 /* unittest_print_crashed_testcase: To print the corresponding information from a crashed testcase  */
 extern  void unittest_print_crashed_testcase(UnitTestCaseErrorInfo *info);
 
+/* unittest_memory_cmp: Compares two blocks of memory and returns the index where they differ.
+   If the function returns 'n', it means that the first 'n' bytes are equal. */
+extern size_t unittest_memory_cmp(const char *var1, const char *var2, size_t n);
+
+/* capture_n_hexvals: Captures the first n  hexadecimal values input hex_string. */
+extern void capture_n_hexvals(const char *memory, size_t size, char *hex_string, size_t bsize);
+
 #endif

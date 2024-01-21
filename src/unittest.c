@@ -13,9 +13,12 @@
 
 #include <assert.h>
 #include <time.h>
+#include <sys/time.h>
 #include <stddef.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
+bool unittest_running_tests = false;
 int unittest_ret = 0;
 
 /* unittest_print_results: Prints the results of the executed testcases. */
@@ -31,7 +34,7 @@ static void unittest_print_tests_results(double duration, size_t crashed_tests, 
 		unittest_print_faild_test(infofails[i]);
 
 	LOG("---------------------------------------------------------------------------"
-	    "-----------\n");
+	    "----------------\n");
 	LOG("Ran %zu test in %fs\n", count_tests, duration);
 
 	if (failed_tests == 0 && crashed_tests == 0) {
@@ -58,7 +61,10 @@ void unittest_run_tests(void)
 
 	/* Execute each testcase */
 	crashed_tests = count_tests = success_test = failed_tests = 0;
-	clock_t start_time				       = clock();
+	/* clock_t start_time				       = clock(); */
+	struct timeval start_time, end_time;
+	gettimeofday(&start_time, NULL);
+
 	while (unittest_head_tc != NULL) {
 		unittest_run_isolated_testcase(unittest_head_tc);
 		
@@ -87,9 +93,13 @@ void unittest_run_tests(void)
 		/* Move to the next test */
 		unittest_head_tc = unittest_head_tc->next;
 	}
-	clock_t end_time = clock();
-	double duration = end_time - start_time / CLOCKS_PER_SEC;
-
+	
+	/* clock_t end_time = clock(); */
+	/* double duration = (end_time - start_time) / CLOCKS_PER_SEC; */
+	gettimeofday(&end_time, NULL);
+	double duration = (end_time.tv_sec - start_time.tv_sec) +
+		(end_time.tv_usec - start_time.tv_usec) / 1000000.0;
+	
 	/* Printing section */
 	unittest_print_tests_results(duration, crashed_tests, failed_tests, count_tests);
 }

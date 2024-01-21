@@ -119,7 +119,7 @@ void unittest_fetch_filesname(const char *file, const char *outfile, const char 
 	strcpy(unittest_hashed_file, unittest_testdir);
 	strcat(unittest_hashed_file, hashed_file);
 
-	unittest_fetched_files_name = 1;
+	unittest_fetched_files_name = true;
 }
 
 void unittest_check_testdir_exist(void)

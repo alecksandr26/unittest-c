@@ -43,7 +43,7 @@ void unittest_include(UnitTestFile *tf)
 	/* Check if it has been already included */
 
 	for (size_t i = 0; i < unittest_tfile_count; i++)
-		if (strcmp(tf->filename, unittest_tfiles[i].filename) == 0)
+		if (strcmp(tf->name, unittest_tfiles[i].name) == 0)
 			return;
 
 	long h;
@@ -51,7 +51,7 @@ void unittest_include(UnitTestFile *tf)
 
 	memset(path, 0, 255);
 	strcat(path, unittest_testdir);
-	strcat(path, tf->filename);
+	strcat(path, tf->name);
 
 	unittest_get_creation_date(path, date);
 	h = unittest_hash((const uint8_t *) date);

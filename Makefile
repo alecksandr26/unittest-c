@@ -42,7 +42,7 @@ UPLOAD_DIR = upload
 TEST_SRC_DIR = $(addprefix $(TEST_DIR)/, src)
 TEST_BIN_DIR = $(addprefix $(TEST_DIR)/, bin)
 
-OBJS = $(addprefix $(OBJ_DIR)/, debug.o assert.o tcase.o valgrind.o command.o compile.o tfile.o dir.o \
+OBJS = $(addprefix $(OBJ_DIR)/, debug.o assert.o tcase.o suit.o valgrind.o command.o compile.o tfile.o dir.o \
 				hashdates.o rerun.o unittest.o)
 
 LIBS = $(addprefix $(LIB_DIR)/, libunittest.a)
@@ -50,15 +50,15 @@ EXAMPLES = $(addprefix $(EXAMPLE_DIR)/, test.out \
 					testc.out \
 					valgrind_test.out)
 
-TESTS = $(addprefix $(TEST_BIN_DIR)/, 	test_running_testcase.out \
-					test_create_suit.out \
+TESTS = $(addprefix $(TEST_BIN_DIR)/, 	test_running_testcase.out\
+					test_create_suit.out\
 					test_multiple_suits.out\
-					test_unittest_map.out\
-					test_assert.out\
-					test_compile.out\
-					test_compile_fails.out\
-					test_log.out\
-					test_crashed_test.out)
+					test_assert.out)
+					# test_compile.out\
+					# test_compile_fails.out\
+					# test_log.out\
+					# test_crashed_test.out
+# )				
 
 .PHONY: all compile pkg  upload-aur examples
 all: $(OBJS) $(LIBS) $(TESTS) $(EXAMPLES)

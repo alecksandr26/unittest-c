@@ -73,6 +73,21 @@ TESTCASE(NewCase)
 }
 ENDTESTCASE
 
+TESTCASE(TestingTime)
+{
+	#define N 1e6
+
+	/* Take time */
+	size_t sum = 0;
+	for (size_t i = 0; i < N; i++)
+		sum = 1;
+
+	TEST(SumGreaterThanZero) {
+		ASSERT(sum > 0);
+	}
+	
+} ENDTESTCASE
+
 int main(void)
 {
 	/* Run the tests case */
@@ -85,7 +100,7 @@ int main(void)
 	*/
 
 	// CATCH(Testfoo, NewCase, TestingMalloc);
-
+	
 	/*  Run the tree at once */
 	MUTE_ACTIVE(true);
 
@@ -95,7 +110,7 @@ int main(void)
 	assert(TestingMalloc.name != NULL);
 	assert(TestingMalloc.file != NULL);
 
-	RUN(Testfoo, NewCase, TestingMalloc);
+	RUN(Testfoo, NewCase, TestingMalloc, TestingTime);
 
 	/* One test failed */
 	assert(unittest_ret == -1);

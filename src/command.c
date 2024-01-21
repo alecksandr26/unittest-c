@@ -121,4 +121,12 @@ int unittest_execute(const UnitCommand *command)
 	return status;
 }
 
+/* unittest_init_command: To inialized a command structure with it default attributes. */
+void unittest_init_command(UnitCommand *command)
+{
+	assert(command != NULL && "Can't be null");
+	memset(command, 0, sizeof(UnitCommand));
+	command->buff_ptr = command->args_buff;
+}
+
 
