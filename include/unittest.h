@@ -22,7 +22,9 @@
 
 
 #include "unittest_debug.h"
+#include "unittest_infofail.h"
 #include "unittest_assert.h"
+#include "unittest_expect.h"
 #include "unittest_tcase.h"
 #include "unittest_suit.h"
 #include "unittest_exceptions.h"

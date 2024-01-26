@@ -22,28 +22,28 @@ bool unittest_running_tests = false;
 int unittest_ret = 0;
 
 /* unittest_print_results: Prints the results of the executed testcases. */
-static void unittest_print_tests_results(double duration, size_t crashed_tests, size_t failed_tests,
-					 size_t count_tests)
-{
+static void unittest_print_tests_results(double duration, size_t crashed_testcases, size_t failed_testcases,
+					 size_t failed_tests, size_t warned_tests, size_t count_tests)
+{	
 	LOG("\n");
 
-	for (size_t i = 0; i < crashed_tests; i++)
+	for (size_t i = 0; i < crashed_testcases; i++)
 		unittest_print_crashed_testcase(unittest_info_crashed_testcases[i]);
 
-	for (size_t i = 0; i < failed_tests; i++)
-		unittest_print_faild_test(infofails[i]);
+	for (size_t i = 0; i < failed_testcases; i++)
+		unittest_print_faild_testcase(infofails[i]);
 
-	LOG("---------------------------------------------------------------------------"
-	    "----------------\n");
+	
+	LOG(DIV_LINE_STR);
 	LOG("Ran %zu test in %fs\n", count_tests, duration);
 
-	if (failed_tests == 0 && crashed_tests == 0) {
+	if (failed_tests == 0 && crashed_testcases == 0 && warned_tests == 0 && failed_testcases) {
 		LOG("\nOk \n\n");
 		unittest_ret = 0;
 	}
 
-	if (crashed_tests) {
-		LOG("\nCRASHED(crashes=%zu)\n", crashed_tests);
+	if (crashed_testcases) {
+		LOG("\nCRASHED(crashes=%zu)\n", crashed_testcases);
 		unittest_ret = -1;
 	}
 
@@ -51,16 +51,22 @@ static void unittest_print_tests_results(double duration, size_t crashed_tests, 
 		LOG("\nFAILED(failures=%zu)\n\n", failed_tests);
 		unittest_ret = -1;
 	}
+
+	if (warned_tests) {
+		LOG("\nWARNED(warnings=%zu)\n\n", warned_tests);
+		unittest_ret = 1;
+	}
 }
 
 /* unittest_run_tests: Takes the linked list of testcases and run isolated it each individual it. */
 void unittest_run_tests(void)
 {
 	assert(unittest_head_tc != NULL && "Should be at least one test");
-	size_t		    count_tests, success_test, failed_tests, crashed_tests;
-
+	size_t count_tests, successed_tests, failed_tests, warned_tests,
+		crashed_testcases, failed_testcases;
+	
 	/* Execute each testcase */
-	crashed_tests = count_tests = success_test = failed_tests = 0;
+	failed_testcases = crashed_testcases = count_tests = successed_tests = failed_tests = warned_tests = 0;
 	/* clock_t start_time				       = clock(); */
 	struct timeval start_time, end_time;
 	gettimeofday(&start_time, NULL);
@@ -71,20 +77,21 @@ void unittest_run_tests(void)
 		if (unittest_head_tc->sigstatus == 0
 		    && unittest_head_tc->retstatus == EXIT_SUCCESS) {
 			
-			success_test += unittest_head_tc->amount -
-				unittest_head_tc->amount_failed;
-
-			/* Catch its failes info */
-			for (size_t i = 0; i < unittest_head_tc->amount_failed;
-			     i++) {
-				infofails[failed_tests] =
-					&unittest_head_tc->failed_info[i];
-				unittest_catch_info_faild(infofails[failed_tests++], unittest_head_tc);
-			}
+			successed_tests += unittest_head_tc->amount
+				- unittest_head_tc->failed_info.number_failed_asserts
+				- unittest_head_tc->failed_info.number_warning_expects;
+			
+			/* Catch its failed asserts info */
+			if (unittest_head_tc->failed_info.number_failed_asserts
+			    || unittest_head_tc->failed_info.number_warning_expects)
+				infofails[failed_testcases++] = &unittest_head_tc->failed_info;
+			
+			failed_tests += unittest_head_tc->failed_info.number_failed_asserts;
+			warned_tests += unittest_head_tc->failed_info.number_warning_expects;
 		} else {
 			LOG("E"); /* Print for a crash  */
-			unittest_info_crashed_testcases[crashed_tests] = &unittest_head_tc->crashed_info;
-			unittest_catch_info_crashed(unittest_info_crashed_testcases[crashed_tests],
+			unittest_info_crashed_testcases[crashed_testcases] = &unittest_head_tc->crashed_info;
+			unittest_catch_info_crashed(unittest_info_crashed_testcases[crashed_testcases],
 						    unittest_head_tc);
 		}
 
@@ -101,5 +108,6 @@ void unittest_run_tests(void)
 		(end_time.tv_usec - start_time.tv_usec) / 1000000.0;
 	
 	/* Printing section */
-	unittest_print_tests_results(duration, crashed_tests, failed_tests, count_tests);
+	unittest_print_tests_results(duration, crashed_testcases, failed_testcases, failed_tests,
+				     warned_tests, count_tests);
 }

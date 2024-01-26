@@ -8,6 +8,7 @@
   @license This project is released under the MIT License
 */
 
+#include "../include/unittest_def.h"
 #include "../include/unittest_tcase.h"
 
 
@@ -15,6 +16,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <sys/shm.h>
 #include <stdlib.h>
 
 #include <trycatch.h>
@@ -32,11 +34,11 @@ void unittest_run_isolated_testcase(UnitTestCase *tc)
 	assert(tc != NULL && "Shouldn't be null");
 	
 	pid_t child_pid;
-	int   pipefd[2];	// File descriptors for the pipe
 	int   status;
-
-	if (pipe(pipefd) == -1) {
-		LOG("IMPOSSIBLE TO BUILT THE PIPES\n");
+	int shmid;		/* The shared memory */
+	
+	if ((shmid = shmget(IPC_PRIVATE, sizeof(UnitTestCase), IPC_CREAT | 0666)) < 0) {
+		LOG("IMPOSSIBLE TO CREATE THE SHARED MEMORY\n");
 		exit(EXIT_FAILURE);
 	}
 
@@ -48,50 +50,47 @@ void unittest_run_isolated_testcase(UnitTestCase *tc)
 		exit(EXIT_FAILURE);
 	}
 
-	if (child_pid == 0) {
-		/* Child process */
-
-		// Close the read end of the pipes
-		close(pipefd[0]);
-
+	if (child_pid == 0) { /* Child process */
+		
+		/* Get a pointer to the shared memory */
+		UnitTestCase *shared_tc = (UnitTestCase *) shmat(shmid, NULL, 0);
+		memcpy(shared_tc, tc, sizeof(UnitTestCase));
+		
 		/* Execute the testcase */
-		tc->testcase(tc);
+		shared_tc->testcase(shared_tc);
 
-		// Write the data to the pipe
-		write(pipefd[1], tc, sizeof(*tc));
+		shmdt(shared_tc);
 
-		// Close the write end of the pipe
-		close(pipefd[1]);
-
-		/* Terminated the program with success */
 		exit(EXIT_SUCCESS);
 	} else {
 		/* Father process */
-
-		// Close the write end of the pipes
-		close(pipefd[1]);
-
+		
 		/* Wait for the execution of the testcase */
 		wait(&status);
 
 		if (WIFEXITED(status)) {
 			if (WEXITSTATUS(status) == EXIT_SUCCESS) {
-				read(pipefd[0], tc, sizeof(*tc));
-
-				/* Close the read pipe */
-				close(pipefd[0]);
+				UnitTestCase *shared_tc = (UnitTestCase *) shmat(shmid, NULL, 0);
+				
+				memcpy(tc, shared_tc, sizeof(UnitTestCase));
+				
 				tc->retstatus = EXIT_SUCCESS;
 				tc->sigstatus = 0;
+				
+				shmdt(shared_tc);
+				shmctl(shmid, IPC_RMID, NULL); // Cleanup shared memory
+					
 				return;
 			}
-			
+
 			tc->retstatus = WEXITSTATUS(status);
 			tc->sigstatus = 0;
+			shmctl(shmid, IPC_RMID, NULL); // Cleanup shared memory
 			return;
 		} else {
 			/* The program was aborted */
-			close(pipefd[0]);
 			tc->sigstatus = WTERMSIG(status);
+			shmctl(shmid, IPC_RMID, NULL); // Cleanup shared memory
 			return;
 		}
 	}
@@ -127,5 +126,3 @@ void unittest_catch_info_faild(UnitTestInfoFailed *info, UnitTestCase *tc)
 	info->unitcase = tc->name;
 	info->file = tc->file;
 }
-
-

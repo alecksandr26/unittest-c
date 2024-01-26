@@ -13,7 +13,11 @@
 
 #define MAX_AMOUNT_OF_TESTS_IN_TESTCASES 128
 #define MAX_AMOUNT_OF_TESTCASES 1024
-#define MAX_AMOUNT_OF_TESTS_INFO_FAILD 131072 /* 1024 * 128 */
+#define MAX_AMOUNT_OF_INFO_FAILES 1024
+
+/* Limited because of the pipes  */
+#define MAX_AMOUNT_OF_FAILED_ASSERTIONS_IN_TESTCASE 128
+#define MAX_AMOUNT_OF_ASSERTS_IN_TESTS 128
 #define MAX_AMOUNT_OF_TESTCASES_IN_SUITS 128
 #define MAX_AMOUNT_OF_SUITS 1024
 #define MAX_AMOUNT_OF_TEST_FILES	     128
@@ -63,6 +67,7 @@
 #define FLAGS_BUFF_SIZE 1024
 #define ERROR_INFO_MSG_SIZE 256
 #define EXPR_LENGHT_SIZE 256
+#define UNITTEST_STR_SIZE 1024
 
 #define DIR_SIZE_NAME 256
 #define FILE_SIZE_NAME 256
@@ -71,6 +76,12 @@
 #define COMPILED_SUCCESS 0
 #define UNITTEST_STD_OUT 1
 #define UNITTEST_STD_ERR 2
+
+#define DIV_LINE_STR "---------------------------------------------------------------------------" \
+	"----------------\n"
+
+#define DIV_DOUBLE_LINE_STR "===========================================================================" \
+	"================\n"
 
 #endif
 

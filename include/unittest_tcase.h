@@ -15,7 +15,7 @@
 
 #include "unittest_def.h"
 #include "unittest_debug.h"
-#include "unittest_assert.h"
+#include "unittest_infofail.h"
 
 #include <stddef.h>
 #include <trycatch.h>
@@ -26,13 +26,14 @@
 typedef struct UnitTestCase UnitTestCase;
 struct  UnitTestCase {
 	const char *file, *name;
-	size_t	    amount, amount_failed;
+	char res;
+	size_t	    amount;
 	UnitTestCase	   *next;
 	int	    line, retstatus, sigstatus;
 
 	/* Catch the test function */
 	void (*testcase)(UnitTestCase *);
-	UnitTestInfoFailed failed_info[MAX_AMOUNT_OF_TESTS_IN_TESTCASES];
+	UnitTestInfoFailed failed_info;
 	UnitTestCaseErrorInfo crashed_info;
 };
 
@@ -47,37 +48,43 @@ typedef struct  {
 
 /* These are macros used to define and run test cases. */
 #define TESTCASE(TEST_CASE_NAME)                                                     \
-	void	     TESTCASE##TEST_CASE_NAME(UnitTestCase *unitcase);	\
+	void	     TESTCASE_##TEST_CASE_NAME(UnitTestCase *unitcase);	\
 	UnitTestCase TEST_CASE_NAME = {.file	      = __FILE__,                    \
 				       .name	      = #TEST_CASE_NAME,             \
 				       .amount	      = 0,                           \
-				       .amount_failed = 0,                           \
 				       .next	      = NULL,                        \
-				       .testcase      = &(TESTCASE##TEST_CASE_NAME), \
-				       .failed_info   = {{0}},                       \
-				       .line	      = __LINE__};                            \
-	void	     TESTCASE##TEST_CASE_NAME(UnitTestCase *unitcase)                \
-	{                                                                            \
-		UnitTestCaseFrame unitframe;                                         \
-		unitframe.state	  = stackjmp(&unitframe.buf);                        \
-		unitframe.counter = 0;                                               \
-		do
+				       .testcase      = &(TESTCASE_##TEST_CASE_NAME), \
+				       .line	      = __LINE__,	\
+				       .failed_info = {			\
+					       .unitcase = #TEST_CASE_NAME, \
+					       .file = __FILE__,	\
+					       .number_failed_asserts = 0, \
+					       .number_warning_expects = 0, \
+				       },				\
+	};								\
+	void	     TESTCASE_##TEST_CASE_NAME(UnitTestCase *unitcase)	\
+	{								\
+	        UnitTestCaseFrame unitframe;					\
+		unitframe.state	  = stackjmp(&unitframe.buf);		\
+		if (unitframe.state > 1)				\
+			LOG("%c", unitcase->res);			\
+		if (unitframe.state > unitcase->amount)			\
+			return;						\
+		unitframe.counter = 0;					\
+	do
 
 #define TEST(TEST_NAME)                               \
 	unitframe.current_test = #TEST_NAME;          \
-	/* Count all the tests */                     \
+	/* Count all the tests */		      \
 	if (unitframe.state == 0) unitcase->amount++; \
-	if (unitframe.state == ++unitframe.counter)
+	if (unitframe.state == ++unitframe.counter && (unitcase->res = '.'))
 
-#define ENDTESTCASE                                                             \
-	while (0)                                                               \
-		;                                                               \
-	if (unitcase->amount == 0) throw(UnittestNoneTests);                    \
-	if (unitframe.state > 0 && unitframe.state <= (int) unitcase->amount && \
-	    !unittest_mute_mode)                                                \
-		LOG(".");                                                       \
-	if (unitframe.state < (int) unitcase->amount)                           \
-		jmpback(&unitframe.buf, unitframe.state + 1);                   \
+#define ENDTESTCASE							\
+	while (0)							\
+		;							\
+	if (unitcase->amount == 0) throw(UnittestNoneTests);		\
+	if (unitframe.state <= (int) unitcase->amount)			\
+		jmpback(&unitframe.buf, unitframe.state + 1);		\
 	}
 
 /* unittest_head_tc: A pointer to the last linked test case. */

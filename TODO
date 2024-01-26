@@ -53,4 +53,7 @@
 - Try to compile and run the other testfiles, you will require edit
   the testrunner files and comment the line where the macro include is
   been executed [ ]
+
+---- 2024/01/23 ----
+- Copy the test case through other way and not via pipes [X]
   
