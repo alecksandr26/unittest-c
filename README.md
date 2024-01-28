@@ -441,10 +441,10 @@ TESTCASE(MyTestCases2)
 
 } ENDTESTCASE
 ```
-3. Create a new test suite using the ***NEW_SUIT*** macro, passing in the ***names*** of all the ***test cases*** you want to include in the suite as
+3. Create a new test suite using the ***SUIT*** macro, passing in the ***names*** of all the ***test cases*** you want to include in the suite as
  arguments.
 ```C
-NEW_SUIT(MySuit, MyTestCases1, MyTestCases2);
+SUIT(MySuit, MyTestCases1, MyTestCases2);
 ```
 4. In the ***main()*** function, call the RUN macro with ***the name of the test suite*** to run all the test cases.
 ```C
@@ -456,9 +456,9 @@ int main(void)
     return 0;
 }
 ```
-5. Compile the code with the ***flags mentioned in the previous section*** ([How to write Test Cases?](https://github.com/alecksandr26/unittest-c#how-to-write-test-cases)) and run the executable. You should see an output similar to this:
+5. Compile the code with the ***flag mentioned in the previous section*** ([How to write Test Cases?](https://github.com/alecksandr26/unittest-c#how-to-write-test-cases)) and run the executable. You should see an output similar to this:
 ```shell
-[term] $ cc mytestfile.c -lunittest -lexcept
+[term] $ cc mytestfile.c -lunittest
 [term] $ ./a.out
 ....
 --------------------------------------------------------------------------------------
@@ -468,58 +468,71 @@ Ok
 
 [term] $
 ```
-Finally here is the complete exmple code from this section.
+Finally here is more elaborated example code from this section.
 ```C
 #include <unittest.h>
 
-TESTCASE(MyTestCases1)
-{
-    // Set up any boilerplate code for all tests in the test case
-    int x = 42;
+#include <math.h>
+#include <malloc.h>
+#include <string.h>
 
-    // Define individual tests using the TEST macro
-    TEST(Test1)
-    {
-        // Use ASSERT macro to check if x equals 42
-        ASSERT(x == 42, "x should equal 42");
-    }
 
-    TEST(Test2)
-    {
-        // Use ASSERT macro to check if x is less than 100
-        ASSERT(x < 100, "x should be less than 100");
-    }
+TESTCASE(MyTestCase1) {
+	TEST(TestSqrt2) {
+		double x = sqrt(2.0);
+		INFO_VAR(x);
+		ASSERT_NEAR(x, 1.414, 1e-3, "Testing the sqrt of 2");
+	}
 
+	void *null_ptr, *non_null_ptr;
+		
+	null_ptr = NULL;
+	non_null_ptr = malloc(100);
+	
+	TEST(TestingTheAssert_eq) {
+		INFO("%p", null_ptr);
+		INFO("%p", non_null_ptr);
+		ASSERT_EQ(null_ptr, non_null_ptr, "Cheking null ptr");
+	}
+
+	free(non_null_ptr);
 } ENDTESTCASE
 
-TESTCASE(MyTestCases2)
-{
-    // Set up any boilerplate code for all tests in the test case
-    int y = 100;
 
-    // Define individual tests using the TEST macro
-    TEST(Test3)
-    {
-        // Use ASSERT macro to check if y equals 100
-        ASSERT(y == 100, "y should equal 100");
-    }
+TESTCASE(MyTestCase2) {
 
-    TEST(Test4)
-    {
-        // Use ASSERT macro to check if y is greater than or equal to 50
-        ASSERT(y >= 50, "y should be greater than or equal to 50");
-    }
+	struct Person {
+		char name[100];
+		int age;
+	};
+	
+	TEST(TestingNonEq) {
+		struct Person p1;
+		memset(&p1, 0, sizeof(struct Person));
+		p1.age = 10;
+		strcpy(p1.name, "Pedrito");
 
+
+		struct Person p2;
+		memset(&p2, 0, sizeof(struct Person));
+		p2.age = 10;
+		strcpy(p2.name, "Pedrito");
+		
+		INFO_EXPR(strcmp(p1.name, p2.name));
+
+		EXPECT_NEQ(p1, p2, "Should throw a warning");
+	}
 } ENDTESTCASE
 
-NEW_SUIT(MySuit, MyTestCases1, MyTestCases2);
+// Create the suit
+SUIT(MySuit, MyTestCase1, MyTestCase2);
 
 int main(void)
 {
-    // Call RUN macro with the name of the suit to run the test cases
-    RUN(MySuit);
-
-    return 0;
+	// Run the suit
+	RUN(MySuit);
+	
+	return unittest_ret;
 }
 ```
 ## How to include `Test Cases` or `Suits` from other files?
@@ -589,7 +602,7 @@ TESTCASE(MyTestCases2)
 
 } ENDTESTCASE
 
-NEW_SUIT(MySuit, MyTestCases1, MyTestCases2);
+SUIT(MySuit, MyTestCases1, MyTestCases2);
 ````
 2. Create a new file, e.g. ***testrunner.c***, which will serve as your main test runner. In this file, include the test cases and the suit from the 
 file that you want to run. 
@@ -597,12 +610,10 @@ You can use the ***INCLUDE_TEST_CASE*** and ***INCLUDE_SUIT*** macros to do this
 matches the actual directory where 
 your ***simpletest.c*** is located. Here's an example:
 ```C
-#include <unittest.h>
 #include <stdio.h>
 
-#undef TEST_DIR
 #define TEST_DIR "dir3/"
-
+#include <unittest.h>
 
 int main(void)
 {
@@ -612,12 +623,12 @@ int main(void)
 	INCLUDE_SUIT("simpletest.c", MySuit);
 	
 	RUN();
-	return 0;
+	return unittest_ret;
 }
 ```
 3. To compile the ***testrunner*** and the included test case, use the following command:
 ```
-[term] $ gcc -o testrunner testrunner.c dir3/simpletest.c -lunittest -ltc
+[term] $ cc -o testrunner testrunner.c dir3/simpletest.c -lunittest
 ```
 The ***dir3/simpletest.c*** file is the test case that was included in the previous step using the ***INCLUDE_TEST_CASE*** macro and here its output.
 ```shell
