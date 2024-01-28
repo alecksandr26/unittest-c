@@ -10,9 +10,9 @@
   		* [How to Log information only on `Failure` or `Warning`?](https://github.com/alecksandr26/unittest-c?tab=readme-ov-file#how-to-log-information-only-on-failure-or-warning)
 	* [How to create Suits?](https://github.com/alecksandr26/unittest-c#how-to-create-suits)
 * [How to include Test Cases or Suits from other files?](https://github.com/alecksandr26/unittest-c#how-to-include-test-cases-or-suits-from-other-files)
-* [Automate the ***Compilation*** of the `Executable` and each individual `Test File`](https://github.com/alecksandr26/unittest-c?tab=readme-ov-file#automate-the-compilation-of-the-executable-and-each-individual-test-file)
+	* [Automate the ***Compilation*** of the `Executable` and each individual `Test File`](https://github.com/alecksandr26/unittest-c?tab=readme-ov-file#automate-the-compilation-of-the-executable-and-each-individual-test-file)
+   	* [Attaching extra flags for the recompilation](https://github.com/alecksandr26/unittest-c#attaching-extra-flags-for-the-recompilation)
 * [Running Valgrind from the framework](https://github.com/alecksandr26/unittest-c#running-valgrind-from-the-framework)
-* [Attaching extra flags for the recompilation](https://github.com/alecksandr26/unittest-c#attaching-extra-flags-for-the-recompilation)
 * [Assertions and Expectations](https://github.com/alecksandr26/unittest-c/?tab=readme-ov-file#assertions-and-expectations)
 	* [Assertions Reference](https://github.com/alecksandr26/unittest-c/?tab=readme-ov-file#assertions-reference)
    	* [Expectations Reference](https://github.com/alecksandr26/unittest-c/?tab=readme-ov-file#expectations-reference)
@@ -535,7 +535,7 @@ int main(void)
 	return unittest_ret;
 }
 ```
-## How to include `Test Cases` or `Suits` from other files?
+# How to include `Test Cases` or `Suits` from other files?
 1. For example, let's create some testcases and a suit in a file called ***simpletest.c***:
 ```C
 // simpletest.c
@@ -728,60 +728,14 @@ Ran 8 test in 0.003770s
 Ok 
 
 ```
-This recompilation feature allows you to focus solely on writing new code and its tests, instead of worrying about compiling your large code tests. The framework creates an ***.obj*** directory where it stores the ***.o*** files, and it will automatically recompile the test files when it detects a change, making the process of compilation and writing tests more efficient.
-### Possible bug 
+This automated compiled feature allows you to focus solely on writing new code and its tests, instead of worrying about compiling your large code tests. The framework creates an ***.obj*** directory where it stores the ***.o*** files, and it will automatically recompile the test files when it detects a change, making the process of compilation and writing tests more efficient.
 
-### Running Valgrind from the framework
-This feature is only available when the **recompilation mode** is enabled. Running your tests in this mode offers several benefits. To ensure that you are utilizing this feature, follow these steps:
-1. Confirm that you have enabled the **recompile mode** feature in your code:
-```C
-#undef UNITTEST_RECOMPILE
-#define UNITTEST_RECOMPILE 1
-```
-2. Within your **main()** test runner binary, invoke the **ACTIVE_VALGRIND()** macro to enable the valgrind feature.
-```C
-#undef TEST_DIR
-#define TEST_DIR "dir3/"
+### ALERT!!!! Potential Bug in the Compilation Automation Feature
+There is a potential bug associated with the compilation automation feature. Specifically, this bug may occur if you update the header files of the code you wish to test but do not modify the corresponding test files. In such cases, the tests might execute using a previous version of the header files, resulting in unexpected bugs during test execution.
+To mitigate this issue, it is recommended to delete the `.hasheddates` file located within your `TEST_DIR` each time you make changes to your header files.
 
-int main(void)
-{
-	#undef UNITTEST_RECOMPILE
-	#define UNITTEST_RECOMPILE 1
-	
-	INCLUDE_TEST_CASE("simpletest.c", SimpleTest);
-	INCLUDE_SUIT("simpletest.c", MySuit);
-	
-	// Activate Valgrind for memory leak detection
-	ACTIVE_VALGRIND();
-	
-	RUN();
-	return 0;
-}
-```
-Then, depending on the number of test cases present in **simpletest.c**, the output of this code will display something like the following:
-```shell
-[term] $ ./test
-==10498== Memcheck, a memory error detector
-==10498== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
-==10498== Using Valgrind-3.21.0 and LibVEX; rerun with -h for copyright info
-==10498== Command: ./example/valgrind_test.out
-==10498== 
-.....
---------------------------------------------------------------------------------------
-Ran 5 test in 0.008277s
 
-Ok 
-
-==10498== 
-==10498== HEAP SUMMARY:
-==10498==     in use at exit: 0 bytes in 0 blocks
-==10498==   total heap usage: 0 allocs, 0 frees, 0 bytes allocated
-==10498== 
-==10498== All heap blocks were freed -- no leaks are possible
-==10498== 
-==10498== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
-```
-### Attaching extra flags for the recompilation
+### Attaching extra flags for the compile automatitation
 If you intend to use a third-party library in your tests or if you wish to test a library or component, you might want to include it in the recompilation process. To achieve this, follow the steps below to learn how to proceed:
 1. Confirm that you have enabled the **recompile mode** feature in your code:
 ```C
@@ -830,6 +784,57 @@ Ran 5 test in 0.008277s
 
 Ok 
 
+```
+
+# Incorporing valgrind to the test execution
+This feature is only available when the **recompilation mode** is enabled. Running your tests in this mode offers several benefits. To ensure that you are utilizing this feature, follow these steps:
+1. Confirm that you have enabled the **recompile mode** feature in your code:
+```C
+#undef UNITTEST_RECOMPILE
+#define UNITTEST_RECOMPILE 1
+```
+2. Within your **main()** test runner binary, invoke the **ACTIVE_VALGRIND()** macro to enable the valgrind feature.
+```C
+#undef TEST_DIR
+#define TEST_DIR "dir3/"
+
+int main(void)
+{
+	#undef UNITTEST_RECOMPILE
+	#define UNITTEST_RECOMPILE 1
+	
+	INCLUDE_TEST_CASE("simpletest.c", SimpleTest);
+	INCLUDE_SUIT("simpletest.c", MySuit);
+	
+	// Activate Valgrind for memory leak detection
+	ACTIVE_VALGRIND();
+	
+	RUN();
+	return 0;
+}
+```
+Then, depending on the number of test cases present in **simpletest.c**, the output of this code will display something like the following:
+```shell
+[term] $ ./test
+==10498== Memcheck, a memory error detector
+==10498== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
+==10498== Using Valgrind-3.21.0 and LibVEX; rerun with -h for copyright info
+==10498== Command: ./example/valgrind_test.out
+==10498== 
+.....
+--------------------------------------------------------------------------------------
+Ran 5 test in 0.008277s
+
+Ok 
+
+==10498== 
+==10498== HEAP SUMMARY:
+==10498==     in use at exit: 0 bytes in 0 blocks
+==10498==   total heap usage: 0 allocs, 0 frees, 0 bytes allocated
+==10498== 
+==10498== All heap blocks were freed -- no leaks are possible
+==10498== 
+==10498== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
 ```
 # Assertions and Expectations
 This library offers **different assertions and expectations**. The difference between an assert and an expect is that an expect is a non-fatal assertion, which means it does not break a test; it only registers the failure information. In this library, expects are counted as simple warnings rather than failures because they are not fatal. Here are two lists of the available assertions and expectations.
