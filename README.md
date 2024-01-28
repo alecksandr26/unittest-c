@@ -633,43 +633,43 @@ This library offers **different assertions and expectations**. The difference be
 
 ## Assertions Reference
 1. **ASSERT(EXPR, ...)**
-   - Evaluates the given expression and registers a failure if it is false.
+   	- Evaluates the given expression and registers a failure if it is false.
 
 2. **ASSERT_EQ(X, Y, ...)**
-   - Compares two variables for equality.
+   	- Compares two variables for equality.
 
 3. **ASSERT_NEQ(X, Y, ...)**
-   - Compares two variables for inequality.
+   	- Compares two variables for inequality.
 
 4. **ASSERT_NEQ(X, Y, ...)**
-   - Checks if the first variable is less than the second.
+   	- Checks if the first variable is less than the second.
 
 5. **ASSERT_LE(X, Y, ...)**
-   - Checks if the first variable is less than or equal to the second.
+  	- Checks if the first variable is less than or equal to the second.
 
 6. **ASSERT_GT(X, Y, ...)**
-   - Checks if the first variable is greater than the second.
+   	- Checks if the first variable is greater than the second.
 
 7. **ASSERT_GE(X, Y, ...)**
-   - Checks if the first variable is greater than or equal to the second.
+   	- Checks if the first variable is greater than or equal to the second.
 
 8. **ASSERT_STR_EQ(X, Y, ...)**
-   - Compares two strings for equality.
+   	- Compares two strings for equality.
 
 9. **ASSERT_STR_NEQ(X, Y, ...)**
-   - Compares two strings for inequality.
+	- Compares two strings for inequality.
 
 10. **ASSERT_NEAR(X, Y, abs_error, ...)**
-   - Asserts that the difference between two values does not exceed a specified absolute error.
+   	- Asserts that the difference between two values does not exceed a specified absolute error.
 
 11. **ASSERT_THROW(STATEMENT, EXCEPT, ...)**
-   - Verifies that a statement throws a specific exception.
+   	- Verifies that a statement throws a specific exception.
 
 12. **ASSERT_ANY_THROW(STATEMENT, ...)**
-   - Verifies that a statement throws an exception of any kind.
+   	- Verifies that a statement throws an exception of any kind.
 
 13. **ASSERT_NO_THROW(STATEMENT, ...)**
-   - Verifies that a statement does not throw any exception.
+   	- Verifies that a statement does not throw any exception.
 
 # References
 1. Wikipedia contributors. (2022a). Boilerplate code. Wikipedia. https://en.wikipedia.org/wiki/Boilerplate_code
