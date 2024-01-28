@@ -7,6 +7,7 @@
 	* [How to write Test Cases?](https://github.com/alecksandr26/unittest-c#how-to-write-test-cases)
 		* [Another example writting `Test Cases`](https://github.com/alecksandr26/unittest-c?tab=readme-ov-file#another-example-of-writing-test-cases)
 		* [Log information](https://github.com/alecksandr26/unittest-c?tab=readme-ov-file#log-information)
+  		* [How to Log information only on `Failure` or `Warning`](https://github.com/alecksandr26/unittest-c?tab=readme-ov-file#how-to-log-information-only-on-failure-or-warning)
 	* [How to create Suits?](https://github.com/alecksandr26/unittest-c#how-to-create-suits)
 	* [How to include Test Cases or Suits from other files?](https://github.com/alecksandr26/unittest-c#how-to-include-test-cases-or-suits-from-other-files)
 	* [How to recompile the executable and each individual test file?](https://github.com/alecksandr26/unittest-c#how-to-recompile-the-executable-and-each-individual-test-file)
