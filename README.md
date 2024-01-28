@@ -1,5 +1,6 @@
 # Table Of Contents
 * [Description](https://github.com/alecksandr26/unittest-c#Unit-Test-C)
+* [License](https://github.com/alecksandr26/unittest-c#Unit-Test-C)
 * [How to install it?](https://github.com/alecksandr26/unittest-c#how-to-install-it)
 	* [Using yay](https://github.com/alecksandr26/unittest-c#using-yay)
 	* [Using make](https://github.com/alecksandr26/unittest-c#using-make)
@@ -17,7 +18,9 @@
 	* [Automate the ***Compilation*** of the `Executable` and each individual `Test File`](https://github.com/alecksandr26/unittest-c?tab=readme-ov-file#automate-the-compilation-of-the-executable-and-each-individual-test-file)
    		* [ALERT!!!! Potential Bug in the Compilation Automation Feature](https://github.com/alecksandr26/unittest-c?tab=readme-ov-file#alert-potential-bug-in-the-compilation-automation-feature)
    		* [Attaching extra flags for the recompilation](https://github.com/alecksandr26/unittest-c#attaching-extra-flags-for-the-recompilation)
-* [Incorporating ***Valgrind*** into the Test Execution Process](https://github.com/alecksandr26/unittest-c#running-valgrind-from-the-framework)
+* [Incorporating ***Valgrind*** into the Test Execution Process](https://github.com/alecksandr26/unittest-c?tab=readme-ov-file#incorporating-valgrind-into-the-test-execution-process)
+	* [Incorporating ***Valgrind*** manually]()
+ 	* [Incorporating ***Valgrind*** for the automated compilation process ]()
 * [References](https://github.com/alecksandr26/unittest-c#references)
 # Unit Test C
 ***Unit Test c*** is a fast and simple macro-based unit testing framework for C. It's inspired by the Python unittest module and designed to reduce 
