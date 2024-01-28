@@ -23,8 +23,11 @@
  	* [Incorporating ***Valgrind*** for the automated compilation process ](https://github.com/alecksandr26/unittest-c/?tab=readme-ov-file#incorporating-valgrind-for-the-automated-compilation-process)
 * [References](https://github.com/alecksandr26/unittest-c#references)
 # Unit Test C
-***Unit Test c*** is a fast and simple macro-based unit testing framework for C. It's inspired by the Python unittest module and designed to reduce 
-boilerplate code. With macros and a built-in test runner, it's ideal for large test suites.
+Unit Test C stands as a straightforward, macro-based unit testing framework tailored for the C programming language. 
+Drawing inspiration from both the Python unittest module and the GoogleTest unittesting framework, 
+it is crafted to alleviate the burden of boilerplate code. Featuring diverse types of assertion and expectation macros, 
+it proves to be an ideal choice for projects of varying complexity in the C language.
+
 # License
 Unit Test C is released under the MIT License, permitting free and open use in both commercial and non-commercial projects.
 # How to install it?
