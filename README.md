@@ -700,16 +700,16 @@ This library offers **different assertions and expectations**. The difference be
    	- Compares two strings for inequality.
 
 10. **EXPECT_NEAR(X, Y, abs_error, ...)**
-    	- Asserts that the difference between two values does not exceed a specified absolute error.
+	- Asserts that the difference between two values does not exceed a specified absolute error.
 
 11. **EXPECT_THROW(STATEMENT, EXCEPT, ...)**
-    	- Verifies that a statement throws a specific exception.
+	- Verifies that a statement throws a specific exception.
 
 12. **EXPECT_ANY_THROW(STATEMENT, ...)**
-    	- Verifies that a statement throws an exception of any kind.
+	- Verifies that a statement throws an exception of any kind.
 
 13. **EXPECT_NO_THROW(STATEMENT, ...)**
-    	- Verifies that a statement does not throw any exception.
+	- Verifies that a statement does not throw any exception.
     
 # References
 1. Wikipedia contributors. (2022a). Boilerplate code. Wikipedia. https://en.wikipedia.org/wiki/Boilerplate_code
