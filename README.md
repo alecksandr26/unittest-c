@@ -677,7 +677,7 @@ test: testrunner
 ```
 And this is the output running the tests throughout `Makefile`.
 ```shell
-make test
+[term] $ make test
 cc -Wall -Werror -c dir/simpletest.c -o dir/simpletest.o
 cc -Wall -Werror -c testrunner.c -o testrunner.o
 cc -lunittest dir/simpletest.o testrunner.o -o testrunner
@@ -718,10 +718,11 @@ int main(void)
 This means that you need to exclude the source code files of your test cases, which were previously included in the compilation command in the previous section.
 For example, if your test cases were included in the compilation command as follows:
 ```shell
-cc -o testrunner testrunner.c simpletest.c -lunittest
+[term] $ cc -o testrunner testrunner.c simpletest.c -lunittest
 ```
 3. When you run the test executable, you will see a message indicating that the test files are being compiled, generating the .o files. After this compilation process, the tests will be executed as usual.
 ```shell
+[term] $ ./testrunner
 [COMPILING]:	dir/simpletest.c -o dir/.obj/simpletest.o
 [LINKING]:	testrunner.c dir/.obj/simpletest.o  -o testrunner
 ........
@@ -735,62 +736,101 @@ This automated compiled feature allows you to focus solely on writing new code a
 
 ### ALERT!!!! Potential Bug in the Compilation Automation Feature
 There is a potential bug associated with the compilation automation feature. Specifically, this bug may occur if you update the header files of the code you wish to test but do not modify the corresponding test files. In such cases, the tests might execute using a previous version of the header files, resulting in unexpected bugs during test execution.
-To mitigate this issue, it is recommended to delete the `.hasheddates` file located within your `TEST_DIR` each time you make changes to your header files.
+To mitigate this issue, it is recommended to delete the `DATE_HASHED_FILE(.date_hashed.bin)` file located within your `TEST_DIR` each time you make changes to your header files.
 
 
 ### Attaching extra flags for the compile automatitation
-If you intend to use a third-party library in your tests or if you wish to test a library or component, you might want to include it in the recompilation process. To achieve this, follow the steps below to learn how to proceed:
+If you intend to use a third-partylibrary in your tests or if you wish to test a library or component, you might want to include it in the compilation process. To achieve this, follow the steps below:
 1. Confirm that you have enabled the **recompile mode** feature in your code:
 ```C
-#undef UNITTEST_RECOMPILE
-#define UNITTEST_RECOMPILE 1
+#define UNITTEST_RECOMPILE
 ```
-2. Inide your **main()** test runner binary, use the **ATTACH_EXTRA_LINKING_FLAGS(path)** macro or **ATTACH_EXTRA_COMPILE_FLAGS(path)**, providing the path to the component you want to test or the flag you want to include in the compilation process:
+2. Inide your **main()** test runner binary, use the **ATTACH_EXTRA_LINKING_FLAGS(flags)** macro or **ATTACH_EXTRA_COMPILE_FLAGS(flags)**, providing the path to the component you want to test or the flag you want to include in the compilation process:
 ```C
-#undef TEST_DIR
-#define TEST_DIR "dir3/"
+#include <stdio.h>
 
-int main()
+#define TEST_DIR "dir/"
+#define UNITTEST_RECOMPILE
+#include <unittest.h>
+
+int main(void)
 {
+	INCLUDE_TESTCASE("simpletest.c", SimpleTest);
 	INCLUDE_SUIT("simpletest.c", MySuit);
-	INCLUDE_TEST_CASE("secondtest.c", TestingFoo);
+
+	/* Include the testcase that tests foo */
+	INCLUDE_TESTCASE("test_foo.c", TestingFoo);
 
 	// Attaching compile flag
 	ATTACH_EXTRA_COMPILE_FLAGS("-DTESTING");
 	
 	// Attaching obj/foo.o as an additional component for testing purposes
 	ATTACH_EXTRA_LINKING_FLAGS("obj/foo.o");
-	RUN();
+
+	/* Run the selected testcases or suits */
+	RUN(SimpleTest, MySuit);
 	
 	return unittest_ret;
 }
+```
+Within the `test_foo.c` file, the testing of the foo component is performed. In this scenario, the foo function is designed to return the constant value `1`.
+```C
+/* Simple example to test the foo  */
+
+#include <unittest.h>
+
+TESTCASE(TestingFoo) {
+
+	extern int foo(void);
+	
+	TEST(FooReturn1) {
+		ASSERT_EQ(foo(), 1, "foo must to return 1");
+	}
+	
+} ENDTESTCASE
 ```
 3. In the code above, if you are trying to link object files for testing, it's important to consider the path where the file is located relative to the test runner. It's recommended to place the test runner at the root path of the project directory. In this example, the obj/foo.o file is attached for testing, assuming it is located in the project root directory. Adjust the path accordingly based on your project structure, for example look this structure.
 ```shell
 [term] $ tree
 .
-├── dir3
-│   └── simpletest.c
+├── dir
+│   ├── simpletest.c
+│   └── test_foo.c
 ├── obj
 │   ├── foo.c
 │   └── foo.o
-├── test
-└── test.c
-2 directories, 5 files
+├── testrunner
+└── testrunner.c
+2 directories, 6 files
 ```
 4. In the code above, after taking care of the paths and setting up the necessary test suites and test cases, you can run the test runner as you normally do. When executing the test runner, you should expect an output similar to the following:
 ```shell
-[term] $ ./test
-.....
---------------------------------------------------------------------------------------
-Ran 5 test in 0.008277s
+[term] $ cc -o testrunner testrunner.c simpletest.c -lunittest
+[term] $ ./testrunner
+[COMPILING]:	dir/test_foo.c -o dir/.obj/test_foo.o
+[LINKING]:	testrunner.c dir/.obj/simpletest.o  -o testrunner
+.........
+-------------------------------------------------------------------------------------------
+Ran 9 test in 0.003532s
+
+Ok
+```
+# Incorporating ***Valgrind*** into the Test Execution Process
+## Incorporating ***Valgrind*** manually
+Incorporating Valgrind into the test execution process is a straightforward task when done manually. Simply execute the following command in the terminal:
+```shell
+[term] $ valgrind --quiet ./testrunner
+........
+-------------------------------------------------------------------------------------------
+Ran 8 test in 0.131442s
 
 Ok 
 
 ```
-
-# Incorporing valgrind to the test execution
-This feature is only available when the **recompilation mode** is enabled. Running your tests in this mode offers several benefits. To ensure that you are utilizing this feature, follow these steps:
+Considering that all memory utilized by the framework is statically allocated, Valgrind is expected to identify any allocations and memory leaks introduced by the tested code. It is advisable to use 
+the `--quiet` flag, particularly since the framework forks the process for each individual test case. 
+This precaution helps manage the potentially extensive log information that Valgrind may generate.
+## Incorporating ***Valgrind*** for the automated compilation process 
 1. Confirm that you have enabled the **recompile mode** feature in your code:
 ```C
 #undef UNITTEST_RECOMPILE
