@@ -86,7 +86,7 @@ ENDTESTCASE
 
 int main(void)
 {
-	// MUTE_ACTIVE();
+	MUTE_ACTIVE(true);
 
 	RUN(NotCrashing2, Crashing, NotCrashing, ExitFailure);
 

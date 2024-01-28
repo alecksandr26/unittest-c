@@ -13,11 +13,13 @@
 
 #include "unittest_def.h"
 
-extern size_t	amount_hashed_dates;
-extern long	hashed_dates[MAX_AMOUNT_OF_TEST_FILES];
+#include <stddef.h>
+
+extern size_t unittest_amount_hashed_dates;
+extern long   unittest_hashed_dates[MAX_AMOUNT_OF_TEST_FILES];
 
 /* unittest_hash: To hash some string and return some random unsinged integer */
-extern unsigned long unittest_hash(const uint8_t *data);
+extern unsigned long unittest_hash(const char *data);
 
 /* unittest_get_creation_date: This function gets the creation time of a file located at a
    given path and stores it as a string in the date parameter. */
@@ -32,9 +34,4 @@ extern void unittest_put_new_dates(void);
  */
 extern void unittest_get_prev_dates(void);
 
-
 #endif
-
-
-
-

@@ -7,19 +7,17 @@
   @license This project is released under the MIT License
 */
 
-#include <assert.h>
-#include <string.h>
-#include <unistd.h>
-#include <stdio.h>
-#include <trycatch.h>
-#include <errno.h>
-#include <stdlib.h>
-#include <sys/wait.h>
-
 #include "../include/unittest_command.h"
+#include "../include/unittest_debug.h"
 
-Except UnittestTooLongCommand = {"Error creating a really big command"};
-Except UnittestTooMuchArgs = {"Error too much arguments"};
+#include <assert.h>
+#include <errno.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/wait.h>
+#include <trycatch.h>
+#include <unistd.h>
 
 /* get_command_str: To get the plain string version of the command. */
 static void get_command_str(const UnitCommand *command, char *str, size_t str_size)
@@ -29,39 +27,28 @@ static void get_command_str(const UnitCommand *command, char *str, size_t str_si
 	assert(str_size > 0 && "Can't process zero arguments");
 
 	memset(str, 0, str_size);
-	
-	size_t index = strlen(command->executable_command);
-	strcat(str, command->executable_command);
-	str[index] = ' ';
-	str += ++index;
-
-	if (index >= COMMAND_SIZE)
-		throw(UnittestTooLongCommand);
 
 	for (size_t i = 0; i < command->nargs; i++) {
-		index = strlen(command->args[i]);
-		strcat(str, command->executable_command);
+		size_t index = strlen(command->args[i]);
+		strcat(str, command->args[i]);
 		str[index] = ' ';
 		str += ++index;
-		
-		if (index >= COMMAND_SIZE)
-			throw(UnittestTooLongCommand);
+
+		assert(index < COMMAND_SIZE &&
+		       "Impossible to build the stringable version of the command");
 	}
 }
 
-/* abort_command_execution: To abort the execution of the program by an error of an command. */
+/* abort_command_execution: To abort the execution of the program by an error of an
+ * command. */
 static void abort_command_execution(const UnitCommand *command)
 {
 	assert(command != NULL && "Can't be null");
-	
+
 	char command_str[COMMAND_SIZE];
 	get_command_str(command, command_str, COMMAND_SIZE);
-	
-	fprintf(stderr, "Error while executing `%s`: fork: %s",
-		command_str,
-		strerror(errno));
-	fprintf(stderr, "Aborting....");
-	abort();
+
+	ABORT("Error while executing `%s`: errno: %s.\n", command_str, strerror(errno));
 }
 
 /* unittest_attach_args: To attach arguments to the command. */
@@ -73,12 +60,13 @@ void unittest_attach_args(UnitCommand *command, const char *args)
 	assert(command->buff_ptr != NULL && "command not initilized");
 	assert(n > 0 && "Can't set empty args");
 
-	if (command->args_buff - command->buff_ptr <= n)
-		throw(UnittestTooMuchArgs);
+	assert((&command->args_buff[FLAGS_BUFF_SIZE] - command->buff_ptr) > n &&
+	       "Must to have enough space to do its operation");
 
-	for (size_t i = 0; i < n; i++) {
+	size_t i = 0;
+	while (i < n) {
 		command->args[command->nargs++] = command->buff_ptr;
-		
+
 		/* Copy en entiere argument */
 		size_t j;
 		for (j = 0; i < n && args[i] != ' '; j++)
@@ -93,29 +81,28 @@ void unittest_attach_args(UnitCommand *command, const char *args)
 	}
 }
 
-
 /* unittest_execute: To execute the command with the attach arguments. */
 int unittest_execute(const UnitCommand *command)
 {
 	assert(command != NULL && "Can't be null");
-	
+
 	int   status;
 	pid_t pid = fork(); /* Creates the child process */
 	if (pid == -1) {
 		abort_command_execution(command);
+
 	} else if (pid == 0) { /* Child process */
 		/* Wtf with that cast */
-		int ret = execv(command->executable_command, (char * const *) command->args);
-		
-		if (ret == -1)
-			abort_command_execution(command);
+		int ret =
+			execv(command->executable_command, (char *const *) command->args);
+
+		if (ret == -1) abort_command_execution(command);
 
 		assert(0 && "Shouldn't exectue this part");
-	} else {	   /* Parent process */
+	} else { /* Parent process */
 		/* waits the child process finished its excecution */
-		pid_t child_pid = waitpid(pid, &status, 0); 
-		if (child_pid == -1)
-			abort_command_execution(command);
+		pid_t child_pid = waitpid(pid, &status, 0);
+		if (child_pid == -1) abort_command_execution(command);
 	}
 
 	return status;
@@ -128,5 +115,3 @@ void unittest_init_command(UnitCommand *command)
 	memset(command, 0, sizeof(UnitCommand));
 	command->buff_ptr = command->args_buff;
 }
-
-

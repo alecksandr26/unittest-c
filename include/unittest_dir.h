@@ -11,9 +11,9 @@
 #ifndef UNITTEST_DIR_INCLUDED
 #define UNITTEST_DIR_INCLUDED
 
-#include <stdbool.h>
-
 #include "unittest_def.h"
+
+#include <stdbool.h>
 
 #ifndef NDEBUG
 extern bool is_root_folder;
@@ -27,23 +27,18 @@ extern char unittest_file[FILE_SIZE_NAME];
 extern char unittest_outfile[FILE_SIZE_NAME];
 extern char unittest_hashed_file[FILE_SIZE_NAME];
 
-/* unittest_fetch_filesname: This functions gets the paths for the needed recompilation. */
-extern  void unittest_fetch_filesname(const char *file, const char *outfile, const char *testdir,
-				      const char *objdir, const char *hashed_file);
+/* unittest_fetch_filesname: This functions gets the paths for the needed recompilation.
+ */
+extern void unittest_fetch_filesname(const char *file, const char *outfile,
+				     const char *testdir, const char *objdir,
+				     const char *hashed_file);
 
-
+/* unittest_check_testdir_exist: Check if the testdir exist, if it doesn't exist it will
+   abort
+   the program. */
 extern void unittest_check_testdir_exist(void);
 
+/* unittest_create_obj_directory: Creates the object directory if doesn't exist. */
+extern void unittest_create_obj_directory(void);
+
 #endif
-
-
-
-
-
-
-
-
-
-
-
-

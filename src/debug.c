@@ -8,40 +8,41 @@
   @license This project is released under the MIT License
 */
 
-#include "../include/unittest_def.h"
 #include "../include/unittest_debug.h"
+#include "../include/unittest_def.h"
 
-#include <string.h>
 #include <assert.h>
-#include <stdbool.h>
 #include <fcntl.h>
-#include <unistd.h>
+#include <stdbool.h>
+#include <string.h>
 #include <sys/signal.h>
+#include <unistd.h>
 
 _Static_assert(MAX_AMOUNT_OF_TESTCASES == 1024, "This should 1024 testscases");
 
-UnitTestCaseErrorInfo  *unittest_info_crashed_testcases[MAX_AMOUNT_OF_TESTCASES];
+UnitTestCaseErrorInfo *unittest_info_crashed_testcases[MAX_AMOUNT_OF_TESTCASES];
 
 _Static_assert(UNITTEST_STD_OUT == 1, "This initialy should be 1");
 
-int unittest_debug_fd_stdout = UNITTEST_STD_OUT, unittest_mute_mode = 0;
+int  unittest_debug_fd_stdout = UNITTEST_STD_OUT;
+bool unittest_mute_mode	      = false;
 
 /* unittest_mute_active: To mute or unmute the printed information. */
 void unittest_mute_active(bool state)
 {
 	if (state) {
-		unittest_mute_mode = 1;					\
-		unittest_debug_fd_stdout = open("/dev/null", O_WRONLY);	\
+		unittest_mute_mode	 = true;
+		unittest_debug_fd_stdout = open("/dev/null", O_WRONLY);
 	} else {
-		if (unittest_debug_fd_stdout > 3)
-			close(unittest_debug_fd_stdout);
-		
-		unittest_mute_mode = 0;				
-		unittest_debug_fd_stdout = UNITTEST_STD_OUT;	
+		if (unittest_debug_fd_stdout > 3) close(unittest_debug_fd_stdout);
+
+		unittest_mute_mode	 = false;
+		unittest_debug_fd_stdout = UNITTEST_STD_OUT;
 	}
 }
 
-/* unittest_signal_error_str: Get the corresponding singal error msg, if testcase crashed. */
+/* unittest_signal_error_str: Get the corresponding singal error msg, if testcase crashed.
+ */
 const char *unittest_signal_error_str(int signum)
 {
 	switch (signum) {
@@ -65,7 +66,8 @@ const char *unittest_signal_error_str(int signum)
 	}
 }
 
-/* unittest_print_crashed_testcase: To print the corresponding information from a crashed testcase  */
+/* unittest_print_crashed_testcase: To print the corresponding information from a crashed
+ * testcase  */
 void unittest_print_crashed_testcase(UnitTestCaseErrorInfo *info)
 {
 	LOG("==========================================================================="
@@ -76,20 +78,20 @@ void unittest_print_crashed_testcase(UnitTestCaseErrorInfo *info)
 	    "-----------\n");
 	LOG("Traceback...\n");
 	LOG("\tFile \"%s\", line %i, in %s\n", info->file, info->line, info->unitcase);
-	LOG("ErrorDescription:\t \"%s\"\n\n", info->msg);
+	LOG("CrashedError:\t \"%s\"\n\n", info->msg);
 }
 
-/* unittest_memory_cmp: Compares two blocks of memory and returns the index where they differ.
+/* unittest_memory_cmp: Compares two blocks of memory and returns the index where they
+   differ.
    If the function returns 'n', it means that the first 'n' bytes are equal. */
 size_t unittest_memory_cmp(const char *var1, const char *var2, size_t n)
 {
-	assert(var1 != NULL && var2 != NULL);  // Assert that pointers are not null
+	assert(var1 != NULL && var2 != NULL);	     // Assert that pointers are not null
 
 	for (size_t i = 0; i < n; ++i)
-		if (var1[i] != var2[i])
-			return i;  // Difference found at index i
-	
-	return n;  // Memory blocks are equal up to 'n' bytes
+		if (var1[i] != var2[i]) return i;	 // Difference found at index i
+
+	return n;	 // Memory blocks are equal up to 'n' bytes
 }
 
 void capture_n_hexvals(const char *memory, size_t size, char *hex_string, size_t str_size)
@@ -101,7 +103,6 @@ void capture_n_hexvals(const char *memory, size_t size, char *hex_string, size_t
 	// Convert each byte to hexadecimal and concatenate to the string
 	for (size_t i = 0; i < size; ++i)
 		snprintf(hex_string + (i * 2), str_size - (i * 2), "%02X", memory[i]);
-	
-	hex_string[size * 2] = '\0';  // Null-terminate the string
-}
 
+	hex_string[size * 2] = '\0';	    // Null-terminate the string
+}

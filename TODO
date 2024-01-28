@@ -26,7 +26,7 @@
 ---- 2023/05/13 ----
 - Think where to put these implementations executing_from_basedir, get_basedir [X]
 - Update the documentation being clear about how to do the recompilation process [X]
-- Start adding more asserts, also add some new features for debuggin [ ]
+- Start adding more asserts, also add some new features for debuggin [X]
 
 ---- 2023/05/22 ----
 - Add several tests for the new features implemented [X]
@@ -36,7 +36,6 @@
 
 ---- 2023/05/23 ----
 - Create an execption if someone trys to use valgrind without using the recompileation mode [ ]
-- Develop a way to use Absolute paths or things like that [ ]
 - Change the sections of the documentation [X]
 - Solve another bug with the hashed date files [X]
 
@@ -47,7 +46,7 @@
 - Solve the bug of the measured time [X]
 
 ---- 2024/01/17 ----
-- Make the library shared dynamically linked [ ]
+- Make the library shared dynamically linked [X]
 
 ---- 2024/01/18 ----
 - Try to compile and run the other testfiles, you will require edit
@@ -56,4 +55,9 @@
 
 ---- 2024/01/23 ----
 - Copy the test case through other way and not via pipes [X]
+
+---- 2024/01/27 ----
+- Develop a way to run isolated each test, not just each testcase [ ]
+- Do a refactor of the info.c file, and also the whole comments [ ]
+- Document the whole asserts and expects [ ]
   

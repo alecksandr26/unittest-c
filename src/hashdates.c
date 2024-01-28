@@ -7,34 +7,27 @@
   @license This project is released under the MIT License.
 */
 
-#include <stdio.h>
-#include <stdbool.h>
-#include <string.h>
-#include <stdint.h>
-#include <unistd.h>
-#include <trycatch.h>
-#include <time.h>
-#include <assert.h>
-#include <fcntl.h>
-#include <sys/stat.h>
-
-
+#include "../include/unittest_debug.h"
 #include "../include/unittest_def.h"
 #include "../include/unittest_dir.h"
-#include "../include/unittest_tfile.h"
 #include "../include/unittest_hashdates.h"
+#include "../include/unittest_tfile.h"
 
-bool dumped		    = false;
-size_t	amount_hashed_dates = 0;
-size_t	new_amount_hashed_dates = 0;
+#include <assert.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <time.h>
+#include <trycatch.h>
+#include <unistd.h>
 
-long	hashed_dates[MAX_AMOUNT_OF_TEST_FILES];
-
-/* TODO: Rewrite this exceptions */
-Except UnittestErrorCreatingFile	= {"Error creating a new file at \"TEST_DIR\""};
-Except UnittestErrorOpeningFile		= {"Error opening a file at \"TEST_DIR\""};
-Except UnittestErrorReadingFile		= {"Error reading a file at \"TEST_DIR\""};
-Except UnittestErrorWrittingFile	= {"Error writting a file at \"TEST_DIR\""};
+bool   dumped			    = false;
+size_t unittest_amount_hashed_dates = 0;
+long   unittest_hashed_dates[MAX_AMOUNT_OF_TEST_FILES];
 
 /* scatter is a 256 entry array that maps bytes to random numbers. */
 static unsigned long scatter[] = {
@@ -83,18 +76,19 @@ static unsigned long scatter[] = {
 	1884137923, 53392249,	1735424165, 1602280572};
 
 /* unittest_hash: To hash some string and return some random unsinged integer */
-unsigned long unittest_hash(const uint8_t *data)
+unsigned long unittest_hash(const char *data)
 {
 	unsigned long h;
 	int	      i;
 	size_t	      len = strlen((char *) data);
+
+	assert(len > 0 && "Invalid data lenght");
 
 	for (h = 0, i = 0; i < (int) len; i++)
 		h = (h << 1) + scatter[(unsigned char) data[i]];
 
 	return h;
 }
-
 
 /* unittest_get_creation_date: This function gets the creation time of a file located at a
    given path and stores it as a string in the date parameter. */
@@ -110,7 +104,6 @@ void unittest_get_creation_date(const char *path_file, char *date)
 	sprintf(date, "Last modified time: %s", ctime(&attr.st_mtime));
 }
 
-
 /* unittest_put_new_dates: Puts new creation/modification dates of the test files in the
  * file. */
 void unittest_put_new_dates(void)
@@ -118,16 +111,18 @@ void unittest_put_new_dates(void)
 	FILE *fp;
 
 	if ((fp = fopen(unittest_hashed_file, "wb")) == NULL)
-		throw(UnittestErrorOpeningFile);
+		ABORT("Error opening the hashdates file \"%s\": errno: %s\n",
+		      unittest_hashed_file, strerror(errno));
 
 	/* Read the hashed binaries*/
-	if (fwrite(&new_amount_hashed_dates, sizeof(size_t), 1, fp) != 1)
-		throw(UnittestErrorWrittingFile);
+	if (fwrite(&unittest_tfile_count, sizeof(size_t), 1, fp) != 1)
+		ABORT("Error writing the hashdates file \"%s\": errno: %s\n",
+		      unittest_hashed_file, strerror(errno));
 
 	for (size_t i = 0; i < unittest_tfile_count; i++)
-		if (fwrite(&unittest_tfiles[i].date_hashed, sizeof(long), 1, fp) !=
-		    new_amount_hashed_dates)
-			throw(UnittestErrorWrittingFile);
+		if (fwrite(&unittest_tfiles[i].date_hashed, sizeof(long), 1, fp) != 1)
+			ABORT("Error writing the hashdates file \"%s\": errno: %s\n",
+			      unittest_hashed_file, strerror(errno));
 	fclose(fp);
 }
 
@@ -138,22 +133,25 @@ void unittest_get_prev_dates(void)
 {
 	FILE *fp;
 
-	if (dumped != 0) return; /* Finish the function */
-	dumped = 1;
+	if (dumped != false) return; /* Finish the function */
+	dumped = true;
 
 	if (access(unittest_hashed_file, F_OK) == -1) /* Doens't exist the file */
 		return;
 
 	if ((fp = fopen(unittest_hashed_file, "rb")) == NULL)
-		throw(UnittestErrorOpeningFile);
+		ABORT("Error opening the hashdates file \"%s\": errno: %s\n",
+		      unittest_hashed_file, strerror(errno));
 
 	/* Read the hashed binaries*/
-	if (fread(&amount_hashed_dates, sizeof(size_t), 1, fp) != 1)
-		throw(UnittestErrorReadingFile);
+	if (fread(&unittest_amount_hashed_dates, sizeof(size_t), 1, fp) != 1)
+		ABORT("Error reading the hashdates file \"%s\": errno: %s\n",
+		      unittest_hashed_file, strerror(errno));
 
-	if (fread(hashed_dates, sizeof(long), amount_hashed_dates, fp) !=
-	    amount_hashed_dates)
-		throw(UnittestErrorReadingFile);
+	if (fread(unittest_hashed_dates, sizeof(long), unittest_amount_hashed_dates,
+		  fp) != unittest_amount_hashed_dates)
+		ABORT("Error reading the hashdates file \"%s\": errno: %s\n",
+		      unittest_hashed_file, strerror(errno));
 
 	fclose(fp);
 }

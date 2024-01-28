@@ -7,8 +7,6 @@
   @license This project is released under the MIT License
 */
 
-
 #include <stdbool.h>
 
 bool unittest_run_valgrind = false;
-

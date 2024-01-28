@@ -13,10 +13,13 @@ endef
 
 PKGNAME = unittest-c
 C = cc
-C_DEBUG_FLAGS = -ggdb -pedantic -Wall
-C_COMPILE_FLAGS = -O2 -DNDEBUG -fno-stack-protector -z execstack -no-pie
+C_DEBUG_FLAGS = -ggdb -pedantic -Wall -fPIC
+C_COMPILE_FLAGS = -O2 -DNDEBUG -fno-stack-protector -z execstack -no-pie -fPIC
 C_FLAGS = $(C_DEBUG_FLAGS)
-C_FLAGS_LIBS = -ltc
+C_FLAGS_TRY_CATCH_LIB = -ltc
+C_FLAGS_WHOLE_ARCHIVE = -Wl,--whole-archive
+C_FLAGS_NO_WHOLE_ARCHIVE = -Wl,--no-whole-archive
+SHARED_LIB_FLAGS = -lunittest
 
 AR = ar cr
 CF = clang-format -i
@@ -42,27 +45,27 @@ UPLOAD_DIR = upload
 TEST_SRC_DIR = $(addprefix $(TEST_DIR)/, src)
 TEST_BIN_DIR = $(addprefix $(TEST_DIR)/, bin)
 
-OBJS = $(addprefix $(OBJ_DIR)/, debug.o infofail.o tcase.o suit.o valgrind.o command.o compile.o tfile.o dir.o \
+OBJS = $(addprefix $(OBJ_DIR)/, debug.o info.o tcase.o suit.o valgrind.o command.o compile.o tfile.o dir.o \
 				hashdates.o rerun.o unittest.o)
 
-LIBS = $(addprefix $(LIB_DIR)/, libunittest.a)
-EXAMPLES = $(addprefix $(EXAMPLE_DIR)/, test.out \
-					testc.out \
-					valgrind_test.out)
+STATIC_LIBS = $(addprefix $(LIB_DIR)/, libunittest.a)
+SHARED_LIBS = $(addprefix $(LIB_DIR)/, libunittest.so)
+
+EXAMPLES = $(addprefix $(EXAMPLE_DIR)/, simple_example.out)
 
 TESTS = $(addprefix $(TEST_BIN_DIR)/, 	test_running_testcase.out\
 					test_create_suit.out\
 					test_multiple_suits.out\
 					test_assert.out\
-					test_expect.out)
-					# test_compile.out\
-					# test_compile_fails.out\
-					# test_log.out\
-					# test_crashed_test.out
-# )				
+					test_expect.out\
+					test_compile.out\
+					test_compile_fails.out\
+					test_log.out\
+					test_crashed_test.out\
+					test_info.out)
 
 .PHONY: all compile pkg  upload-aur examples
-all: $(OBJS) $(LIBS) $(TESTS) $(EXAMPLES)
+all: $(OBJS) $(STATIC_LIBS) $(SHARED_LIBS) $(TESTS) $(EXAMPLES)
 
 $(OBJ_DIR):
 	@echo Creating: $@
@@ -86,34 +89,40 @@ $(EXAMPLE_DIR):
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 	@echo Compiling: $@
-	@$(C) $(C_FLAGS) -c $< -o $@ $(C_FLAGS_LIBS)
+	@$(C) $(C_FLAGS) -c $< -o $@
 
 # Creates the library
 $(LIB_DIR)/%.a: $(OBJS) | $(LIB_DIR)
-	@echo Archiving: $@ $^
+	@echo Archiving: $^ -o $@
 	@$(AR) $@ $^
 	@ranlib $@
 
+$(LIB_DIR)/%.so: $(STATIC_LIBS) | $(LIB_DIR)
+	@echo Archiving: $^ -o $@
+	@$(C) -shared -o $@ $(C_FLAGS_WHOLE_ARCHIVE) $^ $(C_FLAGS_TRY_CATCH_LIB) $(C_FLAGS_NO_WHOLE_ARCHIVE)
+
 # Trying to fetch the compiled directory
-$(EXAMPLE_DIR)/%.out: $(EXAMPLE_DIR)/%.c $(LIBS) | $(EXAMPLE_DIR)
-	@echo Compiling: $(filter-out $(EXAMPLE_DIR), $^) -o $@ 
-	@$(C) $(C_FLAGS) $(filter-out $(EXAMPLE_DIR), $^) -o $@ $(C_FLAGS_LIBS)
+$(EXAMPLE_DIR)/%.out: $(EXAMPLE_DIR)/%.c $(SHARED_LIBS) | $(EXAMPLE_DIR)
+	@echo Compiling: $< -o $@ 
+	@$(C) $(C_FLAGS) -L./$(LIB_DIR) $< -o $@ $(SHARED_LIB_FLAGS)
 
 example_%.out: $(EXAMPLE_DIR)/%.out
 	@echo Running
-	@./$<
+	@export LD_LIBRARY_PATH=$(LIB_DIR):$$LD_LIBRARY_PATH && \
+	./$<
 
 examples: $(addprefix example_, $(notdir $(EXAMPLES)))
 
 # Compile the tests
-$(TEST_BIN_DIR)/test_%.out: $(TEST_SRC_DIR)/test_%.c $(LIBS) | $(TEST_BIN_DIR)
-	@echo Compiling: $(filter-out $(TEST_BIN_DIR), $^) -o $@
-	@$(C) $(C_FLAGS) $(filter-out $(TEST_BIN_DIR), $^) -o $@ $(C_FLAGS_LIBS)
+$(TEST_BIN_DIR)/test_%.out: $(TEST_SRC_DIR)/test_%.c $(SHARED_LIBS) | $(TEST_BIN_DIR)
+	@echo Compiling: $< -o $@
+	@$(C) $(C_FLAGS) -L./$(LIB_DIR) $< -o $@ $(SHARED_LIB_FLAGS)
 
 # To run some tests
 test_%.out: $(TEST_BIN_DIR)/test_%.out
 	@echo Running: $<
-	@$(V) $(V_FLAGS) ./$<
+	@export LD_LIBRARY_PATH=$(LIB_DIR):$$LD_LIBRARY_PATH && \
+	$(V) $(V_FLAGS) ./$<
 	@echo Passed
 
 test: $(notdir $(TESTS))
@@ -163,7 +172,7 @@ format:
 
 # Clean objects and libs and recompile with optimizations
 compile: C_FLAGS = $(C_COMPILE_FLAGS)
-compile: clean $(LIBS)
+compile: clean $(SHARED_LIBS)
 
 pkg:
 	@$(M) $(M_FLAGS)

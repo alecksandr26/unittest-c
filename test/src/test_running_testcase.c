@@ -21,7 +21,8 @@ TESTCASE(Testfoo)
 	float *arr    = malloc(sizeof(float) * amount);
 	float  sum    = 0.0;
 
-	TEST(simple_sum) {
+	TEST(simple_sum)
+	{
 		for (size_t i = 0; i < amount; i++)
 			arr[i] = ((float) i) / 100;
 
@@ -29,7 +30,7 @@ TESTCASE(Testfoo)
 
 		ASSERT(sum == (float) 49.500004);
 	}
-	
+
 	free(arr);
 }
 ENDTESTCASE
@@ -74,17 +75,16 @@ ENDTESTCASE
 
 TESTCASE(TestingTime)
 {
-	#define N 1e6
+#define N 1e6
 
 	/* Take time */
 	size_t sum = 0;
 	for (size_t i = 0; i < N; i++)
 		sum = 1;
 
-	TEST(SumGreaterThanZero) {
-		ASSERT(sum > 0);
-	}
-} ENDTESTCASE
+	TEST(SumGreaterThanZero) { ASSERT(sum > 0); }
+}
+ENDTESTCASE
 
 int main(void)
 {
@@ -98,10 +98,10 @@ int main(void)
 	*/
 
 	// CATCH(Testfoo, NewCase, TestingMalloc);
-	
+
 	/*  Run the tree at once */
 	MUTE_ACTIVE(true);
-	
+
 	/* A few simple asserts */
 	/* after running it should know a few things  */
 	assert(TestingMalloc.testcase != NULL);
@@ -115,8 +115,8 @@ int main(void)
 
 	/* after running it should know a few things  */
 	assert(TestingMalloc.amount == 2);
-	assert(TestingMalloc.failed_info.number_failed_asserts == 0);
+	assert(TestingMalloc.info.number_failed_asserts == 0);
 
 	assert(NewCase.amount == 2);
-	assert(NewCase.failed_info.number_failed_asserts == 1);
+	assert(NewCase.info.number_failed_asserts == 1);
 }

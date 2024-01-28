@@ -7,18 +7,18 @@
   @license This project is released under the MIT License.
 */
 
-#include <string.h>
-#include <stdbool.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <trycatch.h>
-
+#include "../include/unittest_debug.h"
 #include "../include/unittest_def.h"
 #include "../include/unittest_dir.h"
 
-Except UnittestErrorTestBaseDoesntExist = {
-	"Error the default \"TEST_DIR\" doesn't exist"};
+#include <errno.h>
+#include <fcntl.h>
+#include <stdbool.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <trycatch.h>
+#include <unistd.h>
 
 bool unittest_fetched_files_name = false;
 
@@ -32,7 +32,6 @@ char unittest_outfile[FILE_SIZE_NAME];
 char unittest_testdir[FILE_SIZE_NAME];
 char unittest_objdir[FILE_SIZE_NAME];
 char unittest_hashed_file[FILE_SIZE_NAME];
-
 
 /* get_basedir: Gets the base dir from path to a file */
 static void get_basedir(const char *file, char *basedir)
@@ -83,7 +82,8 @@ static bool executing_from_basedir(const char *file)
 	return false;
 }
 
-/* unittest_fetch_filesname: This functions gets the paths for the needed recompilation. */
+/* unittest_fetch_filesname: This functions gets the paths for the needed recompilation.
+ */
 void unittest_fetch_filesname(const char *file, const char *outfile, const char *testdir,
 			      const char *objdir, const char *hashed_file)
 {
@@ -124,6 +124,19 @@ void unittest_fetch_filesname(const char *file, const char *outfile, const char 
 
 void unittest_check_testdir_exist(void)
 {
-	if (access(unittest_testdir, F_OK) != 0) throw(UnittestErrorTestBaseDoesntExist);
+	if (access(unittest_testdir, F_OK) != 0)
+		ABORT("Error the default \"TEST_DIR=%s\" doesn't exist: errno: %s",
+		      unittest_testdir, strerror(errno));
 }
 
+/* unittest_create_obj_directory: Creates the object directory if doesn't exist. */
+void unittest_create_obj_directory(void)
+{
+	/* First check if the directoy exist */
+	if (access(unittest_objdir, F_OK) == 0) return; /* Already exist */
+
+	if (mkdir(unittest_objdir, 0775) != 0)
+		ABORT("Error creating the object dir "
+		      "\"OBJ_DIR=%s\" at \"TEST_DIR=%s\": errno: %s",
+		      unittest_objdir, unittest_testdir, strerror(errno));
+}

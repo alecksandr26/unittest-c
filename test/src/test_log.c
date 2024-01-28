@@ -26,9 +26,10 @@ TESTCASE(MyTests)
 }
 ENDTESTCASE
 
-int main()
+int main(void)
 {
-	/* Simple demostration of the log macro works */
+	MUTE_ACTIVE(true);
 
+	/* Simple demostration of the log macro works */
 	RUN(MyTests);
 }

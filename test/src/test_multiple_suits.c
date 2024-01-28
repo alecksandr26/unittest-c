@@ -56,7 +56,7 @@ TESTCASE(Testfoo)
 ENDTESTCASE
 
 /* First suit */
-NEW_SUIT(FirstSuit, Testfoo, NewCase);
+SUIT(FirstSuit, Testfoo, NewCase);
 
 TESTCASE(TestingMalloc)
 {
@@ -75,7 +75,7 @@ TESTCASE(TestingMalloc)
 }
 ENDTESTCASE
 
-NEW_SUIT(SecondSuit, TestingMalloc);
+SUIT(SecondSuit, TestingMalloc);
 
 int main(void)
 {
@@ -87,7 +87,7 @@ int main(void)
 	assert(strcmp(unittest_head_tc->name, "TestingMalloc") ==
 	       0);				/* Because it is pointing to newcase */
 	assert(unittest_head_tc->next != NULL); /* Because it points to Testfoo */
-	
+
 	MUTE_ACTIVE(true);
 
 	RUN();

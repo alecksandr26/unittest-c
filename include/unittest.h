@@ -13,21 +13,18 @@
 #ifndef UNITTEST_INCLUDE
 #define UNITTEST_INCLUDE
 
-
-#include "unittest_def.h"
-#include "unittest_compile.h"
-#include "unittest_valgrind.h"
-#include "unittest_rerun.h"
-#include "unittest_dir.h"
-
-
-#include "unittest_debug.h"
-#include "unittest_infofail.h"
 #include "unittest_assert.h"
+#include "unittest_compile.h"
+#include "unittest_debug.h"
+#include "unittest_def.h"
+#include "unittest_dir.h"
 #include "unittest_expect.h"
-#include "unittest_tcase.h"
+#include "unittest_hashdates.h"
+#include "unittest_info.h"
+#include "unittest_rerun.h"
 #include "unittest_suit.h"
-#include "unittest_exceptions.h"
+#include "unittest_tcase.h"
+#include "unittest_valgrind.h"
 
 #include <stdbool.h>
 
@@ -35,23 +32,24 @@
  */
 extern int unittest_run_tests(void);
 
-extern int unittest_ret;
+extern int  unittest_ret;
 extern bool unittest_running_tests;
 
-#ifdef UNITTEST_RECOMPILE
-#define RUN(...)							\
-	do {								\
-		UnitCompiler compiler_contex = {.compiler	= COMPILER, \
+#if defined(UNITTEST_RECOMPILE) && !defined(NUNITTEST_RECOMPILE)
+#define RUN(...)                                                                          \
+	do {                                                                              \
+		UnitCompiler compiler_contex = {.compiler	= COMPILER,               \
 						.compiler_path	= COMPILER_PATH COMPILER, \
-						.compiler_flags = COMPILER_FLAGS}; \
-		unittest_fetch_filesname(__FILE__, TEST_OUT, TEST_DIR,	\
-					 TEST_OBJ_DIR, DATE_HASHED_FILE); \
-		unittest_check_testdir_exist();				\
-		unittest_get_prev_dates();				\
-		unittest_recompile_with_tests(&compiler_contex);	\
-		unittest_put_new_dates();				\
-		unittest_rerun();					\
-		unittest_recompile_without_tests(&compiler_contex);	\
+						.compiler_flags = COMPILER_FLAGS};        \
+		unittest_fetch_filesname(__FILE__, TEST_OUT, TEST_DIR, TEST_OBJ_DIR,      \
+					 DATE_HASHED_FILE);                               \
+		unittest_check_testdir_exist();                                           \
+		unittest_get_prev_dates();                                                \
+		unittest_include_files();                                                 \
+		unittest_recompile_with_tests(&compiler_contex);                          \
+		unittest_put_new_dates();                                                 \
+		unittest_rerun();                                                         \
+		unittest_recompile_without_tests(&compiler_contex);                       \
 	} while (0)
 
 #else
@@ -60,16 +58,16 @@ extern bool unittest_running_tests;
 	extern UnitSuit __VA_ARGS__; \
 	CATCH(__VA_ARGS__)
 #undef INCLUDE_TESTCASE
-#define INCLUDE_TESTCASE(filename, ...)	 \
+#define INCLUDE_TESTCASE(filename, ...)  \
 	extern UnitTestCase __VA_ARGS__; \
 	CATCH(__VA_ARGS__)
 #define RUN(...)                        \
-	unittest_running_tests = true;     \
+	unittest_running_tests = true;  \
 	__VA_OPT__(CATCH(__VA_ARGS__)); \
 	unittest_run_tests()
 #endif
 
-#define _CATCH_GENERIC(X)			   \
+#define _CATCH_GENERIC(X)                          \
 	_Generic((X),                              \
 		UnitTestCase: unittest_link_tcase, \
 		UnitSuit: unittest_link_suit_tcase)(&X)

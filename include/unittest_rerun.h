@@ -12,10 +12,10 @@
 #ifndef UNITTEST_RERUN_INCLUDE
 #define UNITTEST_RERUN_INCLUDE
 
+#include "unittest_def.h"
+
 #include <stdint.h>
 #include <string.h>
-
-#include "unittest_def.h"
 
 extern char unittest_file[FILE_SIZE_NAME], unittest_outfile[FILE_SIZE_NAME];
 

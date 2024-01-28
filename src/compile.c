@@ -7,39 +7,36 @@
   @license This project is released under the MIT License
 */
 
-#include <stdio.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <wait.h>
-#include <errno.h>
-#include <string.h>
-#include <assert.h>
-#include <trycatch.h>
-#include <stdbool.h>
-
-#include "../include/unittest_def.h"
 #include "../include/unittest_command.h"
 #include "../include/unittest_compile.h"
+#include "../include/unittest_def.h"
 
-Except UnittestOverPassArgsLimit = {"Error adding more than 128 args"};
+#include <assert.h>
+#include <errno.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <trycatch.h>
+#include <unistd.h>
+#include <wait.h>
+
 Except UnittestEmptyFlags = {"Error empty flags passed"};
 
 char unittest_compile_extra_args_buff[COMPILING_FLAGS_SIZE];
 char unittest_link_extra_args_buff[LINKING_FLAGS_SIZE];
 bool unittest_compile_extra_args = false;
-bool unittest_link_extra_args = false;
-
+bool unittest_link_extra_args	 = false;
 
 /* An external pointer that points to external or static libraries */
 void unittest_catch_extra_linking_flags(const char *flags)
 {
 	size_t n = strlen(flags);
-	
-	if (n == 0)
-		throw(UnittestEmptyFlags);
+
+	if (n == 0) throw(UnittestEmptyFlags);
 
 	memset(unittest_link_extra_args_buff, 0, n);
-	strcpy(unittest_link_extra_args_buff, flags);	
+	strcpy(unittest_link_extra_args_buff, flags);
 	unittest_link_extra_args = true;
 }
 
@@ -47,8 +44,7 @@ void unittest_catch_extra_compile_flags(const char *flags)
 {
 	size_t n = strlen(flags);
 
-	if (n == 0)
-		throw(UnittestEmptyFlags);
+	if (n == 0) throw(UnittestEmptyFlags);
 
 	memset(unittest_compile_extra_args_buff, 0, n);
 	strcpy(unittest_compile_extra_args_buff, flags);
@@ -64,8 +60,8 @@ int compile_obj(const UnitCompiler *compiler_contex, const char *source, const c
 
 	UnitCommand command;
 	unittest_init_command(&command);
-	strcpy(command.executable_command, compiler_contex->compiler);
-	
+	strcpy(command.executable_command, compiler_contex->compiler_path);
+
 	unittest_attach_args(&command, compiler_contex->compiler);
 	unittest_attach_args(&command, compiler_contex->compiler_flags);
 	unittest_attach_args(&command, "-c");
@@ -78,7 +74,8 @@ int compile_obj(const UnitCompiler *compiler_contex, const char *source, const c
 	return unittest_execute(&command);
 }
 
-/* link_objs: To link the entire objects file into a testrunner, returns the return status of the linkage
+/* link_objs: To link the entire objects file into a testrunner, returns the return status
+   of the linkage
    of the objects. */
 int link_objs(const UnitCompiler *compiler_contex, const char *file, const char **objs,
 	      size_t amount_objs, const char *out)
@@ -90,37 +87,27 @@ int link_objs(const UnitCompiler *compiler_contex, const char *file, const char 
 
 	UnitCommand command;
 	unittest_init_command(&command);
-	strcpy(command.executable_command, compiler_contex->compiler);
-	
+	strcpy(command.executable_command, compiler_contex->compiler_path);
+
 	unittest_attach_args(&command, compiler_contex->compiler);
 	unittest_attach_args(&command, compiler_contex->compiler_flags);
-	unittest_attach_args(&command, file);	
-	
+	unittest_attach_args(&command, file);
+
 	for (size_t i = 0; i < amount_objs; i++)
 		unittest_attach_args(&command, objs[i]);
 
 #ifndef NDEBUG /* For debugin the framework */
-#undef LIB_UNITTEST
-#define LIB_UNITTEST "../lib/libunittest.a"
-	
-	char	       libpath[100];
-	extern uint8_t is_root_folder;
-
-	memset(libpath, 0, sizeof(libpath));
-	if (is_root_folder) strcpy(libpath, (LIB_UNITTEST) + 3);
-	else strcpy(libpath, LIB_UNITTEST);
-
-	unittest_attach_args(&command, libpath);
-#else
-	unittest_attach_args(&command, LIB_UNITTEST);
+	unittest_attach_args(&command, "-L./lib");
 #endif
+
+	unittest_attach_args(&command, LIB_UNITTEST);
+
 	if (unittest_link_extra_args)
 		unittest_attach_args(&command, unittest_link_extra_args_buff);
 	unittest_attach_args(&command, "-o");
 	unittest_attach_args(&command, out);
-	
+	/* Recompile without unittest_recompile feature active */
+	unittest_attach_args(&command, "-DNUNITTEST_RECOMPILE");
+
 	return unittest_execute(&command);
 }
-
-
-

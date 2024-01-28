@@ -21,16 +21,16 @@
    of test
    cases, and the name of the suite. */
 typedef struct {
-	UnitTestCase	   *tcase[MAX_AMOUNT_OF_TESTCASES_IN_SUITS];
-	size_t	    amount;
-	const char *name;
+	UnitTestCase *tcase[MAX_AMOUNT_OF_TESTCASES_IN_SUITS];
+	size_t	      amount;
+	const char   *name;
 } UnitSuit;
 
-/* NEW_SUIT: creates a new test suite with a given name and a list of test cases.  */
-#define NEW_SUIT(SUIT_NAME, ...)                                                         \
+/* SUIT: creates a new test suite with a given name and a list of test cases.  */
+#define SUIT(SUIT_NAME, ...)                                                             \
 	UnitSuit SUIT_NAME = {.tcase  = {ADDR(__VA_ARGS__)},                             \
 			      .amount = sizeof((UnitTestCase *[]) {ADDR(__VA_ARGS__)}) / \
-			      sizeof(UnitTestCase *),			\
+					sizeof(UnitTestCase *),                          \
 			      .name = #SUIT_NAME}
 
 /* unittest_link_suit_tcase: to link together the test cases contained within the suit
