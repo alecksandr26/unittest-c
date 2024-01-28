@@ -5,7 +5,7 @@
 	* [Using make](https://github.com/alecksandr26/unittest-c#using-make)
 * [Getting started](https://github.com/alecksandr26/unittest-c#getting-started)
 	* [How to write Test Cases?](https://github.com/alecksandr26/unittest-c#how-to-write-test-cases)
-		* [Another example writting `Test Cases`](https://github.com/alecksandr26/unittest-c#another-example-writing-test-cases)
+		* [Another example writting `Test Cases`](https://github.com/alecksandr26/unittest-c?tab=readme-ov-file#another-example-of-writing-test-cases)
 		* [Print statements](https://github.com/alecksandr26/unittest-c#print-statements)
 	* [How to create Suits?](https://github.com/alecksandr26/unittest-c#how-to-create-suits)
 	* [How to include Test Cases or Suits from other files?](https://github.com/alecksandr26/unittest-c#how-to-include-test-cases-or-suits-from-other-files)
@@ -232,10 +232,11 @@ WARNED(warnings=1)
 
 [term]$
 ```
-This output shows that ***unittest-c*** executed two tests without ***any errors***, and that all assertions passed.
-### Print Statements
-If you want to include a print statement within a testcase, you can use the LOG macro to display the desired information. Building upon the previous section's code, 
-you can incorporate a simple print statement like this:
+This output shows that ***unittest-c*** executed three tests with an **assertion error** and an **expectation warning**.
+
+### Log information
+To facilitate logging information during the execution of a test case, the **LOG** macro can be employed. Building upon the code presented 
+in the previous section, one can seamlessly integrate the **LOG** macro as follows:
 ```C
 #include <unittest.h>
 
@@ -270,7 +271,7 @@ int main(void)
     return 0;
 }
 ```
-With this modification, the output should include the print statement with the value of x. Here's an example of how the updated output might look:
+With this modification, the output will now include the print statement with the value of `x`. An example of the updated output is provided below:
 ```shell
 [term]$ ./a.out
 .The value of x is: 42
@@ -280,6 +281,117 @@ Ran 2 test in 0.010490s
 
 Ok 
 ```
+## How to Print Information Only on Failure or Warning?
+To log information specifically when a failure occurs during a test, the **INFO** macro can be utilized. The **INFO** macro allows you 
+to print information during the runtime of a test, as it is essentially a wrapper for **sprintf**. By employing the following modification 
+to one of the previous code examples, you can incorporate the **INFO** macro in tests where a failure is detected as follows:
+```C
+#include <unittest.h>
+
+#include <math.h>
+#include <malloc.h>
+#include <string.h>
+
+
+TESTCASE(MyTestCase1) {
+	TEST(TestSqrt2) {
+		double x = sqrt(2.0);
+		INFO_VAR(x);
+		ASSERT_NEAR(x, 1.414, 1e-3, "Testing the sqrt of 2");
+	}
+
+	void *null_ptr, *non_null_ptr;
+		
+	null_ptr = NULL;
+	non_null_ptr = malloc(100);
+	
+	TEST(TestingTheAssert_eq) {
+		INFO("%p", null_ptr);
+		INFO("%p", non_null_ptr);
+		ASSERT_EQ(null_ptr, non_null_ptr, "Cheking null ptr");
+	}
+
+	free(non_null_ptr);
+} ENDTESTCASE
+
+
+TESTCASE(MyTestCase2) {
+
+	struct Person {
+		char name[100];
+		int age;
+	};
+	
+	TEST(TestingNonEq) {
+		struct Person p1;
+		memset(&p1, 0, sizeof(struct Person));
+		p1.age = 10;
+		strcpy(p1.name, "Pedrito");
+
+
+		struct Person p2;
+		memset(&p2, 0, sizeof(struct Person));
+		p2.age = 10;
+		strcpy(p2.name, "Pedrito");
+		
+		INFO_EXPR(strcmp(p1.name, p2.name));
+
+		EXPECT_NEQ(p1, p2, "Should throw a warning");
+	}
+} ENDTESTCASE
+
+int main(void)
+{
+	RUN(MyTestCase1, MyTestCase2);
+
+	return unittest_ret;
+}
+```
+With this modification, the output will now include an info section for each testcase execution:
+```shell
+W.F
+===========================================================================================
+WARN:		TestingNonEq		(MyTestCase2.TestingNonEq)
+-------------------------------------------------------------------------------------------
+Traceback...
+	File "simple_example.c", line 58, in TestingNonEq
+ExpectationWarning:	 "p1 != p2, where p1 = 0X5065647269... and p2 = 0X5065647269... have unknown data types",
+		 "Should throw a warning" 
+
+===========================================================================================
+INFO:		TestingNonEq		(MyTestCase2.TestingNonEq)
+-------------------------------------------------------------------------------------------
+	File "simple_example.c", line 56, in TestingNonEq
+InformationMessage: "(strcmp(p1.name, p2.name)) ==> 0"
+
+===========================================================================================
+FAIL:		TestingTheAssert_eq		(MyTestCase1.TestingTheAssert_eq)
+-------------------------------------------------------------------------------------------
+Traceback...
+	File "simple_example.c", line 29, in TestingTheAssert_eq
+AssertionError:	 "null_ptr == non_null_ptr, where null_ptr = (nil) and non_null_ptr = 0x588f21e562a0",
+		 "Cheking null ptr" 
+
+===========================================================================================
+INFO:		TestingTheAssert_eq		(MyTestCase1.TestingTheAssert_eq)
+-------------------------------------------------------------------------------------------
+	File "simple_example.c", line 27, in TestingTheAssert_eq
+InformationMessage: "(nil)"
+
+===========================================================================================
+INFO:		TestingTheAssert_eq		(MyTestCase1.TestingTheAssert_eq)
+-------------------------------------------------------------------------------------------
+	File "simple_example.c", line 28, in TestingTheAssert_eq
+InformationMessage: "0x588f21e562a0"
+
+-------------------------------------------------------------------------------------------
+Ran 3 test in 0.001498s
+
+FAILED(failures=1)
+
+WARNED(warnings=1)
+```
+
 ## How to create `Suits`?
 1. Create a new C file and include the ***unittest.h header*** at the beginning of your code.
 ```C
