@@ -62,7 +62,7 @@ TESTCASE(MyTestCase)
     // Tests code goes here
 } ENDTESTCASE
 ```
-3. Inside the test case defined using the TESTCASE macro, you can write individual test functions using the TEST macro. Each test function should contain one or more assertions that check a specific aspect of the code being tested. Additionally, you can write a few lines of code in the TESTCASE scope to set up a boilerplate code for each individual test, such as initializing variables or creating test fixtures. This code will be executed before each test in the test case, allowing you to reuse common setup logic across multiple tests.
+3. Inside the test case defined using the TESTCASE macro, you can write individual test functions using the TEST macro. Each test function must contain the assertions and expectations that check a specific aspect of the code being tested. Additionally, you can write a few lines of code in the TESTCASE scope to set up a boilerplate code for each individual test, such as initializing variables or creating test fixtures. This code will be executed before each test in the test case, allowing you to reuse common setup logic across multiple tests.
 ```C
 TESTCASE(MyTestCase)
 {
@@ -75,6 +75,7 @@ TESTCASE(MyTestCase)
     }
 } ENDTESTCASE
 ```
+To see all the avaiable assertions and expectations to been used follow this link: [Assertions and Expectations]()
 4. Use the ***RUN*** macro to run the tests inside the test case. In your ***main()*** function, call ***RUN*** and pass in ***the name of the test case*** as an argument:
 ```C
 int main(void)
@@ -105,12 +106,9 @@ int main(void)
     return 0;
 }
 ```
-
-6. To compile the code, you must use the following two flags: ***-lunittest -ltc***. The ***-ltc*** flag is required because ***unittest-c*** uses an exception library ***trycatch-c*** in
-its source code. If you want to learn more about how to use ***exceptions*** in your C code, you can check out the 
-[trycatch-c](https://github.com/alecksandr26/trycatch-c) library, which is used by ***unittest-c.***
+6. To compile the code, you need to include the following flag: ***-lunittest***. This flag is necessary to dynamically link the ***unittest-c*** library.
 ```
-cc mytestfile.c -lunittest -ltc
+cc mytestfile.c -lunittest
 ```
 Finally, the output of the program should look like this because it contains an assertion that causes the program to exit with a non-zero status:
 ```
@@ -198,7 +196,7 @@ TESTCASE(MyTests)
         // Use ASSERT macro to check if x is less than 100
         ASSERT(x < 100, "x should be less than 100");
 	
-	    // Print the value of x using the LOG macro
+	// Print the value of x using the LOG macro
         LOG("The value of x is: %i\n", x);
     }
 
@@ -628,6 +626,47 @@ Ran 5 test in 0.008277s
 Ok 
 
 ```
+# Assertions and Expectations
+This library offers **different assertions and expectations**. The difference between an assert and an expect is that an expect is a non-fatal assertion, which means it does not break a test; it only registers the failure information. In this library, expects are counted as simple warnings rather than failures because they are not fatal. Here are two lists of the available assertions and expectations.
+## Assertions Reference
+1. **ASSERT(EXPR, ...)**
+   - Evaluates the given expression and registers a failure if it is false.
+
+2. **ASSERT_EQ(X, Y, ...)**
+   - Compares two variables for equality.
+
+3. **ASSERT_NEQ(X, Y, ...)**
+   - Compares two variables for inequality.
+
+4. **ASSERT_NEQ(X, Y, ...)**
+   - Checks if the first variable is less than the second.
+
+5. **ASSERT_LE(X, Y, ...)**
+   - Checks if the first variable is less than or equal to the second.
+
+6. **ASSERT_GT(X, Y, ...)**
+   - Checks if the first variable is greater than the second.
+
+7. **ASSERT_GE(X, Y, ...)**
+   - Checks if the first variable is greater than or equal to the second.
+
+8. **ASSERT_STR_EQ(X, Y, ...)**
+   - Compares two strings for equality.
+
+9. **ASSERT_STR_NEQ(X, Y, ...)**
+   - Compares two strings for inequality.
+
+10. **ASSERT_NEAR(X, Y, abs_error, ...)**
+   - Asserts that the difference between two values does not exceed a specified absolute error.
+
+11. **ASSERT_THROW(STATEMENT, EXCEPT, ...)**
+   - Verifies that a statement throws a specific exception.
+
+12. **ASSERT_ANY_THROW(STATEMENT, ...)**
+   - Verifies that a statement throws an exception of any kind.
+
+13. **ASSERT_NO_THROW(STATEMENT, ...)**
+   - Verifies that a statement does not throw any exception.
 
 # References
 1. Wikipedia contributors. (2022a). Boilerplate code. Wikipedia. https://en.wikipedia.org/wiki/Boilerplate_code
