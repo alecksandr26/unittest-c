@@ -19,7 +19,7 @@
    		* [ALERT!!!! Potential Bug in the Compilation Automation Feature](https://github.com/alecksandr26/unittest-c?tab=readme-ov-file#alert-potential-bug-in-the-compilation-automation-feature)
    		* [Attaching extra flags for the recompilation](https://github.com/alecksandr26/unittest-c#attaching-extra-flags-for-the-recompilation)
 * [Incorporating ***Valgrind*** into the Test Execution Process](https://github.com/alecksandr26/unittest-c?tab=readme-ov-file#incorporating-valgrind-into-the-test-execution-process)
-	* [Incorporating ***Valgrind*** manually]()
+	* [Incorporating ***Valgrind*** manually](https://github.com/alecksandr26/unittest-c/?tab=readme-ov-file#incorporating-valgrind-manually)
  	* [Incorporating ***Valgrind*** for the automated compilation process ]()
 * [References](https://github.com/alecksandr26/unittest-c#references)
 # Unit Test C
