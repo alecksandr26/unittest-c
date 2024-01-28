@@ -5,7 +5,7 @@
 	* [Using make](https://github.com/alecksandr26/unittest-c#using-make)
 * [Getting started](https://github.com/alecksandr26/unittest-c#getting-started)
 	* [How to write Test Cases?](https://github.com/alecksandr26/unittest-c#how-to-write-test-cases)
-		* [Another testcase example](https://github.com/alecksandr26/unittest-c#another-testcase-example)
+		* [Another example writting `Test Cases`](https://github.com/alecksandr26/unittest-c#another-example-writing-test-cases)
 		* [Print statements](https://github.com/alecksandr26/unittest-c#print-statements)
 	* [How to create Suits?](https://github.com/alecksandr26/unittest-c#how-to-create-suits)
 	* [How to include Test Cases or Suits from other files?](https://github.com/alecksandr26/unittest-c#how-to-include-test-cases-or-suits-from-other-files)
@@ -78,7 +78,8 @@ TESTCASE(MyTestCase)
     }
 } ENDTESTCASE
 ```
-To see all the avaiable assertions and expectations to been used follow this link: [Assertions and Expectations]()
+To see all the avaiable assertions and expectations to been used follow this link: [Assertions and Expectations](https://github.com/alecksandr26/unittest-c/?tab=readme-ov-file#assertions-and-expectations)
+
 4. Use the ***RUN*** macro to run the tests inside the test case. In your ***main()*** function, call ***RUN*** and pass in ***the name of the test case*** as an argument:
 ```C
 int main(void)
@@ -87,6 +88,15 @@ int main(void)
     return 0;
 }
 ```
+If you have several test cases in your file, you must pass them to the ***RUN*** macro as a list:
+```c
+int main(void)
+{
+    RUN(MyTestCase1, MyTestCase2, MyTestCase3, ...);
+    return 0;
+}
+```
+
 5. Here's a summary of what the final code might look like:
 ```C
 #include <unittest.h>
@@ -131,47 +141,94 @@ FAILED(failures=1)
 
 [term] $
 ```
-### Another `Test Case` example
-Here's another example of how you can use the unittest-c framework to write your own test cases:
+### Another example of writing `Test Cases`
+Here's a more elaborate example of how you can use the unittest-c framework to write your own test cases:
 ```C
 #include <unittest.h>
 
-TESTCASE(MyTests)
-{
-    // Set up any boilerplate code for all tests in the test case
-    int x = 42;
+#include <math.h>
+#include <malloc.h>
+#include <string.h>
 
-    // Define individual tests using the TEST macro
-    TEST(Test1)
-    {
-        // Use ASSERT macro to check if x equals 42
-        ASSERT(x == 42, "x should equal 42");
-    }
 
-    TEST(Test2)
-    {
-        // Use ASSERT macro to check if x is less than 100
-        ASSERT(x < 100, "x should be less than 100");
-    }
+TESTCASE(MyTestCase1) {
+	TEST(TestSqrt2) {
+		double x = sqrt(2.0);
+		INFO_VAR(x);
+		ASSERT_NEAR(x, 1.414, 1e-3, "Testing the sqrt of 2");
+	}
 
+	void *null_ptr, *non_null_ptr;
+		
+	null_ptr = NULL;
+	non_null_ptr = malloc(100);
+	
+	TEST(TestingTheAssert_eq) {
+		ASSERT_EQ(null_ptr, non_null_ptr, "Cheking null ptr");
+	}
+	
+
+	free(non_null_ptr);
+} ENDTESTCASE
+
+
+TESTCASE(MyTestCase2) {
+
+	struct Person {
+		char name[100];
+		int age;
+	};
+	
+	TEST(TestingNonEq) {
+		struct Person p1;
+		memset(&p1, 0, sizeof(struct Person));
+		p1.age = 10;
+		strcpy(p1.name, "Pedrito");
+
+
+		struct Person p2;
+		memset(&p2, 0, sizeof(struct Person));
+		p2.age = 10;
+		strcpy(p2.name, "Pedrito");
+
+		EXPECT_NEQ(p1, p2, "Should throw a warning");
+	}
 } ENDTESTCASE
 
 int main(void)
 {
-    // Call RUN macro with the name of the test case to run the tests
-    RUN(MyTests);
+	RUN(MyTestCase1, MyTestCase2);
 
-    return 0;
+	return unittest_ret;
 }
 ```
-Then the output says that the tests were exectued well, there is no error detected.
+Then the output says that the tests were exectued well, there is an error and a warning detected.
 ```shell
 [term]$ ./a.out
-..
---------------------------------------------------------------------------------------
-Ran 2 test in 0.000031s
+W.F
+===========================================================================================
+WARN:		TestingNonEq		(MyTestCase2.TestingNonEq)
+-------------------------------------------------------------------------------------------
+Traceback...
+	File "simple_example.c", line 53, in TestingNonEq
+ExpectationWarning:	 "p1 != p2, where p1 = 0X5065647269... and p2 = 0X5065647269... have unknown data types",
+		 "Should throw a warning" 
 
-Ok
+===========================================================================================
+FAIL:		TestingTheAssert_eq		(MyTestCase1.TestingTheAssert_eq)
+-------------------------------------------------------------------------------------------
+Traceback...
+	File "simple_example.c", line 26, in TestingTheAssert_eq
+AssertionError:	 "null_ptr == non_void_ptr, where null_ptr = (nil) and non_void_ptr = 0x65226f07a2a0",
+		 "Cheking null ptr" 
+
+-------------------------------------------------------------------------------------------
+Ran 3 test in 0.002126s
+
+FAILED(failures=1)
+
+WARNED(warnings=1)
+
 
 [term]$
 ```
