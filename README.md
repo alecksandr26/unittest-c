@@ -9,15 +9,15 @@
 		* [Log information](https://github.com/alecksandr26/unittest-c?tab=readme-ov-file#log-information)
   		* [How to Log information only on `Failure` or `Warning`?](https://github.com/alecksandr26/unittest-c?tab=readme-ov-file#how-to-log-information-only-on-failure-or-warning)
 	* [How to create Suits?](https://github.com/alecksandr26/unittest-c#how-to-create-suits)
+* [Assertions and Expectations](https://github.com/alecksandr26/unittest-c/?tab=readme-ov-file#assertions-and-expectations)
+	* [Assertions Reference](https://github.com/alecksandr26/unittest-c/?tab=readme-ov-file#assertions-reference)
+   	* [Expectations Reference](https://github.com/alecksandr26/unittest-c/?tab=readme-ov-file#expectations-reference)
 * [How to include `Test Cases` and `Suits` from other files?](https://github.com/alecksandr26/unittest-c?tab=readme-ov-file#how-to-include-test-cases-and-suits-from-other-files)
 	* [Including `Test Cases` and `Suits` manually](https://github.com/alecksandr26/unittest-c?tab=readme-ov-file#including-test-cases-and-suits-manually) 
 	* [Automate the ***Compilation*** of the `Executable` and each individual `Test File`](https://github.com/alecksandr26/unittest-c?tab=readme-ov-file#automate-the-compilation-of-the-executable-and-each-individual-test-file)
    		* [ALERT!!!! Potential Bug in the Compilation Automation Feature](https://github.com/alecksandr26/unittest-c?tab=readme-ov-file#alert-potential-bug-in-the-compilation-automation-feature)
    		* [Attaching extra flags for the recompilation](https://github.com/alecksandr26/unittest-c#attaching-extra-flags-for-the-recompilation)
-* [Running Valgrind from the framework](https://github.com/alecksandr26/unittest-c#running-valgrind-from-the-framework)
-* [Assertions and Expectations](https://github.com/alecksandr26/unittest-c/?tab=readme-ov-file#assertions-and-expectations)
-	* [Assertions Reference](https://github.com/alecksandr26/unittest-c/?tab=readme-ov-file#assertions-reference)
-   	* [Expectations Reference](https://github.com/alecksandr26/unittest-c/?tab=readme-ov-file#expectations-reference)
+* [Incorporating ***Valgrind*** into the Test Execution Process](https://github.com/alecksandr26/unittest-c#running-valgrind-from-the-framework)
 * [References](https://github.com/alecksandr26/unittest-c#references)
 # Unit Test C
 ***Unit Test c*** is a fast and simple macro-based unit testing framework for C. It's inspired by the Python unittest module and designed to reduce 
@@ -537,6 +537,88 @@ int main(void)
 	return unittest_ret;
 }
 ```
+# Assertions and Expectations
+This library offers **different assertions and expectations**. The difference between an assert and an expect is that an expect is a non-fatal assertion, which means it does not break a test; it only registers the failure information. In this library, expects are counted as simple warnings rather than failures because they are not fatal. Here are two lists of the available assertions and expectations.
+
+## Assertions Reference
+1. **ASSERT(EXPR, ...)**
+   	- Evaluates the given expression and registers a failure if it is false.
+
+2. **ASSERT_EQ(X, Y, ...)**
+   	- Compares two variables for equality.
+
+3. **ASSERT_NEQ(X, Y, ...)**
+   	- Compares two variables for inequality.
+
+4. **ASSERT_NEQ(X, Y, ...)**
+   	- Checks if the first variable is less than the second.
+
+5. **ASSERT_LE(X, Y, ...)**
+  	- Checks if the first variable is less than or equal to the second.
+
+6. **ASSERT_GT(X, Y, ...)**
+   	- Checks if the first variable is greater than the second.
+
+7. **ASSERT_GE(X, Y, ...)**
+   	- Checks if the first variable is greater than or equal to the second.
+
+8. **ASSERT_STR_EQ(X, Y, ...)**
+   	- Compares two strings for equality.
+
+9. **ASSERT_STR_NEQ(X, Y, ...)**
+	- Compares two strings for inequality.
+
+10. **ASSERT_NEAR(X, Y, abs_error, ...)**
+   	- Asserts that the difference between two values does not exceed a specified absolute error.
+
+11. **ASSERT_THROW(STATEMENT, EXCEPT, ...)**
+   	- Verifies that a statement throws a specific exception.
+
+12. **ASSERT_ANY_THROW(STATEMENT, ...)**
+   	- Verifies that a statement throws an exception of any kind.
+
+13. **ASSERT_NO_THROW(STATEMENT, ...)**
+   	- Verifies that a statement does not throw any exception.
+## Expectations Reference
+1. **EXPECT(EXPR, ...)**
+   	- Evaluates the given expression and registers a failure if it is false.
+
+2. **EXPECT_EQ(X, Y, ...)**
+   	- Compares two variables for equality.
+
+3. **EXPECT_NEQ(X, Y, ...)**
+   	- Compares two variables for inequality.
+
+4. **EXPECT_NEQ(X, Y, ...)**
+   	- Checks if the first variable is less than the second.
+
+5. **EXPECT_LE(X, Y, ...)**
+   	- Checks if the first variable is less than or equal to the second.
+
+6. **EXPECT_GT(X, Y, ...)**
+   	- Checks if the first variable is greater than the second.
+
+7. **EXPECT_GE(X, Y, ...)**
+   	- Checks if the first variable is greater than or equal to the second.
+
+8. **EXPECT_STR_EQ(X, Y, ...)**
+   	- Compares two strings for equality.
+
+9. **EXPECT_STR_NEQ(X, Y, ...)**
+   	- Compares two strings for inequality.
+
+10. **EXPECT_NEAR(X, Y, abs_error, ...)**
+	- Asserts that the difference between two values does not exceed a specified absolute error.
+
+11. **EXPECT_THROW(STATEMENT, EXCEPT, ...)**
+	- Verifies that a statement throws a specific exception.
+
+12. **EXPECT_ANY_THROW(STATEMENT, ...)**
+	- Verifies that a statement throws an exception of any kind.
+
+13. **EXPECT_NO_THROW(STATEMENT, ...)**
+	- Verifies that a statement does not throw any exception.
+    
 # How to include `Test Cases` and `Suits` from other files?
 ## Including `Test Cases` and `Suits` manually
 1. For example, let's create some testcases and a suit in a file called ***simpletest.c***:
@@ -879,88 +961,6 @@ Ok
 ==10498== 
 ==10498== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
 ```
-# Assertions and Expectations
-This library offers **different assertions and expectations**. The difference between an assert and an expect is that an expect is a non-fatal assertion, which means it does not break a test; it only registers the failure information. In this library, expects are counted as simple warnings rather than failures because they are not fatal. Here are two lists of the available assertions and expectations.
-
-## Assertions Reference
-1. **ASSERT(EXPR, ...)**
-   	- Evaluates the given expression and registers a failure if it is false.
-
-2. **ASSERT_EQ(X, Y, ...)**
-   	- Compares two variables for equality.
-
-3. **ASSERT_NEQ(X, Y, ...)**
-   	- Compares two variables for inequality.
-
-4. **ASSERT_NEQ(X, Y, ...)**
-   	- Checks if the first variable is less than the second.
-
-5. **ASSERT_LE(X, Y, ...)**
-  	- Checks if the first variable is less than or equal to the second.
-
-6. **ASSERT_GT(X, Y, ...)**
-   	- Checks if the first variable is greater than the second.
-
-7. **ASSERT_GE(X, Y, ...)**
-   	- Checks if the first variable is greater than or equal to the second.
-
-8. **ASSERT_STR_EQ(X, Y, ...)**
-   	- Compares two strings for equality.
-
-9. **ASSERT_STR_NEQ(X, Y, ...)**
-	- Compares two strings for inequality.
-
-10. **ASSERT_NEAR(X, Y, abs_error, ...)**
-   	- Asserts that the difference between two values does not exceed a specified absolute error.
-
-11. **ASSERT_THROW(STATEMENT, EXCEPT, ...)**
-   	- Verifies that a statement throws a specific exception.
-
-12. **ASSERT_ANY_THROW(STATEMENT, ...)**
-   	- Verifies that a statement throws an exception of any kind.
-
-13. **ASSERT_NO_THROW(STATEMENT, ...)**
-   	- Verifies that a statement does not throw any exception.
-## Expectations Reference
-1. **EXPECT(EXPR, ...)**
-   	- Evaluates the given expression and registers a failure if it is false.
-
-2. **EXPECT_EQ(X, Y, ...)**
-   	- Compares two variables for equality.
-
-3. **EXPECT_NEQ(X, Y, ...)**
-   	- Compares two variables for inequality.
-
-4. **EXPECT_NEQ(X, Y, ...)**
-   	- Checks if the first variable is less than the second.
-
-5. **EXPECT_LE(X, Y, ...)**
-   	- Checks if the first variable is less than or equal to the second.
-
-6. **EXPECT_GT(X, Y, ...)**
-   	- Checks if the first variable is greater than the second.
-
-7. **EXPECT_GE(X, Y, ...)**
-   	- Checks if the first variable is greater than or equal to the second.
-
-8. **EXPECT_STR_EQ(X, Y, ...)**
-   	- Compares two strings for equality.
-
-9. **EXPECT_STR_NEQ(X, Y, ...)**
-   	- Compares two strings for inequality.
-
-10. **EXPECT_NEAR(X, Y, abs_error, ...)**
-	- Asserts that the difference between two values does not exceed a specified absolute error.
-
-11. **EXPECT_THROW(STATEMENT, EXCEPT, ...)**
-	- Verifies that a statement throws a specific exception.
-
-12. **EXPECT_ANY_THROW(STATEMENT, ...)**
-	- Verifies that a statement throws an exception of any kind.
-
-13. **EXPECT_NO_THROW(STATEMENT, ...)**
-	- Verifies that a statement does not throw any exception.
-    
 # References
 1. Wikipedia contributors. (2022a). Boilerplate code. Wikipedia. https://en.wikipedia.org/wiki/Boilerplate_code
 2. Wikipedia contributors. (2023a). Test suite. Wikipedia. https://en.wikipedia.org/wiki/Test_suite
