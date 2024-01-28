@@ -630,6 +630,7 @@ Ok
 ```
 # Assertions and Expectations
 This library offers **different assertions and expectations**. The difference between an assert and an expect is that an expect is a non-fatal assertion, which means it does not break a test; it only registers the failure information. In this library, expects are counted as simple warnings rather than failures because they are not fatal. Here are two lists of the available assertions and expectations.
+
 ## Assertions Reference
 1. **ASSERT(EXPR, ...)**
    - Evaluates the given expression and registers a failure if it is false.
