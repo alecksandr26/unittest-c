@@ -36,12 +36,10 @@
 #endif
 
 #define LIB_UNITTEST  "-lunittest"
+
 #define VALGRIND      "valgrind"
 #define VALGRIND_PATH "/usr/bin/"
-
-#ifndef VALGRIND_FLAGS
-#define VALGRIND_FLAGS "--quiet"
-#endif
+#define VALGRIND_FLAGS "--quiet --leak-check=full --show-leak-kinds=all --track-origins=yes"
 
 #ifndef DATE_HASHED_FILE
 #define DATE_HASHED_FILE ".date_hashed.bin"

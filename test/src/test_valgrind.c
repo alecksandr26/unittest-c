@@ -1,6 +1,4 @@
-
-
-#define TEST_OUT "../bin/test_compile.out"
+#define TEST_OUT "../bin/test_valgrind.out"
 #define TEST_DIR "test_dir/"
 
 #define UNITTEST_RECOMPILE
@@ -15,9 +13,9 @@ int main(void)
 {
 	INCLUDE_SUIT("simpletest.c", MySuit);
 	INCLUDE_SUIT("crashtest.c", CrashableSuit);
-	
-	ACTIVE_VALGRIND(true);
 
+	ACTIVE_VALGRIND(true);
+	
 	MUTE_ACTIVE(false);
 
 	RUN(MySuit, CrashableSuit);
@@ -43,3 +41,5 @@ int main(void)
 
 	return 0;
 }
+
+

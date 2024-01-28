@@ -5,7 +5,7 @@
 
 TESTCASE(CrashTest) {
 	void *ptr = NULL;
-
+	
 	struct person {
 		char name[200];
 		int age;

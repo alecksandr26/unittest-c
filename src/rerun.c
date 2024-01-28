@@ -43,7 +43,8 @@ void unittest_rerun(void)
 	if (unittest_run_valgrind) {
 		unittest_attach_args(&command, VALGRIND);
 		unittest_attach_args(&command, VALGRIND_FLAGS);
-		strcpy(command.executable_command, COMPILER_PATH VALGRIND);
+		strcpy(command.executable_command, VALGRIND_PATH);
+		strcat(command.executable_command, VALGRIND);
 	} else strcpy(command.executable_command, executable);
 
 	unittest_attach_args(&command, executable);

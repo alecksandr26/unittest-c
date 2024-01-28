@@ -17,6 +17,6 @@
 extern bool unittest_run_valgrind;
 
 /* ACTIVE_VALGRIND: To active valgrind into the execution */
-#define ACTIVE_VALGRIND(BOOL) unittest_run_valgrind = (BOOL) ? true : false
+#define ACTIVE_VALGRIND(BOOL) unittest_run_valgrind = BOOL
 
 #endif

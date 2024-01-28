@@ -27,14 +27,23 @@ typedef struct {
 	long  date_hashed;
 } UnitTestFile;
 
-#define INCLUDE_SUIT(filename, ...) \
-	unittest_tfiles[unittest_tfile_count++].name = filename
+#define INCLUDE_SUIT(filename, ...)		\
+	do {								\
+		if (!unittest_file_already_included(filename))		\
+			unittest_tfiles[unittest_tfile_count++].name = filename; \
+	} while (0)
 
-#define INCLUDE_TESTCASE(filename, ...) \
-	unittest_tfiles[unittest_tfile_count++].name = filename
+#define INCLUDE_TESTCASE(filename, ...)					\
+	do {								\
+		if (!unittest_file_already_included(filename))		\
+			unittest_tfiles[unittest_tfile_count++].name = filename; \
+	} while (0)
 
 extern size_t	    unittest_tfile_count;
 extern UnitTestFile unittest_tfiles[MAX_AMOUNT_OF_TEST_FILES];
+
+/* unittest_file_already_included: Checks if a file has been already included. */
+extern bool unittest_file_already_included(const char *file);
 
 /* unittest_include_files: Include the whole files. */
 extern void unittest_include_files(void);

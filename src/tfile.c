@@ -30,6 +30,18 @@ size_t unittest_tfile_count = 0;
 _Static_assert(MAX_AMOUNT_OF_TEST_FILES == 128, "Should be 128 test files at max");
 UnitTestFile unittest_tfiles[MAX_AMOUNT_OF_TEST_FILES];
 
+/* unittest_file_already_included: Checks if a file has been already included. */
+bool unittest_file_already_included(const char *file)
+{
+	assert(file != NULL);
+
+	for (size_t i = 0; i < unittest_tfile_count; i++)
+		if (strcmp(unittest_tfiles[i].name, file) == 0)
+			return true;
+	return false;
+}
+
+
 /* unittest_include_tfile: This function includes a file with a given unittest_hashed_file
  * into a specific test directory. */
 void unittest_include_tfile(UnitTestFile *tf)

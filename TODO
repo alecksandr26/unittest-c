@@ -59,5 +59,13 @@
 ---- 2024/01/27 ----
 - Develop a way to run isolated each test, not just each testcase [ ]
 - Do a refactor of the info.c file, and also the whole comments [ ]
-- Document the whole asserts and expects [ ]
+- Document the whole asserts and expects [X]
+- Solve the printing bug using the macro INFO_VAR with structures [ ]
+- Change the INFO_EXPR macro to look more pretty [ ]
+- Add the feture to attach flags to valgrind [ ]
+- Integrate a testrunnr [ ]
+
+---- URGENT 2024/01/278 ----
+- Solve the bug of include testcases and paths from other files [X]
+- Solve the bug of redefinition in recompilation time [X]
   

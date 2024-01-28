@@ -16,7 +16,7 @@ int main()
 	ACTIVE_VALGRIND(false);
 	MUTE_ACTIVE(true);
 
-	RUN();
+	RUN(MySuit);
 
 	/* To test recompilation we need to know which process we are */
 	if (unittest_running_tests) {

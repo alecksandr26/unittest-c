@@ -11,6 +11,5 @@ TESTCASE(TestRecompile) {
 
 }
 
-
 SUIT(MySuit, TestRecompile);
 

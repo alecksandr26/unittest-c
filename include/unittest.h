@@ -54,17 +54,15 @@ extern bool unittest_running_tests;
 
 #else
 #undef INCLUDE_SUIT
-#define INCLUDE_SUIT(filename, ...)  \
-	extern UnitSuit __VA_ARGS__; \
-	CATCH(__VA_ARGS__)
+#define INCLUDE_SUIT(filename, ...)  extern UnitSuit __VA_ARGS__
 #undef INCLUDE_TESTCASE
-#define INCLUDE_TESTCASE(filename, ...)  \
-	extern UnitTestCase __VA_ARGS__; \
-	CATCH(__VA_ARGS__)
-#define RUN(...)                        \
-	unittest_running_tests = true;  \
-	__VA_OPT__(CATCH(__VA_ARGS__)); \
-	unittest_run_tests()
+#define INCLUDE_TESTCASE(filename, ...)  extern UnitTestCase __VA_ARGS__
+#define RUN(...)				\
+	do {					\
+		unittest_running_tests = true;	\
+		__VA_OPT__(CATCH(__VA_ARGS__)); \
+		unittest_run_tests();		\
+	} while (0)
 #endif
 
 #define _CATCH_GENERIC(X)                          \
