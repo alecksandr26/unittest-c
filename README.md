@@ -20,7 +20,7 @@
    		* [Attaching extra flags for the recompilation](https://github.com/alecksandr26/unittest-c#attaching-extra-flags-for-the-recompilation)
 * [Incorporating ***Valgrind*** into the Test Execution Process](https://github.com/alecksandr26/unittest-c?tab=readme-ov-file#incorporating-valgrind-into-the-test-execution-process)
 	* [Incorporating ***Valgrind*** manually](https://github.com/alecksandr26/unittest-c/?tab=readme-ov-file#incorporating-valgrind-manually)
- 	* [Incorporating ***Valgrind*** for the automated compilation process ]()
+ 	* [Incorporating ***Valgrind*** for the automated compilation process ](https://github.com/alecksandr26/unittest-c/?tab=readme-ov-file#incorporating-valgrind-for-the-automated-compilation-process)
 * [References](https://github.com/alecksandr26/unittest-c#references)
 # Unit Test C
 ***Unit Test c*** is a fast and simple macro-based unit testing framework for C. It's inspired by the Python unittest module and designed to reduce 
