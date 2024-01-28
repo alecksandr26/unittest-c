@@ -612,57 +612,78 @@ your ***simpletest.c*** is located. Here's an example:
 ```C
 #include <stdio.h>
 
-#define TEST_DIR "dir3/"
+#define TEST_DIR "dir/"
 #include <unittest.h>
 
 int main(void)
 {
 	// Include a testcase
-	INCLUDE_TEST_CASE("simpletest.c", MyTestCases1);
+	INCLUDE_TESTCASE("simpletest.c", SimpleTest);
+	
 	// Include a suit
 	INCLUDE_SUIT("simpletest.c", MySuit);
+
+	/* Run the selected testcases or suits */
+	RUN(SimpleTest, MySuit);
 	
-	RUN();
 	return unittest_ret;
 }
 ```
 3. To compile the ***testrunner*** and the included test case, use the following command:
 ```
-[term] $ cc -o testrunner testrunner.c dir3/simpletest.c -lunittest
+[term] $ cc -o testrunner testrunner.c dir/simpletest.c -lunittest
 ```
 The ***dir3/simpletest.c*** file is the test case that was included in the previous step using the ***INCLUDE_TEST_CASE*** macro and here its output.
 ```shell
-[term] $ ./a.out
+[term] $ ./testrunner
 ........
---------------------------------------------------------------------------------------
-Ran 8 test in 0.000006s
+-------------------------------------------------------------------------------------------
+Ran 8 test in 0.002476s
 
 Ok 
-
 ```
 4. Since the source code for unit tests are essentially code themselves, it's common to use build automation tools such as make or `cmake` or `make` 
 to simplify 
 the process of compiling and executing large test suites. These tools can create object files (.o) from your test source files, which can be 
 linked together to create the final executable, heres is an example with a makefile.
 ```Makefile
-CC = gcc
+C = cc
 CFLAGS = -Wall -Werror
-LDFLAGS = -lunittest -lexcept
-OBJECTS = simpletest.o testrunner.o
+LDFLAGS = -lunittest
+TEST_DIR = dir
+TEST_OBJECTS = $(addprefix  $(TEST_DIR)/, simpletest.o)
 
 all: testrunner
 
-testrunner: $(OBJECTS)
-	$(CC) $(LDFLAGS) $(OBJECTS) -o testrunner
+testrunner: $(TEST_OBJECTS) testrunner.o
+	$(C) $(LDFLAGS) $(TEST_OBJECTS) testrunner.o -o testrunner
 
-simpletest.o: simpletest.c
-	$(CC) $(CFLAGS) -c simpletest.c -o simpletest.o
+$(TEST_DIR)/simpletest.o: $(TEST_DIR)/simpletest.c
+	$(C) $(CFLAGS) -c $(TEST_DIR)/simpletest.c -o $(TEST_DIR)/simpletest.o
 
 testrunner.o: testrunner.c
-	$(CC) $(CFLAGS) -c testrunner.c -o testrunner.o
+	$(C) $(CFLAGS) -c testrunner.c -o testrunner.o
 
+# Clean all the compiled things
 clean:
-	rm -f $(OBJECTS) testrunner
+	rm -f $(TEST_OBJECTS) testrunner.o testrunner
+
+# To run the tests
+test: testrunner
+	./testrunner
+```
+And this is the output running the tests throughout `Makefile`.
+```shell
+make test
+cc -Wall -Werror -c dir/simpletest.c -o dir/simpletest.o
+cc -Wall -Werror -c testrunner.c -o testrunner.o
+cc -lunittest dir/simpletest.o testrunner.o -o testrunner
+./testrunner
+........
+-------------------------------------------------------------------------------------------
+Ran 8 test in 0.001662s
+
+Ok 
 ```
 
 ## How to recompile the `executable` and each individual `test file`?
