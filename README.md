@@ -1,6 +1,6 @@
 # Table Of Contents
 * [Description](https://github.com/alecksandr26/unittest-c#Unit-Test-C)
-* [License](https://github.com/alecksandr26/unittest-c#Unit-Test-C)
+* [License](https://github.com/alecksandr26/unittest-c?tab=readme-ov-file#license)
 * [How to install it?](https://github.com/alecksandr26/unittest-c#how-to-install-it)
 	* [Using yay](https://github.com/alecksandr26/unittest-c#using-yay)
 	* [Using make](https://github.com/alecksandr26/unittest-c#using-make)
