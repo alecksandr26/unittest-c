@@ -535,7 +535,8 @@ int main(void)
 	return unittest_ret;
 }
 ```
-# How to include `Test Cases` or `Suits` from other files?
+# How to include `Test Cases` and `Suits` from other files?
+## Including `Test Cases` and `Suits` manually
 1. For example, let's create some testcases and a suit in a file called ***simpletest.c***:
 ```C
 // simpletest.c
