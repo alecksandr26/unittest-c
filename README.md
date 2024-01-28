@@ -10,6 +10,7 @@
   		* [How to Log information only on `Failure` or `Warning`?](https://github.com/alecksandr26/unittest-c?tab=readme-ov-file#how-to-log-information-only-on-failure-or-warning)
 	* [How to create Suits?](https://github.com/alecksandr26/unittest-c#how-to-create-suits)
 * [How to include `Test Cases` and `Suits` from other files?](https://github.com/alecksandr26/unittest-c?tab=readme-ov-file#how-to-include-test-cases-and-suits-from-other-files)
+	* [Including `Test Cases` and `Suits` manually](https://github.com/alecksandr26/unittest-c?tab=readme-ov-file#including-test-cases-and-suits-manually) 
 	* [Automate the ***Compilation*** of the `Executable` and each individual `Test File`](https://github.com/alecksandr26/unittest-c?tab=readme-ov-file#automate-the-compilation-of-the-executable-and-each-individual-test-file)
    	* [Attaching extra flags for the recompilation](https://github.com/alecksandr26/unittest-c#attaching-extra-flags-for-the-recompilation)
 * [Running Valgrind from the framework](https://github.com/alecksandr26/unittest-c#running-valgrind-from-the-framework)
