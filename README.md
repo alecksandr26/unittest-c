@@ -14,6 +14,7 @@
 		* [Attaching extra flags for the recompilation](https://github.com/alecksandr26/unittest-c#attaching-extra-flags-for-the-recompilation)
 * [Assertions and Expectations](https://github.com/alecksandr26/unittest-c/?tab=readme-ov-file#assertions-and-expectations)
 	* [Assertions Reference](https://github.com/alecksandr26/unittest-c/?tab=readme-ov-file#assertions-reference)
+   	* [Expectations Reference](https://github.com/alecksandr26/unittest-c/?tab=readme-ov-file#expectations-reference)
 * [References](https://github.com/alecksandr26/unittest-c#references)
 # Unit Test C
 ***Unit Test c*** is a fast and simple macro-based unit testing framework for C. It's inspired by the Python unittest module and designed to reduce 
@@ -670,7 +671,46 @@ This library offers **different assertions and expectations**. The difference be
 
 13. **ASSERT_NO_THROW(STATEMENT, ...)**
    	- Verifies that a statement does not throw any exception.
+## Expectations Reference
+1. **EXPECT(EXPR, ...)**
+   	- Evaluates the given expression and registers a failure if it is false.
 
+2. **EXPECT_EQ(X, Y, ...)**
+   	- Compares two variables for equality.
+
+3. **EXPECT_NEQ(X, Y, ...)**
+   	- Compares two variables for inequality.
+
+4. **EXPECT_NEQ(X, Y, ...)**
+   	- Checks if the first variable is less than the second.
+
+5. **EXPECT_LE(X, Y, ...)**
+   	- Checks if the first variable is less than or equal to the second.
+
+6. **EXPECT_GT(X, Y, ...)**
+   	- Checks if the first variable is greater than the second.
+
+7. **EXPECT_GE(X, Y, ...)**
+   	- Checks if the first variable is greater than or equal to the second.
+
+8. **EXPECT_STR_EQ(X, Y, ...)**
+   	- Compares two strings for equality.
+
+9. **EXPECT_STR_NEQ(X, Y, ...)**
+   	- Compares two strings for inequality.
+
+10. **EXPECT_NEAR(X, Y, abs_error, ...)**
+    	- Asserts that the difference between two values does not exceed a specified absolute error.
+
+11. **EXPECT_THROW(STATEMENT, EXCEPT, ...)**
+    	- Verifies that a statement throws a specific exception.
+
+12. **EXPECT_ANY_THROW(STATEMENT, ...)**
+    	- Verifies that a statement throws an exception of any kind.
+
+13. **EXPECT_NO_THROW(STATEMENT, ...)**
+    	- Verifies that a statement does not throw any exception.
+    
 # References
 1. Wikipedia contributors. (2022a). Boilerplate code. Wikipedia. https://en.wikipedia.org/wiki/Boilerplate_code
 2. Wikipedia contributors. (2023a). Test suite. Wikipedia. https://en.wikipedia.org/wiki/Test_suite
