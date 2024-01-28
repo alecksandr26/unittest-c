@@ -920,53 +920,56 @@ This precaution helps manage the potentially extensive log information that Valg
 ## Incorporating ***Valgrind*** for the automated compilation process 
 1. Confirm that you have enabled the **recompile mode** feature in your code:
 ```C
-#undef UNITTEST_RECOMPILE
-#define UNITTEST_RECOMPILE 1
+#define UNITTEST_RECOMPILE
 ```
-2. Within your **main()** test runner binary, invoke the **ACTIVE_VALGRIND()** macro to enable the valgrind feature.
+2. In your **main()** test runner binary, utilize the **ACTIVE_VALGRIND(true)** macro to enable the Valgrind feature.
+By default, it employs the following flags: `--quiet --leak-check=full --show-leak-kinds=all --track-origins=yes`. Valgrind will then identify any memory leaks in your code.
 ```C
-#undef TEST_DIR
-#define TEST_DIR "dir3/"
+#include <stdio.h>
+
+#define TEST_DIR "dir/"
+#define UNITTEST_RECOMPILE
+#include <unittest.h>
 
 int main(void)
 {
-	#undef UNITTEST_RECOMPILE
-	#define UNITTEST_RECOMPILE 1
-	
-	INCLUDE_TEST_CASE("simpletest.c", SimpleTest);
+	INCLUDE_TESTCASE("simpletest.c", SimpleTest);
 	INCLUDE_SUIT("simpletest.c", MySuit);
+	INCLUDE_TESTCASE("test_foo.c", TestingFoo);
 	
-	// Activate Valgrind for memory leak detection
-	ACTIVE_VALGRIND();
 	
-	RUN();
-	return 0;
+	ATTACH_EXTRA_LINKING_FLAGS("obj/foo.o");
+
+	ACTIVE_VALGRIND(true);
+		
+	/* Run the selected testcases or suits */
+	RUN(SimpleTest, MySuit, TestingFoo);
+	
+	return unittest_ret;
 }
 ```
-Then, depending on the number of test cases present in **simpletest.c**, the output of this code will display something like the following:
+Then, in the event that you forget to free some memory, Valgrind will provide an alert:
 ```shell
 [term] $ ./test
-==10498== Memcheck, a memory error detector
-==10498== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
-==10498== Using Valgrind-3.21.0 and LibVEX; rerun with -h for copyright info
-==10498== Command: ./example/valgrind_test.out
-==10498== 
-.....
---------------------------------------------------------------------------------------
-Ran 5 test in 0.008277s
+[COMPILING]:	dir/test_foo.c -o dir/.obj/test_foo.o
+[LINKING]:	testrunner2.c dir/.obj/simpletest.o  -o testrunner
+.==17437== 4 bytes in 1 blocks are definitely lost in loss record 1 of 1
+==17437==    at 0x4841828: malloc (vg_replace_malloc.c:442)
+==17437==    by 0x10A76C: foo (foo.c:11)
+==17437==    by 0x10A3D3: TESTCASE_TestingFoo (test_foo.c:12)
+==17437==    by 0x4877BC3: unittest_run_isolated_testcase (in /usr/lib/libunittest.so)
+==17437==    by 0x48792C7: unittest_run_tests (in /usr/lib/libunittest.so)
+==17437==    by 0x10928A: main (testrunner2.c:25)
+==17437== 
+........
+-------------------------------------------------------------------------------------------
+Ran 9 test in 0.804693s
 
 Ok 
-
-==10498== 
-==10498== HEAP SUMMARY:
-==10498==     in use at exit: 0 bytes in 0 blocks
-==10498==   total heap usage: 0 allocs, 0 frees, 0 bytes allocated
-==10498== 
-==10498== All heap blocks were freed -- no leaks are possible
-==10498== 
-==10498== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
 ```
 # References
+The development of this framework drew inspiration from various sources that contributed to its design and functionality. Below are a few key references:
 1. Wikipedia contributors. (2022a). Boilerplate code. Wikipedia. https://en.wikipedia.org/wiki/Boilerplate_code
 2. Wikipedia contributors. (2023a). Test suite. Wikipedia. https://en.wikipedia.org/wiki/Test_suite
 3. Python, R. (2023). Getting Started With Testing in Python. realpython.com. https://realpython.com/python-testing/
+4. Assertions reference. (n.d.). GoogleTest. Retrieved January 28, 2024, from https://google.github.io/googletest/reference/assertions.html
