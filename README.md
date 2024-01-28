@@ -282,7 +282,7 @@ Ran 2 test in 0.010490s
 
 Ok 
 ```
-## How to Log information only on `Failure` or `Warning`?
+### How to Log information only on `Failure` or `Warning`?
 To log information specifically when a failure occurs during a test, the **INFO** macro can be utilized. The **INFO** macro allows you 
 to print information during the runtime of a test, as it is essentially a wrapper for **sprintf**. By employing the following modification 
 to one of the previous code examples, you can incorporate the **INFO** macro in tests where a failure is detected as follows:
