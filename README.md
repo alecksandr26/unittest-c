@@ -25,6 +25,8 @@
 # Unit Test C
 ***Unit Test c*** is a fast and simple macro-based unit testing framework for C. It's inspired by the Python unittest module and designed to reduce 
 boilerplate code. With macros and a built-in test runner, it's ideal for large test suites.
+# License
+Unit Test C is released under the MIT License, permitting free and open use in both commercial and non-commercial projects.
 # How to install it?
 ## Using `yay`
 1. First, ensure that you have the ***yay package manager*** installed. You can install it here: [install-and-use-yay-arch-linux](https://www.makeuseof.com/install-and-use-yay-arch-linux/).
