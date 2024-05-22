@@ -69,7 +69,7 @@ typedef struct {
 		UnitTestCaseFrame unitframe;                               \
 		unitframe.state = stackjmp(&unitframe.buf);                \
 		if (unitframe.state > 1) LOG("%c", unitcase->res);         \
-		if (unitframe.state > unitcase->amount) return;            \
+		if ((size_t) unitframe.state > unitcase->amount) return; \
 		unitframe.counter = 0;                                     \
 		do
 

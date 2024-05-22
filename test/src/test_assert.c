@@ -21,7 +21,7 @@ TESTCASE(Checking)
 	int var1 = 1, var2 = 2;
 
 	TEST(NormalAssertion) { ASSERT(var1 != var2, "Testing the message"); }
-
+	
 	TEST(ComparisonAssertion) { ASSERT_EQ(var1, 3, "This is a message"); }
 
 	struct person {
@@ -86,7 +86,7 @@ TESTCASE(Checking)
 int main(void)
 {
 	MUTE_ACTIVE(true);
-
+	
 	RUN(Checking);
 
 	/* It supouse to have an failed assertion */

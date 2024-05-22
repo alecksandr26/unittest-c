@@ -35,14 +35,14 @@ typedef struct {
 #define LOG_ERR(M, ...) dprintf(UNITTEST_STD_ERR, M __VA_OPT__(, ) __VA_ARGS__)
 
 /* ABORT: Abort the program and prints the error. */
-#define ABORT(M, ...)                                                            \
-	do {                                                                     \
+#define ABORT(M, ...)							\
+	do {								\
 		LOG_ERR("Traceback...\n");                                       \
 		LOG_ERR("\tFile \"%s\", in line %i, in func \"%s\"\n", __FILE__, \
-			__LINE__, __func__);                                     \
-		LOG_ERR("[ERROR]:\t " M, __VA_ARGS__);                           \
-		LOG_ERR("\nAborting...\n");                                      \
-		abort();                                                         \
+			__LINE__, __func__);				\
+		LOG_ERR("[ERROR]:\t " M __VA_OPT__(,) __VA_ARGS__);	\
+		LOG_ERR("\nAborting...\n");				\
+		abort();						\
 	} while (0)
 
 /* The file descriptor to know where to send the information. */
