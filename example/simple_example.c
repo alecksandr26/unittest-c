@@ -10,7 +10,6 @@
 #include <malloc.h>
 #include <string.h>
 
-
 TESTCASE(MyTestCase1) {
 	TEST(TestSqrt2) {
 		double x = sqrt(2.0);
