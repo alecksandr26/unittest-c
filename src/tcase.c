@@ -19,7 +19,6 @@
 #include <sys/shm.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-#include <trycatch.h>
 #include <unistd.h>
 
 /* unittest_head_tc: A pointer to the last linked test case. */

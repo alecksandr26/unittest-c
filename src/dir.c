@@ -17,7 +17,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
-#include <trycatch.h>
 #include <unistd.h>
 
 bool unittest_fetched_files_name = false;

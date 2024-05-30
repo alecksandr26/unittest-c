@@ -16,10 +16,15 @@ C = cc
 C_DEBUG_FLAGS = -ggdb -pedantic -Wall -fPIC
 C_COMPILE_FLAGS = -O2 -DNDEBUG -fno-stack-protector -z execstack -no-pie -fPIC
 C_FLAGS = $(C_DEBUG_FLAGS)
-C_FLAGS_TRY_CATCH_LIB = -ltc
+C_FLAGS_EXCEPT_LIB = -lexcept
 C_FLAGS_WHOLE_ARCHIVE = -Wl,--whole-archive
 C_FLAGS_NO_WHOLE_ARCHIVE = -Wl,--no-whole-archive
 SHARED_LIB_FLAGS = -lunittest
+
+N = nasm
+N_DEBUG_FLAGS = -g -f elf64
+N_COMPILE_FLAGS = -f elf64
+N_FLAGS = $(N_DEBUG_FLAGS)
 
 AR = ar cr
 CF = clang-format -i
@@ -46,7 +51,7 @@ TEST_SRC_DIR = $(addprefix $(TEST_DIR)/, src)
 TEST_BIN_DIR = $(addprefix $(TEST_DIR)/, bin)
 
 OBJS = $(addprefix $(OBJ_DIR)/, debug.o info.o tcase.o suit.o valgrind.o command.o compile.o tfile.o dir.o \
-				hashdates.o rerun.o unittest.o)
+				hashdates.o rerun.o unittest.o stackjmp.o)
 
 STATIC_LIBS = $(addprefix $(LIB_DIR)/, libunittest.a)
 SHARED_LIBS = $(addprefix $(LIB_DIR)/, libunittest.so)
@@ -65,7 +70,7 @@ TESTS = $(addprefix $(TEST_BIN_DIR)/, 	test_running_testcase.out\
 					test_info.out)
 
 .PHONY: all compile pkg  upload-aur examples
-all: $(OBJS) $(STATIC_LIBS) $(SHARED_LIBS) $(TESTS) $(EXAMPLES)
+all: $(OBJS) $(STATIC_LIBS) $(SHARED_LIBS) $(TESTS) # $(EXAMPLES)
 
 $(OBJ_DIR):
 	@echo Creating: $@
@@ -90,6 +95,10 @@ $(EXAMPLE_DIR):
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 	@echo Compiling: $@
 	@$(C) $(C_FLAGS) -c $< -o $@
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.asm | $(OBJ_DIR)
+	@echo Compiling: $@
+	@$(N) $(N_FLAGS) $< -o $@
 
 # Creates the library
 $(LIB_DIR)/%.a: $(OBJS) | $(LIB_DIR)
@@ -116,13 +125,13 @@ examples: $(addprefix example_, $(notdir $(EXAMPLES)))
 # Compile the tests
 $(TEST_BIN_DIR)/test_%.out: $(TEST_SRC_DIR)/test_%.c $(SHARED_LIBS) | $(TEST_BIN_DIR)
 	@echo Compiling: $< -o $@
-	@$(C) $(C_FLAGS) -L./$(LIB_DIR) $< -o $@ $(SHARED_LIB_FLAGS)
+	@$(C) $(C_FLAGS) -L./$(LIB_DIR) $< -o $@ $(SHARED_LIB_FLAGS) $(C_FLAGS_EXCEPT_LIB)
 
 # To run some tests
 test_%.out: $(TEST_BIN_DIR)/test_%.out
 	@echo Running: $<
 	@export LD_LIBRARY_PATH=$(LIB_DIR):$$LD_LIBRARY_PATH && \
-	$(V) $(V_FLAGS) ./$<
+	DEBUGINFOD_URLS="https://debuginfod.archlinux.org" $(V) $(V_FLAGS) ./$<
 	@echo Passed
 
 test: $(notdir $(TESTS))

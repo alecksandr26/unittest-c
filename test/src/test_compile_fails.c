@@ -1,4 +1,3 @@
-
 #define TEST_DIR "test_dir/"
 #define TEST_OUT "../bin/test_compile_fails.out"
 #define UNITTEST_RECOMPILE
@@ -9,13 +8,13 @@
 #include <stdio.h>
 #include <unistd.h>
 
-int main()
+int main(void)
 {
 	INCLUDE_SUIT("compile_error.c", MySuit);
 
 	ACTIVE_VALGRIND(false);
 	MUTE_ACTIVE(true);
-
+	
 	RUN(MySuit);
 
 	/* To test recompilation we need to know which process we are */

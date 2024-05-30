@@ -36,6 +36,7 @@
 #endif
 
 #define LIB_UNITTEST  "-lunittest"
+#define LIB_EXCEPT "-lexcept"
 
 #define VALGRIND      "valgrind"
 #define VALGRIND_PATH "/usr/bin/"

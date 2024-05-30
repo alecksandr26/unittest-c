@@ -23,7 +23,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
-#include <trycatch.h>
 #include <unistd.h>
 #include <wait.h>
 
@@ -74,6 +73,7 @@ void unittest_recompile_without_tests(const UnitCompiler *compiler_contex)
 	unittest_attach_args(&command, "-L./lib");
 #endif
 	unittest_attach_args(&command, LIB_UNITTEST);
+	unittest_attach_args(&command, LIB_EXCEPT);
 
 	unittest_attach_args(&command, "-o");
 	unittest_attach_args(&command, unittest_outfile);
@@ -103,8 +103,9 @@ void unittest_recompile_with_tests(const UnitCompiler *compiler_contex)
 		/* Change the last character test.c -> test.o */
 		objs[n_objs][strlen(objs[n_objs]) - 1] = 'o';
 
-		/* Check if there were changes */
-		if (unittest_tfile_needs_update(&unittest_tfiles[i])) {
+		/* Check if there were changes, or if it even exist that file */
+		if (unittest_tfile_needs_update(&unittest_tfiles[i])
+		    || access(objs[n_objs], F_OK) == -1) {
 			char source[FILE_SIZE_NAME];
 			memset(source, 0, FILE_SIZE_NAME);
 			strcat(source, unittest_testdir);

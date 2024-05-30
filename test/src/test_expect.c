@@ -3,11 +3,11 @@
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
-#include <trycatch.h>
+#include <except.h>
 
 void throws_expection(void)
 {
-	throw(ExceptLogicalError, "throwing logical error");
+	RAISE(ExceptLogicalError, "throwing logical error");
 }
 
 void do_nothing(void)

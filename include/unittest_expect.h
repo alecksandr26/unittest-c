@@ -240,8 +240,8 @@
 		}							\
 	} while (0)
 
-/* EXPECT_THROW: Verifies that statement throws the exception `EXCEPT`. */
-#define EXPECT_THROW(STATEMENT, EXCEPT, ...)	\
+/* EXPECT_THROW: Verifies that statement throws the exception `E`. */
+#define EXPECT_THROW(STATEMENT, E, ...)	\
 	do {								\
 		UnitTestInfo    *info = &unitcase->info;		\
 		UnitTestExpectatinoInfo *info_expect =			\
@@ -249,16 +249,16 @@
 		_UNITTEST_CATCH_INFO(info_expect, __LINE__,                             \
 				     _UNITTEST_FIRST(__VA_ARGS__ __VA_OPT__(, ) NULL), \
 				     unitframe.current_test);		\
-		try {							\
+		TRY {							\
 			STATEMENT;					\
-		} catch(EXCEPT) {					\
+		} EXCEPT(E) {					\
 			;						\
-		} otherwise {						\
+		} ELSE {						\
 			sprintf(info_expect->expr, "The statement \'%s\' never throws the exception \'%s\'", \
-				#STATEMENT, EXCEPT.reason);		\
+				#STATEMENT, Except_raise_info.reason);		\
 			info->number_warning_expects++;			\
 			unitcase->res = 'W';				\
-		} endtry;						\
+		} END_TRY;						\
 	} while (0)
 
 /* EXPECT_ANY_THROW: Verifies that statement throws an exception of any kind. */
@@ -270,15 +270,15 @@
 		_UNITTEST_CATCH_INFO(info_expect, __LINE__,                             \
 				     _UNITTEST_FIRST(__VA_ARGS__ __VA_OPT__(, ) NULL), \
 				     unitframe.current_test);		\
-		try {							\
+		TRY {							\
 			STATEMENT;					\
 			sprintf(info_expect->expr, "The statement \'%s\' never throws any exception", \
 				#STATEMENT);				\
 			info->number_warning_expects++;			\
 			unitcase->res = 'W';				\
-		} otherwise {						\
+		} ELSE {						\
 			;						\
-		} endtry;						\
+		} END_TRY;						\
 	} while (0)
 
 /* EXPECT_NO_THROW: Verifies that statement does not throw any exception. */
@@ -290,14 +290,14 @@
 		_UNITTEST_CATCH_INFO(info_expect, __LINE__,                             \
 				     _UNITTEST_FIRST(__VA_ARGS__ __VA_OPT__(, ) NULL), \
 				     unitframe.current_test);		\
-		try {							\
+		TRY {							\
 			STATEMENT;					\
-		} otherwise {						\
+		} ELSE {						\
 			sprintf(info_expect->expr, "The statement \'%s\' throws the exception \'%s\'", \
-				#STATEMENT, __except_frame.exception->reason); \
+				#STATEMENT, Except_raise_info.reason); \
 			info->number_warning_expects++;			\
 			unitcase->res = 'W';				\
-		} endtry;						\
+		} END_TRY;						\
 	} while (0)
 
 /* The structure that captures all information needed for a warning expect test. */

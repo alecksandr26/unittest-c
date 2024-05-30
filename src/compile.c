@@ -17,11 +17,11 @@
 #include <stdio.h>
 #include <string.h>
 #include <sys/stat.h>
-#include <trycatch.h>
+#include <except.h>
 #include <unistd.h>
 #include <wait.h>
 
-Except UnittestEmptyFlags = {"Error empty flags passed"};
+Except_T UnittestEmptyFlags = INIT_EXCEPT_T("Error empty flags passed");
 
 char unittest_compile_extra_args_buff[COMPILING_FLAGS_SIZE];
 char unittest_link_extra_args_buff[LINKING_FLAGS_SIZE];
@@ -33,7 +33,7 @@ void unittest_catch_extra_linking_flags(const char *flags)
 {
 	size_t n = strlen(flags);
 
-	if (n == 0) throw(UnittestEmptyFlags);
+	if (n == 0) RAISE(UnittestEmptyFlags);
 
 	memset(unittest_link_extra_args_buff, 0, n);
 	strcpy(unittest_link_extra_args_buff, flags);
@@ -44,7 +44,7 @@ void unittest_catch_extra_compile_flags(const char *flags)
 {
 	size_t n = strlen(flags);
 
-	if (n == 0) throw(UnittestEmptyFlags);
+	if (n == 0) RAISE(UnittestEmptyFlags);
 
 	memset(unittest_compile_extra_args_buff, 0, n);
 	strcpy(unittest_compile_extra_args_buff, flags);
@@ -101,11 +101,14 @@ int link_objs(const UnitCompiler *compiler_contex, const char *file, const char 
 #endif
 
 	unittest_attach_args(&command, LIB_UNITTEST);
+	unittest_attach_args(&command, LIB_EXCEPT);
 
 	if (unittest_link_extra_args)
 		unittest_attach_args(&command, unittest_link_extra_args_buff);
+	
 	unittest_attach_args(&command, "-o");
 	unittest_attach_args(&command, out);
+	
 	/* Recompile without unittest_recompile feature active */
 	unittest_attach_args(&command, "-DNUNITTEST_RECOMPILE");
 

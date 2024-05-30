@@ -16,9 +16,10 @@
 #include "unittest_debug.h"
 #include "unittest_def.h"
 #include "unittest_info.h"
+#include "unittest_stackjmp.h"
 
 #include <stddef.h>
-#include <trycatch.h>
+
 
 /* The UnitTestCase struct represents a test case and includes information such as file
    name, test

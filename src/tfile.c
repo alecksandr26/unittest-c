@@ -15,16 +15,9 @@
 #include "../include/unittest_tfile.h"
 
 #include <assert.h> /* assert() */
-#include <fcntl.h>  /* create() */
-#include <malloc.h>
 #include <stdbool.h>
 #include <stdint.h>
-#include <stdio.h>
 #include <string.h>
-#include <sys/stat.h> /* stat() */
-#include <time.h>     /* ctime() */
-#include <trycatch.h> /* throw() */
-#include <unistd.h>   /* access() */
 
 size_t unittest_tfile_count = 0;
 _Static_assert(MAX_AMOUNT_OF_TEST_FILES == 128, "Should be 128 test files at max");
@@ -80,8 +73,7 @@ bool unittest_tfile_needs_update(const UnitTestFile *tf)
 	size_t i;
 
 	for (i = 0; i < unittest_amount_hashed_dates; i++)
-		if (tf->date_hashed ==
-		    unittest_hashed_dates[i]) { /* If there weren't chages return 0 */
+		if (tf->date_hashed == unittest_hashed_dates[i]) { /* If there weren't chages return 0 */
 			unittest_hashed_dates[i] =
 				unittest_hashed_dates[unittest_amount_hashed_dates - 1];
 			unittest_amount_hashed_dates--;

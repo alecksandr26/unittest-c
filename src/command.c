@@ -16,7 +16,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/wait.h>
-#include <trycatch.h>
 #include <unistd.h>
 
 /* get_command_str: To get the plain string version of the command. */

@@ -13,11 +13,12 @@
 
 #include "unittest_debug.h"
 #include "unittest_def.h"
+#include "unittest_stackjmp.h"
 
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
-#include <trycatch.h>
+#include <except.h>
 
 /* ASSERT: Evaluates expression, records failed test info, increments failure count,
    outputs 'UnitTestInfo', and jumps back to execute more tests using setjmp(). */
@@ -250,8 +251,8 @@
 		}							\
 	} while (0)
 
-/* ASSERT_THROW: Verifies that statement throws the exception `EXCEPT`. */
-#define ASSERT_THROW(STATEMENT, EXCEPT, ...)	\
+/* ASSERT_THROW: Verifies that statement throws the exception `E`. */
+#define ASSERT_THROW(STATEMENT, E, ...)	\
 	do {					\
 		UnitTestInfo    *info = &unitcase->info;		\
 		UnitTestAssertionInfo *info_assert =			\
@@ -259,17 +260,17 @@
 		_UNITTEST_CATCH_INFO(info_assert, __LINE__,                             \
 				     _UNITTEST_FIRST(__VA_ARGS__ __VA_OPT__(, ) NULL), \
 				     unitframe.current_test);		\
-		try {							\
+		TRY {							\
 			STATEMENT;					\
-		} catch(EXCEPT) {					\
+		} EXCEPT(E) {					\
 			;						\
-		} otherwise {						\
+		} ELSE {						\
 			sprintf(info_assert->expr, "The statement \'%s\' never throws the exception \'%s\'", \
-				#STATEMENT, EXCEPT.reason);		\
+				#STATEMENT, Except_raise_info.reason);	\
 			info->number_failed_asserts++;			\
 			unitcase->res = 'F';				\
 			jmpback(&unitframe.buf, unitframe.state + 1);	\
-		} endtry;						\
+		} END_TRY;						\
 	} while (0)
 
 /* ASSERT_ANY_THROW: Verifies that statement throws an exception of any kind. */
@@ -281,16 +282,16 @@
 		_UNITTEST_CATCH_INFO(info_assert, __LINE__,                             \
 				     _UNITTEST_FIRST(__VA_ARGS__ __VA_OPT__(, ) NULL), \
 				     unitframe.current_test);		\
-		try {							\
+		TRY {							\
 			STATEMENT;					\
 			sprintf(info_assert->expr, "The statement \'%s\' never throws any exception", \
 				#STATEMENT);				\
 			info->number_failed_asserts++;			\
 			unitcase->res = 'F';				\
 			jmpback(&unitframe.buf, unitframe.state + 1);	\
-		} otherwise {						\
+		} ELSE {						\
 			;						\
-		} endtry;						\
+		} END_TRY;						\
 	} while (0)
 
 /* ASSERT_NO_THROW: Verifies that statement does not throw any exception. */
@@ -302,15 +303,15 @@
 		_UNITTEST_CATCH_INFO(info_assert, __LINE__,                             \
 				     _UNITTEST_FIRST(__VA_ARGS__ __VA_OPT__(, ) NULL), \
 				     unitframe.current_test);		\
-		try {							\
+		TRY {							\
 			STATEMENT;					\
-		} otherwise {						\
+		} ELSE {						\
 			sprintf(info_assert->expr, "The statement \'%s\' throws the exception \'%s\'", \
-				#STATEMENT, __except_frame.exception->reason); \
+				#STATEMENT, Except_raise_info.reason); \
 			info->number_failed_asserts++;			\
 			unitcase->res = 'F';				\
 			jmpback(&unitframe.buf, unitframe.state + 1);	\
-		} endtry;						\
+		} END_TRY;						\
 	} while (0)
 
 /* The structure that captures all information needed for a failed assertion test. */

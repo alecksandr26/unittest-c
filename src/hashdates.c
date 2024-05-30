@@ -22,7 +22,6 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <time.h>
-#include <trycatch.h>
 #include <unistd.h>
 
 bool   dumped			    = false;
